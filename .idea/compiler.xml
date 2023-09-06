@@ -15,7 +15,6 @@
         <module name="tripleo.small" />
         <module name="test" />
         <module name="tripleo.elijah.core" />
-        <module name="tripleo.elijah.typeinf" />
         <module name="tripleo.elijah.stateful" />
         <module name="main" />
         <module name="tripleo.elijah.reactive" />
@@ -27,6 +26,7 @@
       <module name="annotations" target="17" />
       <module name="japkit-examples-simpledto" target="17" />
       <module name="java-compiler-gen" target="17" />
+      <module name="tripleo.elijah.typeinf" target="17" />
       <module name="tripleo.elijah.v2.impl" target="17" />
       <module name="tripleo.vendor.mal" target="17" />
     </bytecodeTargetLevel>

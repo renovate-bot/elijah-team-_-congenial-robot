@@ -81,18 +81,6 @@ public class DeferredMember {
 			return new DeferredObject<GenType, Diagnostic, Void>();
 		}
 	}
-
-	public DeduceElementWrapper getParent() {
-		throw new NotImplementedException("should be lombok");
-	}
-
-	public NamespaceStatement getVariableStatement() {
-		throw new NotImplementedException("should be lombok");
-	}
-
-	public IInvocation getInvocation() {
-		throw new NotImplementedException("should be lombok");
-	}
 }
 
 //

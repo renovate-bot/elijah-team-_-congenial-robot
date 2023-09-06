@@ -221,7 +221,21 @@ class Resolve_Variable_Table_Entry {
 	 * @param aGenType the GenType to modify. must be set to a nonGenericTypeName that is non-null and generic
 	 */
 	private void genCIForGenType(final @NotNull GenType aGenType) {
-		assert aGenType.getNonGenericTypeName() != null;//&& ((NormalTypeName) aGenType.nonGenericTypeName).getGenericPart().size() > 0;
+
+
+
+
+
+
+
+
+		//assert aGenType.getNonGenericTypeName() != null;//&& ((NormalTypeName) aGenType.nonGenericTypeName).getGenericPart().size() > 0;
+		if (aGenType.getNonGenericTypeName() == null) return;
+
+
+
+
+
 
 		aGenType.genCI(aGenType.getNonGenericTypeName(), deduceTypes2, deduceTypes2._errSink(), deduceTypes2.phase);
 		final IInvocation invocation = aGenType.getCi();

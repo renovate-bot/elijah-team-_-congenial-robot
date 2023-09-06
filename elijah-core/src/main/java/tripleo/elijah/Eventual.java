@@ -4,7 +4,6 @@ import org.jdeferred2.DoneCallback;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.diagnostic.Diagnostic;
-import tripleo.elijah.stages.gen_fn.IdentTableEntry;
 
 public class Eventual<P> {
 	private final DeferredObject<P, Diagnostic, Void> prom = new DeferredObject<>();
