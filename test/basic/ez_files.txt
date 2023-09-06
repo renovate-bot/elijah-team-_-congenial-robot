@@ -1,0 +1,3 @@
+test/basic/listfolders4/listfolders4.ez
+test/basic/fact1/main2/main2.ez
+test/basic/listfolders3/listfolders3.ez

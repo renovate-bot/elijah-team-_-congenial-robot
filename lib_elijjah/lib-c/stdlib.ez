@@ -1,0 +1,11 @@
+library stdlib
+
+lib
+    "std.collections"
+    "std.math"
+    "std.io"
+
+generate 
+    lang: "c"
+
+end

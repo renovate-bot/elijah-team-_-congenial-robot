@@ -1,0 +1,9 @@
+program main2
+
+lib
+    ".."
+
+generate
+    lang: "c"
+
+end

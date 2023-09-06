@@ -1,0 +1,16 @@
+class Main { main() {
+
+    var y: Integer
+    var z: typeof y
+    var x: List[typeof z]
+
+    y = 10
+    z = 9
+    x << y
+    x << z
+
+    println(x)
+
+} }
+
+

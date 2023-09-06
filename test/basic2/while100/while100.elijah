@@ -1,0 +1,7 @@
+class Main {
+	main() {
+		iterate from 1 to 100 with i {
+			println(i)
+		}
+	}
+}

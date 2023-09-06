@@ -1,0 +1,19 @@
+package wpkotlin.demo.list_folders
+
+//import<J> java.io.File
+import Java.java.io.File
+
+@MainClass // !!
+class Main < Arguments {
+  main() {
+    val folders = File(argument(1)).
+        listFiles(function (f) {
+              Result = f.isDirectory()})
+    if folders {  // folders?. //??
+        folders.forEach({|folder| println(folder) })
+    }
+  } 
+}
+
+// Java.java.lang.System.out.println(folder as Java.java.lang.Object)
+// import Java.java.lang.{System, Object}

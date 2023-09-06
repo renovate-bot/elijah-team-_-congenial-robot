@@ -1,0 +1,180 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="AddConversionCallMigration" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="AmbiguousExpressionInWhenBranchMigration" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="Anonymous2MethodRef" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="AnonymousClassComplexity" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="m_limit" value="3" />
+    </inspection_tool>
+    <inspection_tool class="AnonymousClassMethodCount" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="m_limit" value="1" />
+    </inspection_tool>
+    <inspection_tool class="AssertEqualsCalledOnArray" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="AssertEqualsMayBeAssertSame" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="AssignmentToForLoopParameter" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="m_checkForeachParameters" value="true" />
+    </inspection_tool>
+    <inspection_tool class="AssignmentToLambdaParameter" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="AssignmentToMethodParameter" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoreTransformationOfOriginalParameter" value="false" />
+    </inspection_tool>
+    <inspection_tool class="AssignmentToNull" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="AssignmentToStaticFieldFromInstanceMethod" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="AssignmentToSuperclassField" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="BooleanVariableAlwaysNegated" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="CastDueToProgressionResolutionChangeMigration" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="ClassInitializer" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="ClassNameDiffersFromFileName" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="ClassReferencesSubclass" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="ClassWithMultipleLoggers" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="loggerNamesString" value="java.util.logging.Logger,org.slf4j.Logger,org.apache.commons.logging.Log,org.apache.log4j.Logger,org.apache.logging.log4j.Logger" />
+    </inspection_tool>
+    <inspection_tool class="ClassWithOnlyPrivateConstructors" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="CloneCallsConstructors" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="CloneInNonCloneableClass" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="CloneReturnsClassType" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="ConstantDeclaredInAbstractClass" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="ConstantDeclaredInInterface" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="ConstantValue" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="ConstantValueVariableUse" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="ConstructorCount" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoreDeprecatedConstructors" value="false" />
+      <option name="m_limit" value="5" />
+    </inspection_tool>
+    <inspection_tool class="Convert2Diamond" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="DeclareCollectionAsInterface" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoreLocalVariables" value="false" />
+      <option name="ignorePrivateMethodsAndFields" value="false" />
+    </inspection_tool>
+    <inspection_tool class="DeconstructionCanBeUsed" enabled="true" level="INFORMATION" enabled_by_default="true" />
+    <inspection_tool class="EmptyClass" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignorableAnnotations">
+        <value />
+      </option>
+      <option name="ignoreClassWithParameterization" value="false" />
+      <option name="ignoreThrowables" value="true" />
+      <option name="commentsAreContent" value="true" />
+    </inspection_tool>
+    <inspection_tool class="FinalClass" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="FinalMethod" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="Finalize" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoreTrivialFinalizers" value="true" />
+    </inspection_tool>
+    <inspection_tool class="GrUnnecessaryAlias" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="GrUnnecessaryDefModifier" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="GrUnnecessaryFinalModifier" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="GrUnnecessaryNonSealedModifier" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="GrUnnecessaryPublicModifier" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="GrUnnecessarySealedModifier" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="GrUnnecessarySemicolon" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="GroovyVariableCanBeFinal" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="IfCanBeSwitch" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="minimumBranches" value="3" />
+      <option name="suggestIntSwitches" value="true" />
+      <option name="suggestEnumSwitches" value="true" />
+    </inspection_tool>
+    <inspection_tool class="IncrementDecrementUsedAsExpression" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="InlineClassDeprecatedMigration" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="InspectionUsingGrayColors" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="InstanceofThis" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="InterfaceMayBeAnnotatedFunctional" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="LambdaUnfriendlyMethodOverload" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="LimitedScopeInnerClass" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="ListenerMayUseAdapter" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="checkForEmptyMethods" value="true" />
+    </inspection_tool>
+    <inspection_tool class="LoggerInitializedWithForeignClass" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="loggerFactoryMethodName" value="getLogger,getLogger,getLog,getLogger" />
+    </inspection_tool>
+    <inspection_tool class="MagicNumber" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="MarkerInterface" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="MethodCoupling" enabled="false" level="WARNING" enabled_by_default="false">
+      <option name="m_includeJavaClasses" value="false" />
+      <option name="m_includeLibraryClasses" value="false" />
+      <option name="m_limit" value="20" />
+    </inspection_tool>
+    <inspection_tool class="MethodOnlyUsedFromInnerClass" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoreMethodsAccessedFromAnonymousClass" value="false" />
+      <option name="ignoreStaticMethodsFromNonStaticInnerClass" value="false" />
+      <option name="onlyReportStaticMethods" value="false" />
+    </inspection_tool>
+    <inspection_tool class="MethodReturnAlwaysConstant" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="MissingOverrideAnnotation" enabled="true" level="ERROR" enabled_by_default="true">
+      <option name="ignoreObjectMethods" value="false" />
+      <option name="ignoreAnonymousClassMethods" value="false" />
+    </inspection_tool>
+    <inspection_tool class="MultipleTopLevelClassesInFile" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="NegativelyNamedBooleanVariable" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="NestedAssignment" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="NonFinalFieldOfException" enabled="true" level="ERROR" enabled_by_default="true" editorAttributes="ERRORS_ATTRIBUTES" />
+    <inspection_tool class="NonFinalUtilityClass" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="NonPublicClone" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="NonStaticFinalLogger" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="loggerClassName" value="java.util.logging.Logger,org.slf4j.Logger,org.apache.commons.logging.Log,org.apache.log4j.Logger,org.apache.logging.log4j.Logger" />
+    </inspection_tool>
+    <inspection_tool class="NoopMethodInAbstractClass" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="ObsoleteCollection" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="ignoreRequiredObsoleteCollectionTypes" value="true" />
+    </inspection_tool>
+    <inspection_tool class="ObsoleteExperimentalCoroutines" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="ObsoleteKotlinJsPackages" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="OverlyStrongTypeCast" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoreInMatchingInstanceof" value="false" />
+    </inspection_tool>
+    <inspection_tool class="PackageVisibleField" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="ProhibitJvmOverloadsOnConstructorsOfAnnotationClassesMigration" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="ProhibitRepeatedUseSiteTargetAnnotationsMigration" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="ProhibitTypeParametersForLocalVariablesMigration" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="ProhibitUseSiteTargetAnnotationsOnSuperTypesMigration" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="ProtectedField" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="PsiElementConcatenation" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RecordCanBeClass" enabled="false" level="INFORMATION" enabled_by_default="false" />
+    <inspection_tool class="RedundantLabelMigration" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="RedundantTypeArguments" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="RestrictReturnStatementTargetMigration" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="ReuseOfLocalVariable" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="Singleton" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="SpellCheckingInspection" enabled="false" level="TYPO" enabled_by_default="false">
+      <option name="processCode" value="true" />
+      <option name="processLiterals" value="true" />
+      <option name="processComments" value="true" />
+    </inspection_tool>
+    <inspection_tool class="StaticMethodOnlyUsedInOneClass" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="StaticNonFinalField" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="StringConcatenationArgumentToLogCall" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="SuperTearDownInFinally" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="SystemOutErr" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="ThreadDumpStack" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="TrivialIf" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoreAssertStatements" value="true" />
+    </inspection_tool>
+    <inspection_tool class="TypeMayBeWeakened" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="useRighthandTypeAsWeakestTypeInAssignments" value="true" />
+      <option name="useParameterizedTypeForCollectionMethods" value="true" />
+      <option name="doNotWeakenToJavaLangObject" value="true" />
+      <option name="onlyWeakentoInterface" value="true" />
+      <stopClasses>org.jdeferred2.impl.DeferredObject,java.util.List</stopClasses>
+    </inspection_tool>
+    <inspection_tool class="TypeParameterExtendsFinalClass" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="TypeParameterFindViewById" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="UseDPIAwareBorders" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="UseDPIAwareInsets" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="UseJBColor" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="UseOfClone" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="UseOfObsoleteDateTimeApi" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="UsePluginIdEquals" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="UsePrimitiveTypes" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="UseVirtualFileEquals" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="UtilityClassCanBeEnum" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="UtilityClassWithPublicConstructor" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="UtilityClassWithoutPrivateConstructor" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignorableAnnotations">
+        <value />
+      </option>
+      <option name="ignoreClassesWithOnlyMain" value="false" />
+    </inspection_tool>
+    <inspection_tool class="WarningOnMainUnusedParameterMigration" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="WrongPropertyKeyValueDelimiter" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+  </profile>
+</component>

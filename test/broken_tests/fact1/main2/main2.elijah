@@ -1,0 +1,20 @@
+// pk _ // !!
+
+import wprust.demo.fact
+
+class Main < Arguments {
+  main() {
+    var b1 = 3
+    val a1 = argument(1)
+
+    if a1.isInt() {
+       b1 = a1.to_int() // intValue()
+    }
+
+    val f1 = factorial(b1)
+    println(f1)
+  }
+}
+
+// elcc (or elijahc) . -o fact
+// eljc (to java) . -o fact[.jar]

@@ -1,0 +1,38 @@
+import wpkotlin.demo.list_folders.MainLogic
+
+class Main ( Arguments ) {
+  main() {
+    MainLogic().main(arguments())
+    ExitCode = ExitSuccess
+  }
+}
+
+package wpkotlin.demo.list_folders
+
+//import<J> java.io.File
+import Java.java.io.File
+
+namespace __JAVA__ {
+  p1(a: ToStringable) {println(a.toString())}
+}
+namespace {
+  class signature ToStringable {
+    toString() -> Java.java.lang.String
+      // {abstract}
+  }
+}
+
+class MainLogic {
+  main(args: List[String]) {
+    const folders = args[1].  // Can we use Option or Maybe here?
+        listFiles(function (f) {
+              Result = f.isDirectory()})
+    if folders {  // folders?. //??
+        // copy(folders, p1)
+        folders.forEach(p1)
+    }
+  } 
+}
+
+// Java.java.lang.System.out.println(folder as Java.java.lang.Object)
+// import Java.java.lang.{System, Object}

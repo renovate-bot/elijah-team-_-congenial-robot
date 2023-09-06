@@ -1,0 +1,13 @@
+indexing
+	date: "0415190152"
+	
+class Main { main() {
+
+val a = Array[Integer](25)
+
+copy(a, randomInt)
+iterate a.Count with c {
+	println(a[c])
+}
+} }
+

@@ -1,0 +1,104 @@
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>tripleo.elijah</groupId>
+		<artifactId>elijah-v2</artifactId>
+		<version>0.91.1-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>tripleo.elijah.core</artifactId>
+	<name>elijah-core</name>
+	<description>elijah-core</description>
+	<packaging>jar</packaging>
+	<version>0.9.1-SNAPSHOT</version>
+
+	<dependencies>
+		<dependency>
+			<groupId>tripleo.elijah</groupId>
+			<artifactId>tripleo.small</artifactId>
+			<version>0.9.1-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>tripleo.elijah</groupId>
+			<artifactId>tripleo.elijah.reactive</artifactId>
+			<version>0.9.1-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>tripleo.elijah</groupId>
+			<artifactId>tripleo.elijah.stateful</artifactId>
+			<version>0.9.1-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- https://search.maven.org/artifact/io.reactivex.rxjava3/rxjava/3.1.0/jar -->
+		<dependency>
+			<groupId>io.reactivex.rxjava3</groupId>
+			<artifactId>rxjava</artifactId>
+			<version>3.1.6</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.reactivestreams/reactive-streams -->
+		<dependency>
+			<groupId>org.reactivestreams</groupId>
+			<artifactId>reactive-streams</artifactId>
+			<version>1.0.4</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.15</version> <!-- Use 1.6 for java 1.5 -->
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/antlr/antlr -->
+		<dependency>
+			<groupId>antlr</groupId>
+			<artifactId>antlr</artifactId>
+			<version>2.7.7</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.28</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jetbrains</groupId>
+			<artifactId>annotations</artifactId>
+			<version>24.0.1</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.1</version>
+				<configuration>
+					<source>16</source>
+					<target>16</target>
+					<fork>true</fork>
+					<compilerArgs>
+						<arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED</arg>
+						<arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED</arg>
+						<arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED</arg>
+						<arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED</arg>
+						<arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED</arg>
+						<arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</arg>
+						<arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED</arg>
+						<arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</arg>
+						<arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED</arg>
+						<arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.jvm=ALL-UNNAMED</arg>
+					</compilerArgs>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

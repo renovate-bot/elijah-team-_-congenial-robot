@@ -1,0 +1,9 @@
+program listfolders3
+
+lib
+    ".."
+
+generate 
+    lang: "c"
+
+end

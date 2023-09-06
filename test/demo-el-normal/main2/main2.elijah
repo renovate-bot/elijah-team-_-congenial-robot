@@ -1,0 +1,20 @@
+// pk _ // !!
+
+import wprust.demo.fact
+
+class Main ( FactDemo, Arguments ) {
+  main() {
+    var b1 = 3
+    const a4 = argument(1)
+
+    if a4.isInt() {
+       b1 = a4.to_int() // intValue()
+    }
+
+    const f1 = factorial(b1)
+    println(f1)
+  }
+}
+
+// elcc (or elijahc) . -o fact
+// eljc (to java) . -o fact[.jar]

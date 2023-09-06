@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="generate grammar" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="antlr.Tool" />
+    <module name="main" />
+    <option name="PROGRAM_PARAMETERS" value="elijjah.g" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/main/java/tripleo/elijjah" />
+    <method v="2" />
+  </configuration>
+</component>

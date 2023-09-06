@@ -1,0 +1,7 @@
+indexing
+	date: "0205212356"
+
+class Bar  { quux() { print("ok") } }
+class Foo  { var bar = Bar() }
+class Main { main() { Foo().bar.quux() } }
+

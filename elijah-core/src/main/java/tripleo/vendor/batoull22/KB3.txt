@@ -1,0 +1,8 @@
+G →Q
+L.M→P
+P.A→Q
+B.L→M
+A.B→G
+A
+B
+proof:Q

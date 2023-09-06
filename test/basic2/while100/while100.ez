@@ -1,0 +1,8 @@
+program while100
+
+lib
+	source: "."
+
+generate
+
+end

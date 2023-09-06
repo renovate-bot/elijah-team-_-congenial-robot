@@ -1,0 +1,57 @@
+indexing
+	date: "0323190010"
+
+package elijahdemo.parser.varreftest
+
+namespace { mkfoo() { return Foo() } }
+
+namespace _Foo { var index = 0 def next = index++ }
+
+class Foo {
+	var integer = randInt(1, 1000)
+
+	__call__ () const {
+		println("%d %d" % (integer, index))
+	}
+
+	val index = _Foo.next()
+
+	//@command
+	reset() { integer = randInt(1, 1000) }
+}
+
+class MainLogic {
+	val a = ArrayList(250) //.fill(mkfoo)
+
+	iterate a.Count { a.add(Foo()) }
+	iterate a.Count with m {
+		a[m]().reset()  //RDC
+	}
+}
+
+package _
+
+import elijahdemo.parser.varreftest
+
+class Main < MainLogic {}
+
+// develop one with colors (primiary, pastels)
+// and shapes circle square 4 triangles
+// and let it morph 
+//
+// PAUSE RESET RANDOMIZE QUIT
+
+// demonstrates module namespace
+//	static namespace
+//	var, val
+//	special functions (__call__)
+//	ArrayList (i/o List)
+//	simple iterate
+//	VariableReference correct parsing
+
+
+//
+//
+//
+
+

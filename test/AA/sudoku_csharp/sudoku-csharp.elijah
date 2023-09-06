@@ -1,0 +1,110 @@
+// from RosettaCode: C#
+
+class SudokuSolver {
+
+	var grid : Array[Integer]
+
+	constructor(s: String) {
+		copy(grid, 0)
+		iterate s.Length with i {
+			grid[i] = s.at(i) as Integer
+		}
+	}
+
+	type SolveResult =
+		  Finished
+		| Impossible
+		| Intermediate
+		
+	solve() {
+		//try {
+			var sr = placeNumber(0)
+		//} except (ex: Exception) {
+		//	println(ex.toString())
+		//}
+		if sr == Finished {
+			println("Finished")
+		} else if sr == Impossible {
+			println("Impossible")
+		}
+	}
+
+	placeNumber(pos: Integer) -> SolveResult {
+		if pos == 81 {
+			return Finished
+		}
+
+		if grid[pos] > 0 {
+			placeNumber(pos + 1)
+			return Intermediate
+		}
+		
+		iterate from 1 to 9 with n {
+			if (checkValidity(n, pos % 9, pos / 9)) {
+				grid[pos] = n;
+				placeNumber(pos + 1);
+				grid[pos] = 0;
+			}
+		}
+	}
+ 
+	checkValidity(vall: Integer, x: Integer, y: Integer) -> Boolean
+	{
+		iterate from 1 to 9 with i {
+			if (grid[y * 9 + i] == vall || grid[i * 9 + x] == vall) {
+				return false;
+			}
+		}
+		
+			val startX = (x / 3) * 3;
+		val startY = (y / 3) * 3;
+		iterate from startY to startY+3 with i {
+			iterate from startX to startX+3 with j {
+				if (grid[i * 9 + j] == vall) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+ 
+	//@Override
+	toString() -> String {
+		val sb = "";
+		iterate from 0 to 8 with i {
+			iterate from 0 to 8 with j {
+				sb += (grid[i * 9 + j] + " ");
+				if (j == 2 || j == 5) {
+					sb += ("| ");
+				}
+			}
+			sb += ('\n');
+			if (i == 2 || i == 5) {
+				sb += ("------+-------+------\n");
+			}
+			}
+			return sb;
+		}
+	}
+ 
+class Main {
+	main() {
+	
+		val ss = SudokuSolver("850002400" +
+					"720000009" +
+					"004000000" +
+					"000107002" +
+					"305000900" +
+					"040000000" +
+					"000080070" +
+					"017000000" +
+					"000036040")
+		ss.solve();
+		//Console.Read();
+	}
+}
+
+
+//
+//
+//

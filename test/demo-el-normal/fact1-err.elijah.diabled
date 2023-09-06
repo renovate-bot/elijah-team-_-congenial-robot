@@ -1,0 +1,17 @@
+package wprust.demo.fact
+
+class Main {
+  main() {
+    const kl = 3
+    const f1 = factorial(k1)
+    println(f1)
+  }
+  factorial(i: u64) -> u64 {
+     var acc = 1
+     iterate from 2 to i with num {
+        acc *= num
+     }
+     Result = acc
+  }
+
+}

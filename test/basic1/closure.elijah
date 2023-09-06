@@ -1,0 +1,18 @@
+class Main { main() {
+
+var _i = 0 
+
+class Foo { p() {println(i) } val i = _i++ }
+
+iterate 20 { Foo() }
+
+}  }
+
+// VAR ACCESS
+// -----------
+// MEMBER
+// LOCAL
+// CLOSURE
+// ARGUMENT
+// QUALIFIED
+

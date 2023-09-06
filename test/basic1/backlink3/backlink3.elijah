@@ -1,0 +1,22 @@
+indexing
+	date: ["1002202216", "1220200416"]
+
+class Foo {
+	var x: Integer
+	printIt() {
+		println(x)
+	}
+}
+
+class Main { main() {
+
+var 
+	foo = Foo()
+
+foo.x = 13
+foo.printIt()
+
+}
+
+}
+

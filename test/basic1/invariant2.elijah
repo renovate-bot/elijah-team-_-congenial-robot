@@ -1,0 +1,16 @@
+indexing 
+	purpose: "simplest invariant demo part 2"
+	date: "0416200430"
+	
+class Main {
+
+val i = 3
+
+invariant
+	i_must_be_3: i == 3
+}
+
+//
+//
+//
+

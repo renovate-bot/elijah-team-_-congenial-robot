@@ -1,0 +1,32 @@
+indexing
+	date: ["0411201943", "1006200619"]
+
+import std.math
+
+class Main { main() {
+
+class Foo  { val m1 = randInt(1, 100) }
+class Foo1 { val m2 = randInt(101, 200) }
+
+iterate 20 { 
+	val a : Any
+	if randInt(1,2) > 1 {
+		a = Foo()
+	} else {
+		a = Foo1()
+	}
+	n(a) 
+}
+
+}
+
+n(a: generic A) {
+	match a {
+		x: Foo  { println(x.m1) }
+		y: Foo1 { println(x.m2) }
+}  }  }
+
+//
+//
+//
+

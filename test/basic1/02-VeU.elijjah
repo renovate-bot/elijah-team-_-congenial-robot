@@ -1,0 +1,19 @@
+class Main { main {
+    var y: Integer
+
+    y = 3
+
+    {
+        var y: String
+        y = (4 as Integer)
+        println(y)
+    }
+
+    println(y)
+
+} }
+
+//
+// TypeMismatch: y: String declared at line 7 cannot be assigned a Integer declared at line 6
+//
+//

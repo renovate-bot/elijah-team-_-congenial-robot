@@ -1,0 +1,277 @@
+package Prelude;
+
+import C
+
+class interface String {
+	prop Length : SystemInteger {get;set;} // TODO implement me
+
+    to_int() -> Integer {
+		"from SmartEiffel Oct 7 2008"
+			// `self' must look like an INTEGER.
+		/*pre {
+			is_integer: is_integer()
+		}*/
+		var
+			i: SystemInteger
+		var
+			cc: Character
+		var
+			negative: Boolean
+		
+		i = 0
+		
+		/*variant
+			count - (i+1)*/
+		while at(i).is_separator() {
+			i = i + 1
+		}
+		cc = at(i)
+		i = i + 1
+		if cc == '+' {
+			cc = at(i)
+			i = i + 1
+		} else if cc == '-' {
+			negative = True
+			cc = item(i)
+			i = i + 1
+		}
+		/*check
+			cc.is_digit
+		}*/
+		Result = -cc.value
+		
+		/*variant
+			count - (i+1)*/
+		while !(i > count) {
+			cc = at(i)
+
+			if cc.is_digit() {
+				Result = 10 * Result - cc.decimal_value // Should not overflow since `is_integer' is true
+			} else {
+				/*check
+					cc.is_separator
+				}*/
+				i = count // terminate the loop
+			}
+			i = i + 1
+		}
+		if negative {
+		} else {
+			Result = -Result
+		}
+    }
+
+    isInt() -> Boolean {
+		"from SmartEiffel Oct 7 2008"
+			// Does 'self' represent an INTEGER?
+			// `Result' is True if and only if the following two conditions
+			// hold:
+			//
+			// 1. In the following BNF grammar, the value of `self' can be
+			// produced by "Integer_literal", if leading and trailing
+			// separators are ignored:
+			//
+			// Integer_literal = [Sign] Integer
+			// Sign            = "+" | "-"
+			// Integer         = Digit | Digit Integer
+			// Digit           = "0"|"1"|"2"|"3"|"4"|"5"|"6"|"7"|"8"|"9"
+			//
+			// 2. The numerical value represented by `self' is within the
+			// range that can be represented by an instance of type Integer32.
+		var
+			i, state, value, bound, critical_bound: SystemInteger
+		var
+			cc: Character
+
+		const count = Length
+
+		// state 0: nothing read.
+		// state 1: "+" or "-" read.
+		// state 2: error.
+		// state 3: in the number.
+		// state 4: last digit of a critically big number
+		// state 5: after the number.
+			
+		i = 0 // String indexes start at 0 not 1
+		
+		/*variant
+			count - i*/
+		while !(state == 2 || i > count) {
+			cc = at(i)
+			
+			case state {
+			0 {
+				if cc.is_separator(){
+				} else if cc == '+' {
+					bound = Integer32.Maximum_integer % 10 // #\\
+					critical_bound = Integer32.Maximum_integer / 10 // #//
+					state = 1
+				} else if cc == '-' {
+					bound = -(Integer32.Minimum_integer % 10) // #\\
+					critical_bound = -(Integer32.Minimum_integer / 10) // #\\
+					state = 1
+				} else if cc.is_digit {
+					bound = Integer32.Maximum_integer % 10 // #\\
+					critical_bound = Integer32.Maximum_integer / 10 // #//
+					value = cc.decimal_value
+					state = 3
+				} else {
+					state = 2
+				}
+			}
+			1 {
+				if cc.is_digit {
+					value = cc.decimal_value
+					state = 3
+				} else {
+					state = 2
+				}
+			}
+			3 {
+				if cc.is_digit {
+					value = 10 * value + cc.decimal_value
+					if value >= critical_bound {
+						state = 4
+					}
+				} else if cc.is_separator(){
+					state = 5
+				} else {
+					state = 2
+				}
+			}
+			4 {
+				if cc.is_digit {
+					if value > critical_bound {
+						state = 2
+					} else {
+						if cc.decimal_value <= bound {
+							state = 5
+						} else {
+							state = 2
+						}
+					}
+				} else if cc.is_separator(){
+					state = 5
+				} else {
+					state = 2
+				}
+			}
+			5 {
+				if cc.is_separator(){
+				} else {
+					state = 2
+				}
+			}
+		}
+		i = i + 1
+		}
+		Result = state >= 3
+    }
+}
+
+class ConstString < String {}
+
+class interface Integer {
+	prop Value : ?A < Integer { get; set; }
+	prop Maximum_Value : typeof self { get; }
+	prop Minimum_Value : typeof self { get; }
+
+	__preinc__() -> typeof self {
+		var tmp = Value
+		Value = Value + 1
+		Result = tmp
+	}
+
+	__imult__(other: Integer) {
+		Value = Value * other
+	}
+}
+
+#[Primitive C.repr("int64_t")]
+class Integer64 < Integer {
+}
+
+#[Primitive C.repr("int32_t")]
+class Integer32 < Integer {
+}
+
+#[Primitive C.repr("uint64_t")]
+class Unsigned64 < Integer {
+}
+
+#[Primitive C.repr("uint32_t")]
+class Unsigned32 < Integer {
+}
+
+//enum
+class
+ Boolean {
+//    True, False
+}
+alias SystemInteger = Integer64
+//alias Integer = SystemInteger
+
+namespace {
+    val ExitSuccess = 0
+    val ExitFailure = 1
+}
+
+class interface IPrintable {
+    // TODO forgot what to put here
+    printable() -> ConstString {}
+}
+
+namespace {
+    print (a: IPrintable) {
+		C.puts(String8(a.printable()))
+    }
+    println (a: IPrintable) {
+		print(a)
+		print('\n')
+    }
+}
+
+class Arguments {
+    arguments() -> SystemInteger {
+		Result = argument_count_
+    }
+    alias argument_count = arguments
+    argument(n: SystemInteger) -> ConstString {
+//		pre {
+//			valid_index: n >= 0 && n < argument_count_
+//		}
+		Result = String8(argument_array[n])
+    }
+access {NONE}
+	var argument_array: C.Array[C.str]
+	var argument_count_: SystemInteger
+}
+
+//type NoneType = 
+//	None
+
+namespace {
+	//#[Primitive]
+	val None = 0
+	
+	var ExitCode = ExitSuccess
+}
+
+class abstract Character {
+
+}
+
+class SystemCharacter < Character {
+	// TODO change for java
+	prop Value : u8 { get { Value = c; }
+	                  set { c = Value; } }
+}
+
+/*type*/ alias u64 = Unsigned64
+/*type*/ alias u32 = Unsigned32
+/*type*/ alias i64 = Integer64
+/*type*/ alias i32 = Integer32
+
+//
+//
+//

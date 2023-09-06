@@ -1,0 +1,28 @@
+indexing
+	date: "0205210056", "1129210409"
+
+class Foo {
+	prop P: Pr { get { Value = _p }
+	             set { _p = Value }
+		   }
+	
+access {NONE}
+	var _p = Pr()
+}
+
+class Pr {
+	val t = 100
+}
+
+class Main {
+	main() {
+		var
+			foo = Foo()
+
+		foo.P.t = 200
+		println(foo.P.t)
+	}
+}
+
+// Pr can't be named P because there is only one namespace
+

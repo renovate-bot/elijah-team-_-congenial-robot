@@ -1,0 +1,18 @@
+indexing
+	date: "1002202218"
+
+class Foo {
+	var x: Integer
+}
+
+class Main { main() {
+
+var 
+	foo: Foo // test auto creation like C++
+
+foo.x = 13
+
+}
+
+}
+

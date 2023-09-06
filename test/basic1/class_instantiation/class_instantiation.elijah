@@ -1,0 +1,29 @@
+indexing
+	date: "0305210428"
+
+class Bar[T] {
+	var t: T
+}
+
+class Foo {
+	var f: String
+}
+
+class Main {
+	main() {
+		var bar : Bar[String]
+		construct bar
+		bar.t = "13"
+
+		var foo = Foo()
+		foo.f = "14"
+
+		println(bar.t)
+		println(foo.f)
+
+	}
+}
+
+
+
+

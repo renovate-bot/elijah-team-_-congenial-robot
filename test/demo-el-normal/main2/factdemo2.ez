@@ -1,0 +1,9 @@
+program factdemo2
+
+lib
+    ".."
+
+generate
+
+end
+

@@ -1,0 +1,9 @@
+program backlink3
+
+lib
+	source: "."
+
+generate
+
+end
+

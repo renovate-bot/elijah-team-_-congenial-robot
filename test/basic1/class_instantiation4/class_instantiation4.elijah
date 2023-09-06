@@ -1,0 +1,36 @@
+indexing
+	date: "0305210428", "1119210035"
+
+class Bar[T] {
+
+	constructor(a_t: T, a_foo: Foo, a_i: Integer) {
+		t = a_t
+		foo = a_foo
+		i = a_i
+	}
+
+//access {NONE}
+
+	var t: T
+	var foo: Foo
+	var i: Integer
+
+}
+
+class Foo {
+	var f: String
+}
+
+class Main {
+	main() {
+		var foo = Foo()
+		foo.f = "14"
+
+		var bar : Bar[String]
+		construct bar("13", foo, 10000)
+
+		println(bar.t)
+		println(foo.f)
+
+	}
+}

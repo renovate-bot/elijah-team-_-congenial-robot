@@ -1,0 +1,24 @@
+indexing
+	date: "1002202216", "0413210448"
+
+class Foo {
+	var _x: Integer = 0
+
+	prop x: Integer {
+		get { Value = _x }
+		set { _x = Value }
+	}
+ 
+}
+
+class Main { main() {
+
+var 
+	foo = Foo()
+
+foo.x = 13
+
+}
+
+}
+

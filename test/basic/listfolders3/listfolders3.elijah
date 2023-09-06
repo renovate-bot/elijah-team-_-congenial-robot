@@ -1,0 +1,27 @@
+import wpkotlin_c.demo.list_folders.MainLogic
+
+class Main ( Arguments ) {
+  main() {
+    MainLogic().main(arguments())
+    ExitCode = ExitSuccess
+  }
+}
+
+package wpkotlin_c.demo.list_folders
+
+import std.io.Directory
+import std.collections
+
+class MainLogic {
+  main(args: List[String]) {
+    const fun = function (f) {
+              Result = f.isDirectory()}
+    const folders = Directory(args[1]).  // Can we use Option or Maybe here?
+        listFiles(fun)
+    if folders != None { 	// folders?. //??
+        // copy(folders, p1)
+        folders.forEach(p1)
+    }
+  } 
+}
+

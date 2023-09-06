@@ -1,0 +1,525 @@
+/*
+// The Great Computer Language Shootout
+// http://shootout.alioth.debian.org/
+// contributed by Jose
+*/
+
+class RayTracer < Arguments
+
+access {ANY}
+
+	const default_size: INTEGER = 160
+
+	const fractal_level: INTEGER = 6
+
+	const subdivision: INTEGER = 4
+
+	const initial_radius: Float64 = 1.0
+
+	initial_center: VECTOR is
+		once
+			construct Result.make(0.0, -1.0, 0.0)
+		}
+
+	light: VECTOR is
+		once
+			construct Result.make(-1, -3, 2)
+			Result.normalize
+		}
+
+	color_factor: Float64 is
+		once
+			Result := 255.0 / (subdivision * subdivision)
+		}
+
+	vue_point: VECTOR is
+		once
+			construct Result.make(0.0, 0.0, -4.0)
+		}
+
+	tracer: TRACER is
+		once
+			construct Result.make
+		}
+
+	constructor() {
+		var
+			n, x, y, dx, dy: INTEGER
+		var direction: VECTOR
+	
+		// get the size of the image (number of pixel)
+		if argument_count >= 1 && argument(1).is_integer {
+			n = argument(1).to_integer
+			if n <= 0 {
+				n = default_size
+			}
+		} else {
+			n := default_size
+		}
+		// construct the scene
+		tracer.put_origin(vue_point)
+		tracer.put_light(light)
+		tracer.put_scene(construct_scene(fractal_level, initial_radius, initial_center))
+		construct direction.zero
+		tracer.put_direction(direction)
+		// compute the scene
+		io.put_string(once "P5")
+		io.put_new_line
+		io.put_integer(n)
+		io.put_character(' ')
+		io.put_integer(n)
+		io.put_new_line
+		io.put_string(once "255")
+		io.put_new_line
+		iterate from n to 0 by -1 {
+			x = 0
+
+			do {
+				tracer.reset_material()
+				iterate from 0 to subdivision with dx {
+					iterate from 0 to subdivision with dy {
+						construct direction(x + dx / subdivision - n / 2, y + dy / subdivision - n / 2, n)
+						direction.normalize()
+						tracer.compute()
+					}
+				}
+				io.put_character((0.5 + tracer.material * color_factor).force_to_integer_32.to_character)
+				x++
+			} while (!(x>=n))
+
+		}
+	}
+
+	radius_factor -> Float64 {
+	once
+		Result := 3.0 / (12.0).sqrt
+	}
+
+	construct_scene (level: INTEGER; r: Float64; v: VECTOR) -> TRACEABLE {
+		var
+			rn: Float64
+		var w: VECTOR
+		var dz, dx: INTEGER
+		var group: GROUP
+		
+		if level = 1 {
+			Result = /*construct*/ SPHERE.make(v, r)
+		} else {
+			construct group.make(v, 3.0 * r)
+			group.add(/*construct*/ SPHERE.make(v, r))
+			rn := r * radius_factor
+			dz = -1
+			do {
+				dx = -1
+				do {
+					construct w.make(v.x - dx * rn, v.y + rn, v.z - dz * rn)
+					group.add(construct_scene(level - 1, 0.5 * r, w))
+					dx = dx + 2
+				} while (!(dx > 1))
+				dz = dz + 2
+			} while (!(dz > 1))
+			Result = group
+		}
+	}
+
+} // class RAY
+
+
+class TRACER
+
+	import CONSTANTS
+
+access {ANY}
+	var scene: TRACEABLE
+
+	var direct_ray: TRACESTATE
+
+	var reflected_ray: SHADOWSTATE
+//	reflected_ray: TRACESTATE
+
+	var light: VECTOR
+
+	var material: Float64
+
+	constructor make() {
+		construct direct_ray
+		construct reflected_ray
+	}
+
+	is_ready -> Boolean {
+		Result = direct_ray.is_ready && light != None && scene != None
+	}
+
+	put_origin (value: VECTOR) {
+		direct_ray.put_origin(value)
+	}
+
+	origin: VECTOR {
+		Result = direct_ray.origin
+	}
+
+	put_direction (value: VECTOR) {
+		direct_ray.put_direction(value)
+	}
+
+	direction -> VECTOR	{
+		Result = direct_ray.direction()
+	}
+
+	put_light (value: VECTOR) {
+		light = -value
+		reflected_ray.put_direction(light)
+	}
+
+	put_scene (value: TRACEABLE) {
+		scene = value
+	}
+
+	reset_material() {
+		material = 0
+	}
+
+	compute() {
+		pre {
+			is_ready
+		var
+			normal: VECTOR
+		var
+			mat: Float64
+
+		direct_ray.reset()
+		direct_ray.compute_distance(scene)
+		if direct_ray.intersected() {
+			normal := direct_ray.normal
+			mat := (normal | light)
+			if mat > 0 {
+				reflected_ray.put_origin(direct_ray.intersection + normal * delta)
+				reflected_ray.reset()
+				reflected_ray.compute_distance(scene)
+				if !reflected_ray.intersected() {
+					material = material + mat
+				}
+			}
+		}
+	}
+
+} // class TRACER
+
+class TRACESTATE
+
+	import CONSTANTS
+
+feature {ANY}
+	var origin: VECTOR
+
+	var direction: VECTOR
+
+	var item: NORMALIZABLE
+
+	var distance: Float64
+
+	put_origin (org: VECTOR)
+	{
+		origin = org
+	}
+
+	put_direction (dir: VECTOR) is
+	{
+		direction = dir
+	}
+
+	intersect (dist: Float64; obj: NORMALIZABLE) {
+		pre {
+			obj != None
+			dist >= 0
+		}
+	
+		if distance > dist {
+			distance = dist
+			item = obj
+		}
+	post
+		intersected || dist == infinity
+	}
+
+	reset() {
+		item = None
+		distance = infinity
+	post
+		not_intersected: !intersected
+	}
+
+	intersected -> Boolean {
+		Result = item != None
+	post
+		Result = (distance != infinity)
+	}
+
+	intersection -> VECTOR {
+		pre {
+			intersected
+		}
+
+		Result := origin + direction * distance
+	}
+
+	compute_distance (scene: TRACEABLE) {
+		pre {
+			is_ready
+		}
+
+		scene.compute_distance(self)
+	}
+
+	normal: VECTOR is
+		pre {
+			intersected
+		{
+
+		Result := item.compute_normal(self)
+		post
+			is_normalized: Result.is_normalized
+	}
+
+	def is_ready -> Boolean = origin != None && direction != None
+
+
+invariant
+	positive_distance: distance >= 0
+
+} // class TRACESTATE
+
+
+class SHADOWSTATE < TRACESTATE
+	//redefine compute_distance }
+
+access {ANY}
+	
+	#[Redefine] // Override??
+	compute_distance (scene: TRACEABLE) {
+		if !intersected() {
+			scene.compute_distance(self)
+		}
+	}
+
+} // class SHADOWSTATE
+
+class abstract TRACEABLE
+
+access {ANY}
+	compute_distance (state: TRACESTATE) {
+		abstract
+	}
+
+} // class TRACEABLE
+
+class abstract NORMALIZABLE
+
+access {ANY}
+	compute_normal (state: TRACESTATE) -> VECTOR {
+		pre {
+			state.item = self
+		}
+		abstract
+		post
+			Result.is_normalized
+	}
+
+} // class NORMALIZABLE
+
+class GROUP < TRACEABLE
+
+feature {ANY}
+	var bound: SPHERE
+
+	var group: LINKED_LIST[TRACEABLE]
+
+	var iterator: ITERATOR[TRACEABLE]
+
+	constructor make (c: VECTOR, r: Float64) {
+		construct bound.make(c, r)
+		construct group.make
+		iterator := group.iterator()
+	}
+
+	add (some: TRACEABLE)
+	{
+		group.add_last(some)
+	}
+
+	compute_distance (state: TRACESTATE) {
+		if bound.distance(state) < state.distance {
+			iterate iterator with item {
+				state.compute_distance(item)
+			}
+		}
+	}
+
+} // class GROUP
+
+class SPHERE < TRACEABLE, NORMALIZABLE
+
+	import CONSTANTS
+
+feature {ANY}
+	var center: VECTOR
+
+	var square_radius: Float64
+
+	var radius: Float64
+
+	constructor make (c: VECTOR; r: Float64)
+	{
+		center = c
+		square_radius = r * r
+		radius = r
+	}
+
+	distance (state: TRACESTATE): Float64 is
+	local
+		v: VECTOR; b, disc, d: Float64
+	{
+		Result := infinity
+		v := center - state.origin
+		b := (v | state.direction)
+		disc := b * b - v.square_length + square_radius
+		if disc >= 0.0 {
+		disc := disc.sqrt
+		d := b - disc
+		if d >= 0.0 {
+			Result := d
+		elseif b+disc > 0 {
+			Result := 0
+		}
+		}
+	}
+
+//	compute_distance (state: TRACESTATE) is
+//		{
+//			state.intersect(distance(state), self)
+//		}
+
+	compute_distance (state: TRACESTATE) is
+	local
+		v: VECTOR; b, disc, d: Float64
+	{
+		v := center - state.origin
+		b := (v | state.direction)
+		disc := b * b - v.square_length + square_radius
+		if disc >= 0.0 {
+		disc := disc.sqrt
+		d := b - disc
+		if d >= 0.0 {
+			state.intersect(d,self)
+		}
+		}
+	}
+
+	compute_normal (state: TRACESTATE): VECTOR is
+	{
+		Result := state.intersection - center
+		Result.normalize
+	}
+
+} // class SPHERE
+
+class VECTOR
+	import CONSTANTS
+
+access {ANY}
+	
+	var x, y, z: Float64
+
+	constructor zero() {
+		make(0.0, 0.0, 0.0)
+	}
+
+	constructor make (a, b, c: Float64)
+	{
+		x := a
+		y := b
+		z := c
+	}
+
+	__mul__ (c: Float64) -> VECTOR is
+	{
+		construct Result.make(c * x, c * y, c * z)
+	}
+
+	__plus__(v: VECTOR) -> VECTOR is
+	{
+		construct Result.make(x + v.x, y + v.y, z + v.z)
+	}
+
+	__sub__(v: VECTOR) -> VECTOR
+	{
+		construct Result.make(x - v.x, y - v.y, z - v.z)
+	}
+
+	__neg__() -> VECTOR is
+	{
+		construct Result.make(- x, - y, - z)
+	}
+
+	__or__(v: VECTOR) -> Float64 is
+	{
+		Result := x * v.x + y * v.y + z * v.z
+	}
+
+	square_length: Float64 is
+	{
+		Result := x * x + y * y + z * z
+	}
+
+	def length: Float64 = square_length.sqrt()
+
+	normalize {
+		pre {
+			not_zero_length: !is_zero_length()
+		}
+
+		var
+			l: Float64
+	
+		l := 1.0 / length
+		x := x * l
+		y := y * l
+		z := z * l
+
+	post
+		is_normalized: is_normalized
+	}
+
+	normed -> VECTOR {
+		pre {
+				not is_zero_length
+		}
+	
+		Result = self * (1.0 / length)
+	post
+		is_normalized: Result.is_normalized
+	}
+
+	def is_zero_length: Boolean = square_length == 0
+
+	def is_zero: Boolean = x == 0 && y = 0 && z = 0
+
+	is_normalized: Boolean = (square_length - 1.0).abs < compare_delta
+
+} // class VECTOR
+
+
+namespace CONSTANTS {}
+
+access {ANY}
+
+	const epsilon: Float64 = 2.2204460492503131e-16
+
+	def delta: Float64 = epsilon.sqrt
+
+	const compare_delta: Float64 = 1e-9
+
+	def infinity: Float64 = Maximum_Float64
+
+} // namespace CONSTANTS
+

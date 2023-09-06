@@ -1,0 +1,33 @@
+indexing
+	date: "1002201751"
+    purpose: "test deduction too"
+
+class Main { main() {
+
+iterate 20 { 
+	val a //: Optional[Boolean]
+    a = foo()    
+    match a {
+        Some(True)  { println("true")}
+        Some(False) { println("false")}
+        None        { println("none")}
+	}
+}
+
+}
+
+foo() -> Optional{Boolean] {
+    match randInt(1,3) {
+		1  {return True}
+        2  {return False}
+        3  {return None}
+    }
+
+} 
+
+}
+
+//
+//
+//
+

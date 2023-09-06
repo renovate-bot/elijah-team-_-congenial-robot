@@ -1,0 +1,9 @@
+program class_instantiation2
+
+lib
+	"."
+
+generate
+
+end
+

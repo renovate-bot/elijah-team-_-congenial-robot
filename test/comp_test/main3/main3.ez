@@ -1,0 +1,9 @@
+program fib
+
+lib
+    ".."
+
+generate
+    lang: "c"
+
+end

@@ -1,0 +1,36 @@
+package std.math
+
+import C
+
+namespace {
+
+	randInt(x: SystemInteger, y: SystemInteger) -> SystemInteger {
+		Result = rand() % ((y + 1) - x) + x
+	}
+
+}
+
+namespace __C__ {
+
+	#[C.impl(std_header="stdlib.h")]
+	rand() -> SystemInteger {
+		"see https://en.cppreference.com/w/c/numeric/random/rand"
+		abstract // no native keyword
+	}
+}
+
+/*
+namespace __CXX__ {
+
+	#[CXX.impl(std_header="random")]
+	rand() -> SystemInteger {
+		"see https://en.cppreference.com/w/cpp/numeric/random"
+
+/*    std::default_random_engine e1(r());
+    std::uniform_int_distribution<int> uniform_dist(1, 6);
+    int mean = uniform_dist(e1);
+* /
+	}
+}
+*/
+

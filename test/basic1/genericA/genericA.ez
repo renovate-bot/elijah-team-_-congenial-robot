@@ -1,0 +1,9 @@
+program genericA
+
+lib
+	source: "."
+
+generate
+
+end
+

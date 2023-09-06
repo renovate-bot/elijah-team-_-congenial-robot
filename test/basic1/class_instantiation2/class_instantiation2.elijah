@@ -1,0 +1,31 @@
+indexing
+	date: "0305210428", "0305210634"
+
+class Bar[T] {
+	var t: T
+
+	constructor x() {}
+}
+
+class Foo {
+	var f: SystemInteger
+}
+
+class Main {
+	main() {
+		var bar : Bar[SystemInteger]
+		construct bar.x
+		bar.t = 13
+
+		var foo = Foo()
+		foo.f = 14
+
+		println(bar.t)
+		println(foo.f)
+
+	}
+}
+
+
+
+

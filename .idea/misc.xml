@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="EntryPointsManager">
+    <list size="1">
+      <item index="0" class="java.lang.String" itemvalue="com.google.common.eventbus.Subscribe" />
+    </list>
+  </component>
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="FrameworkDetectionExcludesConfiguration" detection-enabled="false" />
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/pom.xml" />
+      </list>
+    </option>
+  </component>
+  <component name="NullableNotNullManager">
+    <instrumentedNotNulls>
+      <option value="org.checkerframework.checker.nullness.qual.NonNull" />
+      <option value="org.eclipse.jdt.annotation.NonNull" />
+      <option value="org.jetbrains.annotations.NotNull" />
+    </instrumentedNotNulls>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_16" project-jdk-name="liberica-17" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/out" />
+  </component>
+</project>

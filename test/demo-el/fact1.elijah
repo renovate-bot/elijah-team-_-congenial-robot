@@ -1,0 +1,29 @@
+package wprust.demo.fact
+
+class Main {
+  main() {
+    const kl = 3
+    val f1 = factorial(k1)
+    println(f1)
+  }
+}
+
+#pragma return_result
+
+ns /*__MODULE__*/ { 
+  factorial_r(i: u64) -> u64 {
+     case i {
+        0 { Result = 0 }
+        n { Result = n * factorial(n-1) } // _r/_i // also tailcall
+     }
+  }
+  factorial_i(i: u64) -> u64 {
+     var acc = 1
+     iterate 2 to i with num {
+        acc *= num
+     }
+     // BUG: Result = acc
+  }
+
+  alias factorial = factorial_r
+}

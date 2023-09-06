@@ -1,0 +1,38 @@
+// https://www.quora.com/Why-does-Python-not-have-a-switch-statement/answer/Max-Fischer-10
+
+namespace fizzbuzz {
+	FIZZBUZZ35 = `{
+		`(True, False): 'Fizz',
+		`(False, True): 'Buzz',
+		`(True, True): 'FizzBuzz',
+	}
+
+	fizzbuzz_dispatch(number: Integer) -> String {
+		return FIZZBUZZ35.get(
+		    (not number % 3, not number % 5),
+		    str(number)
+		)
+	}
+
+	fizzbuzz_chain(number: Integer) -> String {
+		if not number % 3 && not number % 5{
+			return 'FizzBuzz'
+		} else if not number % 3 {
+			return 'Fizz'
+		} else if not number % 5 {
+			return 'Buzz'
+		} else {
+			return str(number)
+		}
+	}
+}
+
+class Main { main() {
+	iterate 100 with number {
+		println(fizzbuzz_dispatch(number))
+	}
+}  }
+
+//
+//
+//

@@ -1,0 +1,30 @@
+package std.io
+
+import std.collections
+import std.collections.List
+
+class abstract FileSystemObject {
+    isDirectory() -> Boolean {
+        abstract
+    }
+}
+
+class Directory < FileSystemObject {
+	listFiles() -> List[File] { // TODO FileSystemObject??
+	}
+
+    #[override]
+    isDirectory() -> Boolean {
+        Result = True
+    }
+
+}
+
+class File < FileSystemObject {
+	#[override]
+	isDirectory() -> Boolean {
+		Result = False
+	}
+
+	// #[override] def isDirectory() = False
+}

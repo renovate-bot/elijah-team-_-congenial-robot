@@ -1,0 +1,18 @@
+indexing
+	date: "1002202216"
+
+class Foo {
+	var x: Integer
+}
+
+class Main { main() {
+
+var 
+	foo = Foo()
+
+foo.x = 13
+
+}
+
+}
+

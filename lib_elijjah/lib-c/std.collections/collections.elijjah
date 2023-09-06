@@ -1,0 +1,35 @@
+package std.collections
+
+/*type*/ alias CollectionSize = Integer32
+
+class interface Iterable[T] {
+	iterator() -> Iterator[T]
+}
+
+class interface Iterator[T] {
+	hasNext() -> Boolean
+	next() -> T
+}
+
+class interface Collection[T] < Iterable[T] {
+	prop Count -> CollectionSize { get; }
+	prop IsReadOnly -> Boolean { get; }
+
+	add(item: T)
+	clear()
+	contains(item: T)
+	iterator() -> Iterator[T]
+	remove(item: T)
+}
+
+class interface List[T] < Collection[T] {
+	__getitem__(index: CollectionSize) -> T // throws ...
+
+	findFirst(item: T) 	
+	insert(index: CollectionSize, item: T)
+	//remove(item: T) 	
+	removeAt(index: CollectionSize) 
+
+	forEach(f: proc(x: ?A)/*->?B*/) -> Unit //-> List[B]
+	map(f: function(x: ?A)->?B) -> List[B]
+}
