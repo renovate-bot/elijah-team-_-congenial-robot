@@ -24,6 +24,7 @@
       <module name="annotation-processing" target="11" />
       <module name="annotation-user" target="11" />
       <module name="annotations" target="17" />
+      <module name="elijah-rosetta" target="11" />
       <module name="japkit-examples-simpledto" target="17" />
       <module name="java-compiler-gen" target="17" />
       <module name="tripleo.elijah.typeinf" target="17" />

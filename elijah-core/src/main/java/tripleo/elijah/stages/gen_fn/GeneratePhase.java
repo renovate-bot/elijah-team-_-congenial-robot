@@ -80,7 +80,12 @@ public class GeneratePhase implements ReactiveDimension, CompilationEnclosure.Mo
 
 	@Override
 	public void listen(final @NotNull WorldModule module) {
-		final GenerateFunctions x = getGenerateFunctions(module.module());
+		//final GenerateFunctions x = getGenerateFunctions(module.module());
+	}
+
+	@Override
+	public void close() {
+
 	}
 }
 

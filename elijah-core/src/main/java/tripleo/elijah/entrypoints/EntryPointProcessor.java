@@ -85,14 +85,12 @@ public interface EntryPointProcessor {
 
 			deducePhase.generatePhase.setCodeRegistrar(codeRegistrar);
 
-			final ICodeRegistrar cr = codeRegistrar;
-
-			final @NotNull WlGenerateClass job = new WlGenerateClass(generateFunctions, ci, deducePhase.generatedClasses, cr);
+			final @NotNull WlGenerateClass job = new WlGenerateClass(generateFunctions, ci, deducePhase.generatedClasses, codeRegistrar);
 			wl.addJob(job);
 
 			final @NotNull FunctionInvocation fi = deducePhase.newFunctionInvocation((BaseFunctionDef) f, null, ci);
 //				fi.setPhase(phase);
-			final @NotNull WlGenerateFunction job1 = new WlGenerateFunction(generateFunctions, fi, cr);
+			final @NotNull WlGenerateFunction job1 = new WlGenerateFunction(generateFunctions, fi, codeRegistrar);
 			wl.addJob(job1);
 		}
 	}

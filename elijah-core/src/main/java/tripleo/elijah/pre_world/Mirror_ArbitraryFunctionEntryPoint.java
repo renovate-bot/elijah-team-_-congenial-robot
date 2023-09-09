@@ -17,20 +17,20 @@ import java.util.Objects;
 import static tripleo.elijah.util.Helpers.List_of;
 
 public class Mirror_ArbitraryFunctionEntryPoint implements Mirror_EntryPoint {
-	private final ArbitraryFunctionEntryPoint afep;
+	private final ArbitraryFunctionEntryPoint carrier;
 	private final ModuleThing                 mt;
 	private final GenerateFunctions           gf;
 
 	public Mirror_ArbitraryFunctionEntryPoint(final ArbitraryFunctionEntryPoint aAfep, final @NotNull ModuleThing aMt, final GenerateFunctions aGenerateFunctions) {
-		afep = aAfep;
-		mt   = aMt;
+		carrier = aAfep;
+		mt      = aMt;
 		gf   = aGenerateFunctions;
 	}
 
 	@Override
 	public void generate(final @NotNull IClassGenerator dcg) {
-		final ClassStatement            cs = (ClassStatement) afep.getParent();
-		final FunctionDef               f  = afep.getFunction();
+		final ClassStatement            cs = (ClassStatement) carrier.getParent();
+		final FunctionDef               f  = carrier.getFunction();
 		@Nullable final ClassInvocation ci = dcg.registerClassInvocation(cs, null);
 
 		dcg.submitGenerateClass(Objects.requireNonNull(ci), gf);

@@ -42,7 +42,7 @@ public class WlGenerateFunction implements WorkJob {
 	}
 
 	public WlGenerateFunction(final OS_Module aModule, final FunctionInvocation aFunctionInvocation, final @NotNull Deduce_CreationClosure aCl) {
-		this(aCl.generatePhase().getGenerateFunctions(aModule), aFunctionInvocation, aCl.generatePhase().getCodeRegistrar());
+		this(aCl.generatePhase().getGenerateFunctions(aModule), aFunctionInvocation, aCl.deducePhase().getCodeRegistrar());
 	}
 
 	public EvaFunction getResult() {

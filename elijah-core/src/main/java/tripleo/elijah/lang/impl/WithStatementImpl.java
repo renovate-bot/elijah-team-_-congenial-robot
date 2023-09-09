@@ -35,10 +35,15 @@ public class WithStatementImpl implements OS_Element, OS_Container, StatementIte
 	}
 
 	@Override
-	public void add(final OS_Element anElement) {
+	public void addToContainer(final OS_Element anElement) {
 		if (!(anElement instanceof FunctionItem))
 			return;
 		_items.add((FunctionItem) anElement);
+	}
+
+	@Override
+	public void add(OS_Element anElement) {
+		addToContainer(anElement);
 	}
 
 	@Override
@@ -82,7 +87,7 @@ public class WithStatementImpl implements OS_Element, OS_Container, StatementIte
 	}
 
 	@Override
-	public @Nullable List<OS_Element2> items() {
+	public @Nullable List<OS_NamedElement> items() {
 		return null;
 	}
 

@@ -17,8 +17,10 @@ import tripleo.elijah.comp.StdErrSink;
 import tripleo.elijah.comp.i.ErrSink;
 import tripleo.elijah.lang.i.*;
 import tripleo.elijah.lang.impl.*;
+import tripleo.elijah.nextgen.rosetta.DeduceTypes2.DeduceTypes2Request;
 import tripleo.elijah.stages.deduce.DeduceTypes2;
 import tripleo.elijah.stages.deduce.ResolveError;
+import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.test_help.Boilerplate;
 import tripleo.elijah.util.Helpers;
 
@@ -77,7 +79,7 @@ public class TypeOfTypeNameTest {
 		boilerplate.getGenerateFiles(boilerplate.defaultMod());
 
 		final PipelineLogic pl           = boilerplate.pipelineLogic;
-		final DeduceTypes2  deduceTypes2 = new DeduceTypes2(mod, pl.dp);
+		final DeduceTypes2  deduceTypes2 = new DeduceTypes2(new DeduceTypes2Request(mod, pl.dp, ElLog.Verbosity.VERBOSE));
 		final TypeName      tn           = t.resolve(ctx, deduceTypes2);
 //		tripleo.elijah.util.Stupidity.println_out_2(tn);
 		Assert.assertEquals(typeNameString, tn.toString());
@@ -131,7 +133,7 @@ public class TypeOfTypeNameTest {
 		boilerplate.getGenerateFiles(boilerplate.defaultMod());
 
 		final PipelineLogic pl           = boilerplate.pipelineLogic;
-		final DeduceTypes2  deduceTypes2 = new DeduceTypes2(mod, pl.dp);
+		final DeduceTypes2  deduceTypes2 = new DeduceTypes2(new DeduceTypes2Request(mod, pl.dp, ElLog.Verbosity.VERBOSE));
 		TypeName            tn           = t.resolve(ctx, deduceTypes2);
 //		tripleo.elijah.util.Stupidity.println_out_2(tn);
 		Assert.assertEquals(typeNameString, tn.toString());
@@ -166,7 +168,7 @@ public class TypeOfTypeNameTest {
 		rtn_y.setName(Helpers.string_to_qualident(typeNameString));
 		var_y.setTypeName(rtn_y);
 
-		st_af.add(vs);
+		st_af.addToContainer(vs);
 
 		VariableStatementImpl var_x = new VariableStatementImpl(null);
 		var_x.setName(Helpers.string_to_ident("x")); // not necessary
@@ -199,7 +201,7 @@ public class TypeOfTypeNameTest {
 		boilerplate.getGenerateFiles(boilerplate.defaultMod());
 
 		final PipelineLogic pl           = boilerplate.pipelineLogic;
-		final DeduceTypes2  deduceTypes2 = new DeduceTypes2(mod, pl.dp);
+		final DeduceTypes2  deduceTypes2 = new DeduceTypes2(new DeduceTypes2Request(mod, pl.dp, ElLog.Verbosity.VERBOSE));
 
 		TypeName tn = t.resolve(ctx, deduceTypes2);
 //		tripleo.elijah.util.Stupidity.println_out_2(tn);
@@ -241,7 +243,7 @@ public class TypeOfTypeNameTest {
 		rtn_y.setName(Helpers.string_to_qualident(typeNameString));
 		var_y.setTypeName(rtn_y);
 
-		st_af.add(vs);
+		st_af.addToContainer(vs);
 
 		VariableStatementImpl var_x = new VariableStatementImpl(null);
 		var_x.setName(Helpers.string_to_ident("x")); // not necessary
@@ -272,7 +274,7 @@ public class TypeOfTypeNameTest {
 		boilerplate.getGenerateFiles(boilerplate.defaultMod());
 
 		final PipelineLogic pl           = boilerplate.pipelineLogic;
-		final DeduceTypes2  deduceTypes2 = new DeduceTypes2(mod, pl.dp);
+		final DeduceTypes2  deduceTypes2 = new DeduceTypes2(new DeduceTypes2Request(mod, pl.dp, ElLog.Verbosity.VERBOSE));
 
 //		when(mod.getFileName()).thenReturn("foo.elijah");
 		when(ctx.lookup("x")).thenReturn(lrl);

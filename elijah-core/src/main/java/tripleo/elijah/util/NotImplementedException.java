@@ -26,5 +26,10 @@ public class NotImplementedException extends RuntimeException {
 		final int y = 2;
 		Stupidity.println_err_2("Should not be here 2");
 	}
+
+	public static void raise_stop() {
+		final int y = 2;
+		Stupidity.println_err_2("Should not be here");
+	}
 }
 

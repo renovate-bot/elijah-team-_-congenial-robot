@@ -6,12 +6,12 @@ import tripleo.elijah.lang2.ElElementVisitor;
 
 import java.util.List;
 
-public interface NamespaceStatement extends ModuleItem, StatementItem, FunctionItem, OS_Container, OS_Element2 {
+public interface NamespaceStatement extends ModuleItem, StatementItem, FunctionItem, OS_Container, OS_NamedElement {
 	void addAccess(AccessNotation aAcs);
 
 	@Override
 		// OS_Container
-	void add(OS_Element anElement);
+	void addToContainer(OS_Element anElement);
 
 	void addAnnotations(List<AnnotationClause> aAs);
 

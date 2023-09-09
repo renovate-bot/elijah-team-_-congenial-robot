@@ -2,10 +2,12 @@ package tripleo.elijah.world.impl;
 
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.Eventual;
 import tripleo.elijah.comp.i.CompilationEnclosure;
 import tripleo.elijah.comp.notation.GN_PL_Run2;
 import tripleo.elijah.lang.i.OS_Module;
 import tripleo.elijah.nextgen.inputtree.EIT_ModuleInput;
+import tripleo.elijah.stages.deduce.DeducePhase;
 import tripleo.elijah.stages.inter.ModuleThing;
 import tripleo.elijah.world.i.WorldModule;
 
@@ -16,19 +18,11 @@ public class DefaultWorldModule implements WorldModule {
 	@Getter
 	private GN_PL_Run2.GenerateFunctionsRequest rq;
 
-	public DefaultWorldModule(final OS_Module aMod, final @NotNull CompilationEnclosure ce) {
-		this(aMod);
-		final ModuleThing mt = ce.addModuleThing(mod);
-		setThing(mt);
-	}
+	final Eventual<DeducePhase.GeneratedClasses> _p_GeneratedClasses = new Eventual<>();
 
 	public DefaultWorldModule(final OS_Module aMod, final GN_PL_Run2.GenerateFunctionsRequest aRq) {
 		mod = aMod;
 		rq  = aRq;
-	}
-
-	public DefaultWorldModule(final OS_Module aModule) {
-		mod = aModule;
 	}
 
 	@Override
@@ -44,6 +38,17 @@ public class DefaultWorldModule implements WorldModule {
 	@Override
 	public GN_PL_Run2.GenerateFunctionsRequest rq() {
 		return rq;
+	}
+
+	public DefaultWorldModule(final OS_Module aMod, final @NotNull CompilationEnclosure ce) {
+		mod = aMod;
+		final ModuleThing mt = ce.addModuleThing(mod);
+		setThing(mt);
+	}
+
+	@Override
+	public Eventual<DeducePhase.GeneratedClasses> getEventual() {
+		return _p_GeneratedClasses;
 	}
 
 	public void setRq(final GN_PL_Run2.GenerateFunctionsRequest aRq) {

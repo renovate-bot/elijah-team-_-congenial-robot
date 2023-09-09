@@ -9,5 +9,5 @@ public record GenerateResultEnv(GenerateResultSink resultSink,
 								GenerateResult gr,
 								WorkManager wm,
 								WorkList wl,
-								GM_GenerateModule gmgm) {
+								GM_GenerateModule generateModule) {
 }

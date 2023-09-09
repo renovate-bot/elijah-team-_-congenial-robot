@@ -14,12 +14,16 @@ import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.ci.CompilerInstructions;
 import tripleo.elijah.ci.LibraryStatementPart;
 import tripleo.elijah.lang.i.*;
+import tripleo.elijah.nextgen.outputstatement.ReasonedStringListStatement;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputFile;
+import tripleo.elijah.stages.garish.GarishClass;
 import tripleo.elijah.stages.gen_fn.*;
 import tripleo.elijah.stages.gen_generic.GenerateResult;
 import tripleo.elijah.stages.gen_generic.Old_GenerateResult;
+import tripleo.elijah.util.LazySupplier;
 
 import java.io.File;
+import java.util.function.Supplier;
 
 /**
  * Created 1/13/21 5:54 AM
@@ -103,7 +107,7 @@ public class OutputStrategyC {
 		return new OFC_NFN(lsp0, name0, filename, extension0).getFilename();
 	}
 
-	public @NotNull OSC_NFC nameForClass1(@NotNull EvaClass aEvaClass, GenerateResult.@NotNull TY aTy) {
+	public @NotNull EOT_OutputFile.FileNameProvider nameForClass1(@NotNull EvaClass aEvaClass, GenerateResult.@NotNull TY aTy) {
 		if (aEvaClass.module().isPrelude()) {
 			// We are dealing with the Prelude
 /*
@@ -117,16 +121,12 @@ public class OutputStrategyC {
 			return new OSC_NFC("Prelude", "Prelude", "", Extension0(aTy));
 		}
 
-		final String lsp0, dir0, name0, extension0;
-
 		final LibraryStatementPart lsp = aEvaClass.module().getLsp();
-		lsp0 = a_lsp(lsp);
 
-		dir0       = a_pkg(aEvaClass);
-		name0      = a_name(aEvaClass, lsp);
-		extension0 = Extension0(aTy);
-
-		return new OSC_NFC(lsp0, dir0, name0, extension0);
+		return new OSC_NFC2(()-> a_lsp(lsp),
+							()-> a_pkg(aEvaClass),
+							()-> a_name(aEvaClass, lsp),
+							()-> Extension0(aTy));
 	}
 
 	@NotNull String strip_elijah_extension(@NotNull String aFilename) {
@@ -136,6 +136,30 @@ public class OutputStrategyC {
 			aFilename = aFilename.substring(0, aFilename.length() - 8);
 		}
 		return aFilename;
+	}
+
+	public EOT_OutputFile.FileNameProvider nameForClass1(final GarishClass aGarishClass, final GenerateResult.TY aTy) {
+		var aEvaClass = aGarishClass.getLiving().evaNode();
+
+		if (aEvaClass.module().isPrelude()) {
+			// We are dealing with the Prelude
+/*
+			StringBuilder sb = new StringBuilder();
+			sb.append("/Prelude/");
+			sb.append("Prelude");
+			appendExtension(aTy, sb);
+*/
+			//return sb.toString();
+
+			return new OSC_NFC("Prelude", "Prelude", "", Extension0(aTy));
+		}
+
+		final LibraryStatementPart lsp = aEvaClass.module().getLsp();
+
+		return new OSC_NFC2(()-> a_lsp(lsp),
+							()-> a_pkg(aEvaClass),
+							()-> a_name(aEvaClass, lsp),
+							()-> Extension0(aTy));
 	}
 
 	public class OSC_NFCo implements EOT_OutputFile.FileNameProvider {
@@ -371,19 +395,85 @@ public class OutputStrategyC {
 			extension = extension0;
 		}
 
+		ReasonedStringListStatement z;
+
 		@Override
 		public @NotNull String getFilename() {
-			StringBuilder sb = new StringBuilder();
-			sb.append("/");
-			sb.append(lsp);
-			sb.append("/");
-			sb.append(dir);
-			if (!(basename.equals(""))) {
-				sb.append("/");
-				sb.append(basename);
+			_calculate();
+
+			return z.getText();
+		}
+
+		private void _calculate() {
+			if (z == null) {
+				z = new ReasonedStringListStatement();
+
+				z.append("/", "initial-separator");
+				z.append(lsp, "lsp-name");
+
+				if (!dir.isEmpty()) {
+					z.append("/", "dir-separator");
+					z.append(dir, "dir");
+				}
+
+				if (!(basename.isEmpty())) {
+					z.append("/", "basename-separator");
+					z.append(basename, "basname");
+				}
+
+				z.append(extension, "extension");
 			}
-			sb.append(extension);
-			return sb.toString();
+		}
+	}
+
+	public class OSC_NFC2 implements EOT_OutputFile.FileNameProvider {
+		private final Supplier<String> lsp;
+		private final Supplier<String> dir;
+		private final Supplier<String> extension;
+		private final Supplier<String> basename;
+		ReasonedStringListStatement z;
+
+		public OSC_NFC2(Supplier<String> string, Supplier<String> string2, Supplier<String> string3, Supplier<String> extension0) {
+			lsp       = l(string);
+			dir       = l(string2);
+			basename  = l(string3);
+			extension = l(extension0);
+		}
+
+		private LazySupplier<String> l(final Supplier<String> ss) {
+			if (ss instanceof LazySupplier<String> ls) {
+				return ls;
+			} else {
+				return new LazySupplier<>(ss);
+			}
+		}
+
+		@Override
+		public @NotNull String getFilename() {
+			_calculate();
+
+			return z.getText();
+		}
+
+		private void _calculate() {
+			if (z == null) {
+				z = new ReasonedStringListStatement();
+
+				z.append("/", "initial-separator");
+				z.append(lsp, "lsp-name");
+
+				if (!dir.get().isEmpty()) {
+					z.append("/", "dir-separator");
+					z.append(dir, "dir");
+				}
+
+				if (!(basename.get().isEmpty())) {
+					z.append("/", "basename-separator");
+					z.append(basename, "basname");
+				}
+
+				z.append(extension, "extension");
+			}
 		}
 	}
 }

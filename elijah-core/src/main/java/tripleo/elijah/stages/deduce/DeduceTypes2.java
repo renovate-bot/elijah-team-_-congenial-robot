@@ -41,6 +41,8 @@ import tripleo.elijah.lang2.SpecialFunctions;
 import tripleo.elijah.lang2.SpecialVariables;
 import tripleo.elijah.nextgen.ClassDefinition;
 import tripleo.elijah.nextgen.reactive.Reactivable;
+import tripleo.elijah.nextgen.rosetta.DeduceTypes2.DeduceTypes2Request;
+import tripleo.elijah.nextgen.rosetta.DeduceTypes2.DeduceTypes2Rosetta;
 import tripleo.elijah.stages.deduce.Resolve_Ident_IA.DeduceElementIdent;
 import tripleo.elijah.stages.deduce.declarations.DeferredMember;
 import tripleo.elijah.stages.deduce.declarations.DeferredMemberFunction;
@@ -71,6 +73,7 @@ import java.util.regex.Pattern;
  */
 public class DeduceTypes2 {
 	private final DeduceTypes2Injector __inj = new DeduceTypes2Injector();
+	private final DeduceTypes2Rosetta  rosetta;
 
 	public DeduceElement3_IdentTableEntry _zero_getIdent(final IdentTableEntry aIdentTableEntryBte, final BaseEvaFunction aGf, final DeduceTypes2 aDt2) {
 		return _p_zero.getIdent(aIdentTableEntryBte, aGf, aDt2);
@@ -80,8 +83,8 @@ public class DeduceTypes2 {
 		return _phase()._compilation().getCompilationEnclosure();
 	}
 
-	private static final   String                   PHASE                   = "DeduceTypes2";
-	public final @NotNull  ElLog                    LOG;
+	public static final   String PHASE = "DeduceTypes2";
+	public final @NotNull ElLog  LOG;
 	public final @NotNull  OS_Module                module;
 	public final @NotNull  DeducePhase              phase;
 	public final @NotNull  WorkManager              wm                      = _inj().new_WorkManager();
@@ -97,25 +100,19 @@ public class DeduceTypes2 {
 	private final          List<DE3_Active>         _actives                = _inj().new_ArrayList__DE3_Active();
 	private final          DeduceCreationContext    _defaultCreationContext = _inj().new_DefaultDeduceCreationContext(this);
 
-	public DeduceTypes2(@NotNull OS_Module module, @NotNull DeducePhase phase) {
-		this(module, phase, ElLog.Verbosity.VERBOSE);
-	}
+	public DeduceTypes2(DeduceTypes2Request aRequest) {
+		this.rosetta = new DeduceTypes2Rosetta(aRequest);
 
-	public DeduceTypes2(@NotNull OS_Module aModule, @NotNull DeducePhase aDeducePhase, ElLog.Verbosity aVerbosity) {
-		this.module  = aModule;
-		this.phase   = aDeducePhase;
-		this.errSink = aModule.getCompilation().getErrSink();
-		this.LOG     = _inj().new_ElLog(aModule.getFileName(), aVerbosity, PHASE);
-		//
-		aDeducePhase.addLog(LOG);
-		//
-		IStateRunnable.ST.register(phase);
-		DeduceElement3_VariableTableEntry.ST.register(phase);
+		this.module  = rosetta.getModule();
+		this.phase   = rosetta.getDeducePhase();
+		this.errSink = rosetta.getErrSink();
 
+		this.LOG     = rosetta.createAndAddLog_DeduceTypes2();
 
 		phase.waitOn(this);
 	}
 
+	// TODO 09/09 provide "direct"/wrapped reportDiagnostic
 	public ErrSink _errSink() {
 		return errSink;
 	}
@@ -3063,7 +3060,7 @@ public class DeduceTypes2 {
 		private void do_assign_normal_ident_deferred_FALI(final @NotNull BaseEvaFunction generatedFunction, final @NotNull IdentTableEntry aIdentTableEntry, final @NotNull FormalArgListItem fali) {
 			final GenType            genType            = _inj().new_GenTypeImpl();
 			final FunctionInvocation functionInvocation = generatedFunction.fi;
-			final String             fali_name          = fali.name();
+			final String             fali_name          = fali.name().asString();
 
 			IInvocation invocation = null;
 			if (functionInvocation.getClassInvocation() != null) {

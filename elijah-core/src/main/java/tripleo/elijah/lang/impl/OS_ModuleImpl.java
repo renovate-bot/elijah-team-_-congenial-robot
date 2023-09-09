@@ -6,12 +6,6 @@
  * http://www.gnu.org/licenses/lgpl.html from `Version 3, 29 June 2007'
  *
  */
-/*
- * Created on Sep 1, 2005 8:16:32 PM
- *
- * $Id$
- *
- */
 package tripleo.elijah.lang.impl;
 
 import antlr.Token;
@@ -32,7 +26,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Stack;
+import java.util.stream.Collectors;
 
+/*
+ * Created on Sep 1, 2005 8:16:32 PM
+ *
+ * $Id$
+ *
+ */
 public class OS_ModuleImpl implements OS_Element, OS_Container, tripleo.elijah.lang.i.OS_Module {
 
 	private final   Stack<Qualident>     packageNames_q = new Stack<Qualident>();
@@ -46,29 +47,25 @@ public class OS_ModuleImpl implements OS_Element, OS_Container, tripleo.elijah.l
 	private         Compilation          parent;
 
 	@Override
-	public void add(final OS_Element anElement) {
+	public void add(final ModuleItem anElement) {
+		items.add(anElement);
+	}
+
+	@Override
+	public void addToContainer(final OS_Element anElement) {
 		if (!(anElement instanceof ModuleItem)) {
 			parent.getErrSink()
 					.info(String.format("[Module#add] not adding %s to OS_Module", anElement.getClass().getName()));
 			return; // TODO FalseAddDiagnostic
 		}
-		items.add((ModuleItem) anElement);
+		add((ModuleItem) anElement);
 	}
 
 	@Override // OS_Container
-	public @NotNull List<OS_Element2> items() {
-		final Collection<ModuleItem> c = Collections2.filter(getItems(), new Predicate<ModuleItem>() {
-			@Override
-			public boolean apply(@org.checkerframework.checker.nullness.qual.Nullable final ModuleItem input) {
-				final boolean b = input instanceof OS_Element2;
-				return b;
-			}
-		});
-		final ArrayList<OS_Element2> a = new ArrayList<OS_Element2>();
-		for (final ModuleItem moduleItem : c) {
-			a.add((OS_Element2) moduleItem);
-		}
-		return a;
+	public @NotNull List<OS_NamedElement> items() {
+		final var c = getItems().stream().filter(input -> input instanceof OS_NamedElement);
+
+		return c.collect(Collectors.toList());
 	}
 
 	@Override

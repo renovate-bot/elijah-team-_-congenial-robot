@@ -120,7 +120,7 @@ class CReference_getIdentIAPath_IdentIAHelper {
 			tripleo.elijah.util.Stupidity.println_err("** 31161 not resolved " + getResolved_element());
 		}
 		// README Assuming this is for named constructors
-		final String text  = ((ConstructorDef) getResolved_element()).name();
+		final String text  = ((ConstructorDef) getResolved_element()).name().asString();
 		final String text2 = String.format("ZC%d%s", code, text);
 		aCReference.addRef(text2, CReference.Ref.CONSTRUCTOR);
 	}

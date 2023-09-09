@@ -36,7 +36,7 @@ public class IdentExpressionImpl implements tripleo.elijah.lang.i.IdentExpressio
 		this.text = r1;
 		this._a   = new AttachedImpl();
 
-		this.name = EN_Name.create(text.getText());
+		this.name = EN_Name_.create(text.getText());
 
 		this._fileName = aFilename;
 	}
@@ -46,7 +46,7 @@ public class IdentExpressionImpl implements tripleo.elijah.lang.i.IdentExpressio
 		this._a   = new AttachedImpl();
 		setContext(cur);
 
-		this.name = EN_Name.create(text.getText());
+		this.name = EN_Name_.create(text.getText());
 		cur.addName(name);
 
 		this._fileName = aFilename;

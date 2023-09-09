@@ -14,6 +14,7 @@ import tripleo.elijah.lang.i.El_Category;
 import tripleo.elijah.lang.i.ImportStatement;
 import tripleo.elijah.lang.i.SmallWriter;
 import tripleo.elijah.lang.impl.AccessNotationImpl;
+import tripleo.elijah.lang.impl.EN_Name_;
 import tripleo.elijah.lang.nextgen.names.i.EN_Name;
 
 /**
@@ -56,17 +57,17 @@ public abstract class _BaseImportStatement implements ImportStatement {
 	@Override
 	public @NotNull EN_Name getEnName() {
 		if (__n == null) {
-			__n = EN_Name.create(name());
+			__n = EN_Name_.create(name());
 		}
 		return __n;
 	}
 
 	private EN_Name __n;
 
-	@Override
-	public void serializeTo(final SmallWriter sw) {
-
-	}
+//	@Override
+//	public void serializeTo(final SmallWriter sw) {
+//
+//	}
 }
 
 //

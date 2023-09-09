@@ -8,7 +8,7 @@ import tripleo.elijah.lang2.ElElementVisitor;
 import java.util.Collection;
 import java.util.List;
 
-public interface FunctionDef extends OS_Element, OS_Element2 {
+public interface FunctionDef extends OS_Element, OS_NamedElement {
 	void add(FunctionItem seq);
 
 	FormalArgList fal();
@@ -19,7 +19,7 @@ public interface FunctionDef extends OS_Element, OS_Element2 {
 
 	IdentExpression getNameNode();
 
-	Collection<OS_Element2> items();
+	Collection<OS_NamedElement> items();
 
 	OS_FuncType getOS_Type();
 

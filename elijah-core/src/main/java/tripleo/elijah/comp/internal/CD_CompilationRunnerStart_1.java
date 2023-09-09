@@ -45,7 +45,7 @@ public class CD_CompilationRunnerStart_1 implements CD_CompilationRunnerStart {
 		final CR_AlmostComplete       f3 = new CR_AlmostComplete();
 		final CR_RunBetterAction      f4 = new CR_RunBetterAction();
 
-		final @NotNull List<CR_Action>     crActionList       = List_of(f1, f2, f3, f4);
+		final @NotNull List<CR_Action>     crActionList       = List_of(/*f1,*/ f2, /*f3,*/ f4);
 		final @NotNull List<Operation<Ok>> crActionResultList = new ArrayList<>(crActionList.size());
 
 		for (final CR_Action each : crActionList) {

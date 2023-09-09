@@ -1,5 +1,6 @@
 package tripleo.elijah.world.i;
 
+import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.lang.i.ClassStatement;
 import tripleo.elijah.lang.i.OS_Module;
@@ -9,10 +10,12 @@ import tripleo.elijah.lang.impl.BaseFunctionDef;
 import tripleo.elijah.stages.gen_fn.BaseEvaFunction;
 import tripleo.elijah.stages.gen_fn.EvaClass;
 import tripleo.elijah.stages.gen_fn.EvaNamespace;
+import tripleo.elijah.util.CompletableProcess;
 import tripleo.elijah.world.impl.DefaultLivingClass;
 import tripleo.elijah.world.impl.DefaultLivingFunction;
 import tripleo.elijah.world.impl.DefaultLivingNamespace;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface LivingRepo {
@@ -41,6 +44,14 @@ public interface LivingRepo {
 	boolean hasPackage(String aPackageName);
 
 	LivingFunction getFunction(BaseEvaFunction aBaseEvaFunction);
+
+	void addModuleProcess(CompletableProcess<WorldModule> wmcp);
+
+	Collection<WorldModule> modules();
+
+	void addModule2(WorldModule aMod1);
+
+	@Nullable WorldModule getModule(OS_Module aModule);
 
 	enum Add {MAIN_CLASS, MAIN_FUNCTION, NONE}
 

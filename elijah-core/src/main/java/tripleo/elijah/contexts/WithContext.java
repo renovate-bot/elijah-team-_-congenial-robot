@@ -42,8 +42,8 @@ public class WithContext extends ContextImpl {
 					!(item instanceof FunctionDef) &&
 					!(item instanceof VariableSequenceImpl)
 			) continue;
-			if (item instanceof OS_Element2) {
-				if (((OS_Element2) item).name().equals(name)) {
+			if (item instanceof OS_NamedElement) {
+				if (((OS_NamedElement) item).name().sameName(name)) {
 					Result.add(name, level, item, this);
 				}
 			} else if (item instanceof VariableSequenceImpl) {

@@ -32,7 +32,7 @@ public class DefFunctionDefImpl extends BaseFunctionDef implements tripleo.elija
 	public DefFunctionDefImpl(OS_Element aElement, Context aContext) {
 		parent = aElement;
 		if (aElement instanceof OS_Container) {
-			((OS_Container) parent).add(this);
+			((OS_Container) parent).addToContainer(this);
 		} else if (aElement instanceof PropertyStatement) {
 			// do nothing
 		} else {

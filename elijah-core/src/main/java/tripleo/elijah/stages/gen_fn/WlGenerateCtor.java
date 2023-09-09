@@ -83,7 +83,7 @@ public class WlGenerateCtor implements WorkJob {
 			if (constructorName != null) {
 				Collection<ConstructorDef> cs = klass.getConstructors();
 				for (@NotNull ConstructorDef c : cs) {
-					if (c.name().equals(constructorName.getText())) {
+					if (c.name().sameName(constructorName.getText())) {
 						ccc = c;
 						break;
 					}
@@ -119,7 +119,7 @@ public class WlGenerateCtor implements WorkJob {
 			ConstructorDef             c              = null;
 			if (constructorName != null) {
 				for (ConstructorDef cc : cs) {
-					if (cc.name().equals(constructorName.getText())) {
+					if (cc.name().sameName(constructorName.getText())) {
 						c = cc;
 						break;
 					}

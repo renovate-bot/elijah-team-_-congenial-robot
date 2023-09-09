@@ -71,13 +71,13 @@ public abstract class _CommonNC {
 	}
 
 	// OS_Container
-	public @NotNull List<OS_Element2> items() {
-		final ArrayList<OS_Element2> a = new ArrayList<OS_Element2>();
-		for (final ClassItem functionItem : getItems()) {
-			final boolean b = functionItem instanceof OS_Element2;
-			if (b)
-				a.add((OS_Element2) functionItem);
-		}
+	public @NotNull List<OS_NamedElement> items() {
+		final ArrayList<OS_NamedElement> a = new ArrayList<>();
+
+		getItems().stream()
+				.filter(functionItem -> functionItem instanceof OS_NamedElement)
+				.forEach(functionItem -> a.add((OS_NamedElement) functionItem));
+
 		return a;
 	}
 
@@ -92,8 +92,8 @@ public abstract class _CommonNC {
 	}
 
 	// OS_Element2
-	public String name() {
-		return getName();
+	public OS_ElementName name() {
+		return OS_ElementName_.ofString(getName());
 	}
 
 	public OS_Package getPackageName() {
@@ -128,7 +128,7 @@ public abstract class _CommonNC {
 
 	public EN_Name getEnName() {
 		if (__common_nc__n == null) {
-			__common_nc__n = EN_Name.create(name());
+			__common_nc__n = EN_Name_.create(name());
 		}
 		return __common_nc__n;
 	}

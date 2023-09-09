@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * Created 6/27/21 6:42 AM
  */
-public abstract class BaseFunctionDef implements FunctionDef, Documentable, ClassItem, OS_Container, OS_Element2 {
+public abstract class BaseFunctionDef implements FunctionDef, Documentable, ClassItem, OS_Container, OS_NamedElement {
 
 	public @NotNull Attached               _a          = new AttachedImpl();
 	protected       Species                _species;
@@ -72,11 +72,11 @@ public abstract class BaseFunctionDef implements FunctionDef, Documentable, Clas
 	// endregion
 
 	@Override // OS_Container
-	public @NotNull List<OS_Element2> items() {
-		final ArrayList<OS_Element2> a = new ArrayList<OS_Element2>();
+	public @NotNull List<OS_NamedElement> items() {
+		final ArrayList<OS_NamedElement> a = new ArrayList<OS_NamedElement>();
 		for (final OS_Element functionItem : scope3.items()) {
-			if (functionItem instanceof OS_Element2)
-				a.add((OS_Element2) functionItem);
+			if (functionItem instanceof OS_NamedElement)
+				a.add((OS_NamedElement) functionItem);
 		}
 		return a;
 	}
@@ -152,7 +152,7 @@ public abstract class BaseFunctionDef implements FunctionDef, Documentable, Clas
 	// region annotations
 
 	@Override // OS_Container
-	public void add(final OS_Element anElement) {
+	public void addToContainer(final OS_Element anElement) {
 		if (anElement instanceof FunctionItem) {
 //			mScope2.add((StatementItem) anElement);
 			scope3.add(anElement);
@@ -252,12 +252,12 @@ public abstract class BaseFunctionDef implements FunctionDef, Documentable, Clas
 		return scope3.items().contains(element);
 	}
 
-	@Override
-	@NotNull // OS_Element2
-	public String name() {
-		if (funName == null)
-			return "";
-		return funName.getText();
+	@Override // OS_NamedElement
+	public OS_ElementName name() {
+		if (funName == null) {
+            return OS_ElementName_.empty();
+        }
+		return OS_ElementName_.ofString(funName.getText());
 	}
 
 	public void walkAnnotations(@NotNull AnnotationWalker annotationWalker) {
@@ -275,7 +275,7 @@ public abstract class BaseFunctionDef implements FunctionDef, Documentable, Clas
 	@Override
 	public EN_Name getEnName() {
 		if (__n == null) {
-			__n = EN_Name.create(name());
+			__n = EN_Name_.create(name());
 		}
 		return __n;
 	}

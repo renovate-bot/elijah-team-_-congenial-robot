@@ -1,8 +1,8 @@
 package tripleo.elijah.comp.notation;
 
 import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.comp.i.IPipelineAccess;
 import tripleo.elijah.lang.i.OS_Module;
-
 import tripleo.elijah.stages.gen_c.GenerateC;
 import tripleo.elijah.stages.gen_fn.EvaNode;
 import tripleo.elijah.stages.gen_generic.GenerateFiles;
@@ -60,5 +60,9 @@ public class GM_GenerateModule {
 
 	public GM_GenerateModuleRequest gmr() {
 		return gmr;
+	}
+
+	public IPipelineAccess pa() {
+		return gmr().env().pa();
 	}
 }

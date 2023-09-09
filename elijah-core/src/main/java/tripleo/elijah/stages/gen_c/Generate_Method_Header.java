@@ -37,7 +37,7 @@ class Generate_Method_Header {
 
 	public Generate_Method_Header(final @NotNull BaseEvaFunction gf, @NotNull final GenerateC aGenerateC, final @NotNull ElLog LOG) {
 		gc   = aGenerateC;
-		name = gf.getFD().name();
+		name = gf.getFD().name().asString();
 		//
 		return_type    = find_return_type(gf, LOG);
 		args_statement = find_args_statement(gf);

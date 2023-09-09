@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public interface ClassStatement
-		extends ModuleItem, StatementItem, FunctionItem, OS_Element, OS_Element2, Documentable, OS_Container {
+		extends ModuleItem, StatementItem, FunctionItem, OS_Element, OS_NamedElement, Documentable, OS_Container {
 	List<AnnotationPart> annotationIterable();
 
 	void addAccess(AccessNotation aAcs);

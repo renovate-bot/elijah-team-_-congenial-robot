@@ -43,7 +43,7 @@ public final class AbstractStatementClosure implements StatementClosure, Stateme
 
 			@Override
 			public void add(final StatementItem aItem) {
-				classStatement.add((ClassItem) aItem);
+				classStatement.addToContainer((ClassItem) aItem);
 			}
 
 			@Override

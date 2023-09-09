@@ -1,7 +1,6 @@
 package tripleo.elijah.lang.imports;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.contexts.ImportContext;
 import tripleo.elijah.lang.i.*;
 import tripleo.elijah.lang.impl.QualidentImpl;
@@ -28,7 +27,7 @@ public class RootedImportStatement extends _BaseImportStatement {
 	public RootedImportStatement(final OS_Element aParent) {
 		parent = aParent;
 		if (parent instanceof OS_Container) {
-			((OS_Container) parent).add(this);
+			((OS_Container) parent).addToContainer(this);
 		} else
 			throw new NotImplementedException();
 	}
@@ -87,7 +86,7 @@ public class RootedImportStatement extends _BaseImportStatement {
 	}
 
 	@Override
-	public @Nullable String name() {
+	public OS_ElementName name() {
 		// TODO Auto-generated method stub
 		return null;
 	}

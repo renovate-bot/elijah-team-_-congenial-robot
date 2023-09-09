@@ -18,6 +18,7 @@ import org.jdeferred2.Promise;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tripleo.elijah.ElijahInternal;
 import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.comp.i.CompilationEnclosure;
@@ -29,12 +30,16 @@ import tripleo.elijah.lang.types.OS_UnknownType;
 import tripleo.elijah.nextgen.ClassDefinition;
 import tripleo.elijah.nextgen.diagnostic.CouldntGenerateClass;
 import tripleo.elijah.nextgen.reactive.ReactiveDimension;
+import tripleo.elijah.nextgen.rosetta.DeducePhase.DeducePhase_deduceModule_Request;
+import tripleo.elijah.nextgen.rosetta.DeduceTypes2.DeduceTypes2_deduceFunctions_Request;
+import tripleo.elijah.nextgen.rosetta.Rosetta;
 import tripleo.elijah.stages.deduce.declarations.DeferredMember;
 import tripleo.elijah.stages.deduce.declarations.DeferredMemberFunction;
 import tripleo.elijah.stages.deduce.nextgen.DR_Ident;
 import tripleo.elijah.stages.deduce.nextgen.DR_Item;
 import tripleo.elijah.stages.deduce.nextgen.DR_ProcCall;
 import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_IdentTableEntry;
+import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_VariableTableEntry;
 import tripleo.elijah.stages.gen_fn.*;
 import tripleo.elijah.stages.gen_generic.ICodeRegistrar;
 import tripleo.elijah.stages.logging.ElLog;
@@ -60,14 +65,17 @@ import static tripleo.elijah.util.Helpers.List_of;
  * Created 12/24/20 3:59 AM
  */
 public class DeducePhase extends _RegistrationTarget implements ReactiveDimension {
-	private final String PHASE = "DeducePhase";
-
 	private @NotNull
 	final DeducePhaseInjector __inj = new DeducePhaseInjector();
+
 
 	public final @NotNull  ICodeRegistrar                               codeRegistrar;
 	public final @NotNull  GeneratedClasses                             generatedClasses;
 	public final @NotNull  GeneratePhase                                generatePhase;
+	@NotNull
+	public final           List<IFunctionMapHook>                       functionMapHooks        = _inj().new_ArrayList__IFunctionMapHook();
+	private final String PHASE = "DeducePhase";
+	final Multimap<OS_Module, Consumer<DeduceTypes2>> iWantModules = ArrayListMultimap.create();
 	private final @NotNull ICompilationAccess                           ca;
 	private final          Map<NamespaceStatement, NamespaceInvocation> namespaceInvocationMap  = _inj().new_HashMap__NamespaceInvocationMap();
 	private final          ExecutorService                              classGenerator          = Executors.newCachedThreadPool();
@@ -79,8 +87,6 @@ public class DeducePhase extends _RegistrationTarget implements ReactiveDimensio
 	private final @NotNull ElLog                                        LOG;
 	private final @NotNull PipelineLogic                                pipelineLogic;
 	private final          List<DE3_Active>                             _actives                = _inj().new_ArrayList__DE3_Active();
-	@NotNull
-	public final           List<IFunctionMapHook>                       functionMapHooks        = _inj().new_ArrayList__IFunctionMapHook();
 	private final @NotNull Multimap<ClassStatement, ClassInvocation>    classInvocationMultimap = ArrayListMultimap.create();
 	private final @NotNull List<DeferredMember>                         deferredMembers         = _inj().new_ArrayList__DeferredMember();
 	private final @NotNull Multimap<ClassStatement, OnClass>            onclasses               = ArrayListMultimap.create();
@@ -91,6 +97,41 @@ public class DeducePhase extends _RegistrationTarget implements ReactiveDimensio
 
 	public DeducePhase(final @NotNull CompilationEnclosure ace) {
 		this(ace.getCompilationAccess(), ace.getPipelineAccess(), ace.getPipelineLogic());
+	}
+
+	public DeducePhase(final @NotNull ICompilationAccess aca,
+					   final @NotNull IPipelineAccess pa0,
+					   final @NotNull PipelineLogic aPipelineLogic) {
+		// given
+		pipelineLogic = aPipelineLogic;
+		ca            = aca;
+		pa            = pa0;
+
+		// transitive
+		generatePhase = pipelineLogic.generatePhase;
+
+		// created
+		codeRegistrar = _inj().new_DefaultCodeRegistrar(ca.getCompilation());
+		LOG           = _inj().new_ElLog("(DEDUCE_PHASE)", pipelineLogic.getVerbosity(), PHASE);
+
+		// using
+		pa.getCompilationEnclosure().getPipelineLogic().addLog(LOG);
+		pa.getCompilationEnclosure().addReactiveDimension(this);
+
+		// create more
+		generatedClasses = _inj().new_GeneratedClasses(this);
+
+		extracted_ST_registers_for_annotation();
+	}
+
+	public @NotNull DeducePhaseInjector _inj() {
+		return this.__inj;
+	}
+
+	private void extracted_ST_registers_for_annotation() {
+		IStateRunnable.ST.register(this);
+		DeduceElement3_VariableTableEntry.ST.register(this);
+		DeduceElement3_IdentTableEntry.ST.register(this);
 	}
 
 	public Compilation _compilation() {
@@ -118,30 +159,6 @@ public class DeducePhase extends _RegistrationTarget implements ReactiveDimensio
 		return codeRegistrar;
 	}
 
-	static class DRS {
-		private final List<Pair<BaseEvaFunction, DR_Item>> drs = new ArrayList<>();
-
-		public void add(final Pair<BaseEvaFunction, DR_Item> aDrp) {
-			drs.add(aDrp);
-		}
-
-		public Iterable<Pair<BaseEvaFunction, DR_Item>> iterator() {
-			return drs;
-		}
-	}
-
-	static class WAITS {
-		private final Set<DeduceTypes2> waits = new HashSet<>();
-
-		public void add(final DeduceTypes2 aDeduceTypes2) {
-			waits.add(aDeduceTypes2);
-		}
-
-		public Iterable<DeduceTypes2> iterator() {
-			return waits;
-		}
-	}
-
 	public boolean equivalentGenericPart(@NotNull ClassInvocation first, @NotNull ClassInvocation second) {
 		final ClassInvocation.CI_GenericPart secondGenericPart1 = second.genericPart();
 		final ClassInvocation.CI_GenericPart firstGenericPart1  = first.genericPart();
@@ -166,32 +183,6 @@ public class DeducePhase extends _RegistrationTarget implements ReactiveDimensio
 		return i == 0;
 	}
 
-	public DeducePhase(final @NotNull ICompilationAccess aca,
-					   final @NotNull IPipelineAccess pa0,
-					   final @NotNull PipelineLogic aPipelineLogic) {
-		// given
-		pipelineLogic = aPipelineLogic;
-		ca = aca;
-		pa = pa0;
-
-		// transitive
-		generatePhase = pipelineLogic.generatePhase;
-
-		// created
-		codeRegistrar = _inj().new_DefaultCodeRegistrar(ca.getCompilation());
-		LOG = _inj().new_ElLog("(DEDUCE_PHASE)", pipelineLogic.getVerbosity(), PHASE);
-
-		// using
-		pa.getCompilationEnclosure().getPipelineLogic().addLog(LOG);
-		pa.getCompilationEnclosure().addReactiveDimension(this);
-
-		// create more
-		generatedClasses = _inj().new_GeneratedClasses(this);
-
-		//
-		DeduceElement3_IdentTableEntry.ST.register(this);
-	}
-
 	public void forFunction(DeduceTypes2 deduceTypes2, @NotNull FunctionInvocation fi, @NotNull ForFunction forFunction) {
 //		LOG.err("272 forFunction\n\t"+fi.getFunction()+"\n\t"+fi.pte);
 		fi.generateDeferred().promise()
@@ -207,136 +198,103 @@ public class DeducePhase extends _RegistrationTarget implements ReactiveDimensio
 		deferredMemberFunctions.add(aDeferredMemberFunction);
 	}
 
-	public @NotNull DeduceTypes2 deduceModule(final @NotNull OS_Module aMod) {
-		return deduceModule(aMod, this.generatedClasses, Compilation.gitlabCIVerbosity());
-	}
-
 	public void addFunctionMapHook(final IFunctionMapHook aFunctionMapHook) {
 		functionMapHooks.add(aFunctionMapHook);
 	}
 
 	public void addLog(ElLog aLog) {
-		//deduceLogs.add(aLog);
 		pipelineLogic.addLog(aLog);
 	}
 
-	public void handleFoundElements() {
-		for (@NotNull FoundElement foundElement : foundElements) {
-			// TODO As we are using this, didntFind will never fail because
-			//  we call doFoundElement manually in resolveIdentIA
-			//  As the code matures, maybe this will change and the interface
-			//  will be improved, namely calling doFoundElement from here as well
-			if (foundElement.didntFind()) {
-				foundElement.doNoFoundElement();
-			}
-		}
-	}
+	public @NotNull DeduceTypes2 deduceModule(DeducePhase_deduceModule_Request aRequest) {
+		OS_Module         m   = aRequest.getModule();
+		Iterable<EvaNode> lgf = aRequest.getListOfEvaFunctions();
 
-	public void handleIdteTypeCallbacks() {
-		for (Map.@NotNull Entry<IdentTableEntry, OnType> entry : idte_type_callbacks.entrySet()) {
-			IdentTableEntry idte = entry.getKey();
-			if (idte.type != null && // TODO make a stage where this gets set (resolvePotentialTypes)
-					idte.type.getAttached() != null)
-				entry.getValue().typeDeduced(idte.type.getAttached());
-			else
-				entry.getValue().noTypeFound();
-		}
-	}
+		final @NotNull DeduceTypes2 deduceTypes2 = aRequest.createDeduceTypes2_singleton();
 
-//	public List<ElLog> deduceLogs = new ArrayList<ElLog>();
+		logProgress(DeducePhaseProvenance.DeduceTypes_create, List.of(deduceTypes2, lgf));
 
-	public @NotNull DeduceTypes2 deduceModule(@NotNull OS_Module m, @NotNull Iterable<EvaNode> lgf, ElLog.Verbosity verbosity) {
-		final @NotNull DeduceTypes2 deduceTypes2 = _inj().new_DeduceTypes2(m, this, verbosity);
-//		LOG.err("196 DeduceTypes "+deduceTypes2.getFileName());
-		{
-			final List<EvaNode> p = _inj().new_ArrayList__EvaNode();
-			Iterables.addAll(p, lgf);
-			LOG.info("197 lgf.size " + p.size());
-		}
-		deduceTypes2.deduceFunctions(lgf);
-//		deduceTypes2.deduceClasses(generatedClasses.copy().stream()
-//				.filter(c -> c.module() == m)
-//				.collect(Collectors.toList()));
-
-		for (EvaNode evaNode : generatedClasses.copy()) {
-			if (evaNode.module() != m) continue;
-
-			if (evaNode instanceof final @NotNull EvaClass evaClass) {
-
-				evaClass.fixupUserClasses(deduceTypes2, evaClass.getKlass().getContext());
-				deduceTypes2.deduceOneClass(evaClass);
-			}
-		}
-
-		for (EvaNode evaNode : lgf) {
-			final BaseEvaFunction bef;
-
-			if (evaNode instanceof BaseEvaFunction) {
-				bef = (BaseEvaFunction) evaNode;
-			} else continue;
-			for (final IFunctionMapHook hook : functionMapHooks) {
-				if (hook.matches(bef.getFD())) {
-					hook.apply(List_of((EvaFunction) bef));
-				}
-			}
-		}
+		var df = new DeduceTypes2_deduceFunctions_Request(aRequest, lgf, true, this);
+		Rosetta.create_call(df);
 
 		return deduceTypes2;
 	}
 
-	public void handleOnClassCallbacks() {
-		// TODO rewrite with classInvocationMultimap
-		for (ClassStatement classStatement : onclasses.keySet()) {
-			for (EvaNode evaNode : generatedClasses) {
+	private void logProgress(final @NotNull DeducePhaseProvenance aProvenance, final Object o) {
+		switch (aProvenance) {
+		case DeduceTypes_create -> {
+			List<? extends Object> l = (List<? extends Object>) o;
+			DeduceTypes2 deduceTypes2 = (DeduceTypes2) l.get(0);
+			List<EvaNode> lgf = ((GeneratedClasses) l.get(1)).generatedClasses;
+			LOG.info("196 DeduceTypes " + deduceTypes2.getFileName());
+			{
+				final List<EvaNode> p = _inj().new_ArrayList__EvaNode();
+				Iterables.addAll(p, lgf);
+				LOG.info("197 lgf.size " + p.size());
+			}
+		}
+		default -> throw new IllegalStateException("Unexpected value: " + aProvenance);
+		}
+	}
+
+	@ElijahInternal
+	public void __DeduceTypes2_deduceFunctions_Request__run(final boolean b,
+																	final DeducePhase_deduceModule_Request aRequest) {
+
+
+
+		// TODO @ElijahInternal annotation prob a smell:
+		//  - create an object, call out of package, then come back in...
+		//    firgive me, trying something new
+
+
+
+
+		final @NotNull DeduceTypes2 deduceTypes2 = aRequest.createDeduceTypes2_singleton();
+
+		OS_Module         m   = aRequest.getModule();
+		Iterable<EvaNode> lgf = aRequest.getListOfEvaFunctions();
+
+		deduceTypes2.deduceFunctions(lgf);
+
+		if (b) {
+//		deduceTypes2.deduceClasses(generatedClasses.copy().stream()
+//				.filter(c -> c.module() == m)
+//				.collect(Collectors.toList()));
+
+			for (EvaNode evaNode : generatedClasses.copy()) {
+				if (evaNode.module() != m) continue;
+
 				if (evaNode instanceof final @NotNull EvaClass evaClass) {
-					if (evaClass.getKlass() == classStatement) {
-						Collection<OnClass> ks = onclasses.get(classStatement);
-						for (@NotNull OnClass k : ks) {
-							k.classFound(evaClass);
-						}
-					} else {
-						@NotNull Collection<EvaClass> cmv = evaClass.classMap.values();
-						for (@NotNull EvaClass aClass : cmv) {
-							if (aClass.getKlass() == classStatement) {
-								Collection<OnClass> ks = onclasses.get(classStatement);
-								for (@NotNull OnClass k : ks) {
-									k.classFound(evaClass);
-								}
-							}
-						}
+
+					evaClass.fixupUserClasses(deduceTypes2, evaClass.getKlass().getContext());
+					deduceTypes2.deduceOneClass(evaClass);
+				}
+			}
+
+			for (EvaNode evaNode : lgf) {
+				final BaseEvaFunction bef;
+
+				if (evaNode instanceof BaseEvaFunction) {
+					bef = (BaseEvaFunction) evaNode;
+				} else continue;
+				for (final IFunctionMapHook hook : functionMapHooks) {
+					if (hook.matches(bef.getFD())) {
+						hook.apply(List_of((EvaFunction) bef));
 					}
 				}
 			}
 		}
 	}
 
+//	public List<ElLog> deduceLogs = new ArrayList<ElLog>();
+
 	public Promise<ClassDefinition, Diagnostic, Void> generateClass(final GenerateFunctions gf, final @NotNull ClassInvocation ci) {
 		WorkManager wm = _inj().new_WorkManager();
-		// par { return promise ; wm.drain() ; }
+		// par { return promise ; finishQueue { wm.drain() ; } }
 		final Promise<ClassDefinition, Diagnostic, Void> x = generateClass(gf, ci, wm);
 		wm.drain();
 		return x;
-	}
-
-	public void handleResolvedVariables() {
-		for (EvaNode evaNode : generatedClasses.copy()) {
-			if (evaNode instanceof final @NotNull EvaContainer evaContainer) {
-				Collection<ResolvedVariables> x = resolved_variables.get(evaContainer.getElement());
-				for (@NotNull DeducePhase.ResolvedVariables resolvedVariables : x) {
-					final @NotNull Maybe<EvaContainer.VarTableEntry> variable_m = evaContainer.getVariable(resolvedVariables.varName);
-
-					assert !variable_m.isException();
-
-					final @NotNull EvaContainer.VarTableEntry variable = variable_m.o;
-
-					final TypeTableEntry type = resolvedVariables.identTableEntry.type;
-					if (type != null)
-						variable.addPotentialTypes(List_of(type));
-					variable.addPotentialTypes(resolvedVariables.identTableEntry.potentialTypes());
-					variable.updatePotentialTypes(evaContainer);
-				}
-			}
-		}
 	}
 
 	public @NotNull Promise<ClassDefinition, Diagnostic, Void> generateClass(final GenerateFunctions gf, final @NotNull ClassInvocation ci, final WorkManager wm) {
@@ -370,165 +328,8 @@ public class DeducePhase extends _RegistrationTarget implements ReactiveDimensio
 		return _inj().new_FunctionInvocation(f, aO, ci, this.generatePhase);
 	}
 
-	public void handleDeferredMemberFunctions() {
-		for (@NotNull final DeferredMemberFunction deferredMemberFunction : deferredMemberFunctions) {
-			int              y      = 2;
-			final OS_Element parent = deferredMemberFunction.getParent();//.getParent().getParent();
-
-			if (parent instanceof ClassStatement) {
-				final IInvocation invocation = deferredMemberFunction.getInvocation();
-
-				final DeferredMemberFunctionParentIsClassStatement dmfpic = _inj().new_DeferredMemberFunctionParentIsClassStatement(deferredMemberFunction, invocation, this);
-				dmfpic.action();
-			} else if (parent instanceof NamespaceStatement) {
-//				final ClassStatement classStatement = (ClassStatement) deferredMemberFunction.getParent();
-				final IInvocation invocation = deferredMemberFunction.getInvocation();
-
-				final NamespaceInvocation namespaceInvocation;
-				if (invocation instanceof ClassInvocation) {
-					namespaceInvocation = _inj().new_NamespaceInvocation((NamespaceStatement) parent);
-				} else {
-					namespaceInvocation = (NamespaceInvocation) invocation;
-				}
-
-				namespaceInvocation.resolvePromise().
-						then((final @NotNull EvaNamespace result) -> {
-							final NamespaceInvocation             x  = namespaceInvocation;
-							final @NotNull DeferredMemberFunction z  = deferredMemberFunction;
-							int                                   yy = 2;
-						});
-			}
-		}
-
-		for (EvaNode evaNode : generatedClasses) {
-			if (evaNode instanceof final @NotNull EvaContainerNC nc) {
-				nc.noteDependencies(nc.getDependency()); // TODO is this right?
-
-				for (EvaFunction generatedFunction : nc.functionMap.values()) {
-					generatedFunction.noteDependencies(nc.getDependency());
-				}
-				if (nc instanceof final @NotNull EvaClass evaClass) {
-
-					for (EvaConstructor evaConstructor : evaClass.constructors.values()) {
-						evaConstructor.noteDependencies(nc.getDependency());
-					}
-				}
-			}
-		}
-	}
-
 	public void onType(IdentTableEntry entry, OnType callback) {
 		idte_type_callbacks.put(entry, callback);
-	}
-
-	public void handleFunctionMapHooks() {
-		for (final Map.@NotNull Entry<FunctionDef, Collection<EvaFunction>> entry : functionMap.asMap().entrySet()) {
-			for (final IFunctionMapHook functionMapHook : ca.functionMapHooks()) {
-				if (functionMapHook.matches(entry.getKey())) {
-					functionMapHook.apply(entry.getValue());
-				}
-			}
-		}
-	}
-
-	public void handleDeferredMembers() {
-		for (@NotNull final DeferredMember deferredMember : deferredMembers) {
-			if (deferredMember.getParent().isNamespaceStatement()) {
-				final @NotNull NamespaceStatement parent = (NamespaceStatement) deferredMember.getParent().element();
-				final NamespaceInvocation         nsi    = registerNamespaceInvocation(parent);
-				nsi.resolveDeferred()
-						.done(result -> {
-							@NotNull Maybe<EvaContainer.VarTableEntry> v_m = result.getVariable(deferredMember.getVariableStatement().getName());
-
-							assert !v_m.isException();
-
-							EvaContainer.VarTableEntry v = v_m.o;
-
-							// TODO varType, potentialTypes and _resolved: which?
-							//final OS_Type varType = v.varType;
-
-							assert v != null;
-							v.resolve_varType_cb((varType) -> {
-								final @NotNull GenType genType = _inj().new_GenTypeImpl();
-								genType.set(varType);
-
-//								if (deferredMember.getInvocation() instanceof NamespaceInvocation) {
-//									((NamespaceInvocation) deferredMember.getInvocation()).resolveDeferred().done(new DoneCallback<EvaNamespace>() {
-//										@Override
-//										public void onDone(EvaNamespace result) {
-//											result;
-//										}
-//									});
-//								}
-
-								deferredMember.externalRefDeferred().resolve(result);
-/*
-							if (genType.resolved == null) {
-								// HACK need to resolve, but this shouldn't be here
-								try {
-									@NotNull OS_Type rt = DeduceTypes2.resolve_type(null, varType, varType.getTypeName().getContext());
-									genType.set(rt);
-								} catch (ResolveError aResolveError) {
-									aResolveError.printStackTrace();
-								}
-							}
-							deferredMember.typeResolved().resolve(genType);
-*/
-							});
-						});
-			} else if (deferredMember.getParent().element() instanceof ClassStatement) {
-				// TODO do something
-				final ClassStatement parent = (ClassStatement) deferredMember.getParent().element();
-				final String         name   = deferredMember.getVariableStatement().getName();
-
-				// because deferredMember.invocation is null, we must create one here
-				final @Nullable ClassInvocation ci = registerClassInvocation(parent, null, new NULL_DeduceTypes2());
-				assert ci != null;
-				ci.resolvePromise().then(result -> {
-					final List<EvaContainer.VarTableEntry> vt = result.varTable;
-					for (EvaContainer.VarTableEntry gc_vte : vt) {
-						if (gc_vte.nameToken.getText().equals(name)) {
-							// check connections
-							// unify pot. types (prol. shuld be done already -- we don't want to be reporting errors here)
-							// call typePromises and externalRefPromisess
-
-							// TODO just getting first element here (without processing of any kind); HACK
-							final List<EvaContainer.VarTableEntry.ConnectionPair> connectionPairs = gc_vte.connectionPairs;
-							if (connectionPairs.size() > 0) {
-								final GenType ty = connectionPairs.get(0).vte.getType().genType;
-								assert ty.getResolved() != null;
-								gc_vte.varType = ty.getResolved(); // TODO make sure this is right in all cases
-								if (deferredMember.typeResolved().isPending())
-									deferredMember.typeResolved().resolve(ty);
-								break;
-							} else {
-								NotImplementedException.raise();
-							}
-						}
-					}
-				});
-			} else
-				throw new NotImplementedException();
-		}
-	}
-
-	public @NotNull DeducePhaseInjector _inj() {
-		return this.__inj;
-	}
-
-	// helper function. no generics!
-	public @Nullable ClassInvocation registerClassInvocation(@NotNull ClassStatement aParent, String aConstructorName, final Supplier<DeduceTypes2> aDeduceTypes2) {
-		//@Nullable ClassInvocation ci = _inj().new_ClassInvocation(aParent, aConstructorName, aDeduceTypes2);
-		@Nullable ClassInvocation ci = _inj().new_ClassInvocation(aParent, aConstructorName, aDeduceTypes2); // !! 08/28
-		if (ci != null) {
-			ci = registerClassInvocation(ci);
-		}
-		return ci;
-	}
-
-	public @NotNull ClassInvocation registerClassInvocation(@NotNull ClassInvocation aClassInvocation) {
-		RegisterClassInvocation rci = _inj().new_RegisterClassInvocation(this);
-		return rci.registerClassInvocation(aClassInvocation);
 	}
 
 	public void registerFound(FoundElement foundElement) {
@@ -539,51 +340,14 @@ public class DeducePhase extends _RegistrationTarget implements ReactiveDimensio
 		resolved_variables.put(parent, _inj().new_ResolvedVariables(identTableEntry, parent, varName));
 	}
 
-	public void resolveAllVariableTableEntries() {
-		@NotNull List<EvaClass> gcs                           = _inj().new_ArrayList__EvaClass();
-		boolean                 all_resolve_var_table_entries = false;
-		while (!all_resolve_var_table_entries) {
-			if (generatedClasses.size() == 0) break;
-			for (EvaNode evaNode : generatedClasses.copy()) {
-				if (evaNode instanceof final @NotNull EvaClass evaClass) {
-					all_resolve_var_table_entries = evaClass.resolve_var_table_entries(this); // TODO use a while loop to get all classes
-				}
-			}
-		}
-	}
-
-	private void sanityChecks() {
-		for (EvaNode evaNode : generatedClasses) {
-			if (evaNode instanceof final @NotNull EvaClass evaClass) {
-				sanityChecks(evaClass.functionMap.values());
-//				sanityChecks(generatedClass.constructors.values()); // TODO reenable
-			} else if (evaNode instanceof final @NotNull EvaNamespace generatedNamespace) {
-				sanityChecks(generatedNamespace.functionMap.values());
-//				sanityChecks(generatedNamespace.constructors.values());
-			}
-		}
-	}
-
-	public void setGeneratedClassParents() {
-		// TODO all EvaFunction nodes have a genClass member
-		for (EvaNode evaNode : generatedClasses) {
-			if (evaNode instanceof final @NotNull EvaClass evaClass) {
-				@NotNull Collection<EvaFunction> functions = evaClass.functionMap.values();
-				for (@NotNull EvaFunction generatedFunction : functions) {
-					generatedFunction.setParent(evaClass);
-				}
-			} else if (evaNode instanceof final @NotNull EvaNamespace generatedNamespace) {
-				@NotNull Collection<EvaFunction> functions = generatedNamespace.functionMap.values();
-				for (@NotNull EvaFunction generatedFunction : functions) {
-					generatedFunction.setParent(generatedNamespace);
-				}
-			}
-		}
-	}
-
 	public @NotNull ClassInvocation registerClassInvocation(final @NotNull ClassStatement aParent) {
 		//return registerClassInvocation(_inj().new_ClassInvocation(aParent, null, aDeduceTypes2));
 		return registerClassInvocation(_inj().new_ClassInvocation(aParent, null, new NULL_DeduceTypes2())); // !! 08/28
+	}
+
+	public @NotNull ClassInvocation registerClassInvocation(@NotNull ClassInvocation aClassInvocation) {
+		RegisterClassInvocation rci = _inj().new_RegisterClassInvocation(this);
+		return rci.registerClassInvocation(aClassInvocation);
 	}
 
 	public void addDrs(final BaseEvaFunction aGeneratedFunction, final @NotNull List<DR_Item> aDrs) {
@@ -595,8 +359,6 @@ public class DeducePhase extends _RegistrationTarget implements ReactiveDimensio
 	private void addDr(final Pair<BaseEvaFunction, DR_Item> drp) {
 		drs.add(drp);
 	}
-
-	final Multimap<OS_Module, Consumer<DeduceTypes2>> iWantModules = ArrayListMultimap.create();
 
 	public void doneWait(final DeduceTypes2 aDeduceTypes2, final BaseEvaFunction aGeneratedFunction) {
 		NotImplementedException.raise();
@@ -708,12 +470,273 @@ public class DeducePhase extends _RegistrationTarget implements ReactiveDimensio
 		}
 	}
 
-	public void modulePromise(final OS_Module aModule, final Consumer<DeduceTypes2> con) {
-		iWantModules.put(aModule, con);
+	public void setGeneratedClassParents() {
+		// TODO all EvaFunction nodes have a genClass member
+		for (EvaNode evaNode : generatedClasses) {
+			if (evaNode instanceof final @NotNull EvaClass evaClass) {
+				@NotNull Collection<EvaFunction> functions = evaClass.functionMap.values();
+				for (@NotNull EvaFunction generatedFunction : functions) {
+					generatedFunction.setParent(evaClass);
+				}
+			} else if (evaNode instanceof final @NotNull EvaNamespace generatedNamespace) {
+				@NotNull Collection<EvaFunction> functions = generatedNamespace.functionMap.values();
+				for (@NotNull EvaFunction generatedFunction : functions) {
+					generatedFunction.setParent(generatedNamespace);
+				}
+			}
+		}
 	}
 
-	public interface Country {
-		void sendClasses(Consumer<List<EvaNode>> ces);
+	public void handleOnClassCallbacks() {
+		// TODO rewrite with classInvocationMultimap
+		for (ClassStatement classStatement : onclasses.keySet()) {
+			for (EvaNode evaNode : generatedClasses) {
+				if (evaNode instanceof final @NotNull EvaClass evaClass) {
+					if (evaClass.getKlass() == classStatement) {
+						Collection<OnClass> ks = onclasses.get(classStatement);
+						for (@NotNull OnClass k : ks) {
+							k.classFound(evaClass);
+						}
+					} else {
+						@NotNull Collection<EvaClass> cmv = evaClass.classMap.values();
+						for (@NotNull EvaClass aClass : cmv) {
+							if (aClass.getKlass() == classStatement) {
+								Collection<OnClass> ks = onclasses.get(classStatement);
+								for (@NotNull OnClass k : ks) {
+									k.classFound(evaClass);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	public void handleIdteTypeCallbacks() {
+		for (Map.@NotNull Entry<IdentTableEntry, OnType> entry : idte_type_callbacks.entrySet()) {
+			IdentTableEntry idte = entry.getKey();
+			if (idte.type != null && // TODO make a stage where this gets set (resolvePotentialTypes)
+					idte.type.getAttached() != null)
+				entry.getValue().typeDeduced(idte.type.getAttached());
+			else
+				entry.getValue().noTypeFound();
+		}
+	}
+
+	public void handleFoundElements() {
+		for (@NotNull FoundElement foundElement : foundElements) {
+			// TODO As we are using this, didntFind will never fail because
+			//  we call doFoundElement manually in resolveIdentIA
+			//  As the code matures, maybe this will change and the interface
+			//  will be improved, namely calling doFoundElement from here as well
+			if (foundElement.didntFind()) {
+				foundElement.doNoFoundElement();
+			}
+		}
+	}
+
+	public void handleResolvedVariables() {
+		for (EvaNode evaNode : generatedClasses.copy()) {
+			if (evaNode instanceof final @NotNull EvaContainer evaContainer) {
+				Collection<ResolvedVariables> x = resolved_variables.get(evaContainer.getElement());
+				for (@NotNull DeducePhase.ResolvedVariables resolvedVariables : x) {
+					final @NotNull Maybe<EvaContainer.VarTableEntry> variable_m = evaContainer.getVariable(resolvedVariables.varName);
+
+					assert !variable_m.isException();
+
+					final @NotNull EvaContainer.VarTableEntry variable = variable_m.o;
+
+					final TypeTableEntry type = resolvedVariables.identTableEntry.type;
+					if (type != null)
+						variable.addPotentialTypes(List_of(type));
+					variable.addPotentialTypes(resolvedVariables.identTableEntry.potentialTypes());
+					variable.updatePotentialTypes(evaContainer);
+				}
+			}
+		}
+	}
+
+	public void resolveAllVariableTableEntries() {
+		@NotNull List<EvaClass> gcs                           = _inj().new_ArrayList__EvaClass();
+		boolean                 all_resolve_var_table_entries = false;
+		while (!all_resolve_var_table_entries) {
+			if (generatedClasses.size() == 0) break;
+			for (EvaNode evaNode : generatedClasses.copy()) {
+				if (evaNode instanceof final @NotNull EvaClass evaClass) {
+					all_resolve_var_table_entries = evaClass.resolve_var_table_entries(this); // TODO use a while loop to get all classes
+				}
+			}
+		}
+	}
+
+	public void handleDeferredMemberFunctions() {
+		for (@NotNull final DeferredMemberFunction deferredMemberFunction : deferredMemberFunctions) {
+			int              y      = 2;
+			final OS_Element parent = deferredMemberFunction.getParent();//.getParent().getParent();
+
+			if (parent instanceof ClassStatement) {
+				final IInvocation invocation = deferredMemberFunction.getInvocation();
+
+				final DeferredMemberFunctionParentIsClassStatement dmfpic = _inj().new_DeferredMemberFunctionParentIsClassStatement(deferredMemberFunction, invocation, this);
+				dmfpic.action();
+			} else if (parent instanceof NamespaceStatement) {
+//				final ClassStatement classStatement = (ClassStatement) deferredMemberFunction.getParent();
+				final IInvocation invocation = deferredMemberFunction.getInvocation();
+
+				final NamespaceInvocation namespaceInvocation;
+				if (invocation instanceof ClassInvocation) {
+					namespaceInvocation = _inj().new_NamespaceInvocation((NamespaceStatement) parent);
+				} else {
+					namespaceInvocation = (NamespaceInvocation) invocation;
+				}
+
+				namespaceInvocation.resolvePromise().
+						then((final @NotNull EvaNamespace result) -> {
+							final NamespaceInvocation             x  = namespaceInvocation;
+							final @NotNull DeferredMemberFunction z  = deferredMemberFunction;
+							int                                   yy = 2;
+						});
+			}
+		}
+
+		for (EvaNode evaNode : generatedClasses) {
+			if (evaNode instanceof final @NotNull EvaContainerNC nc) {
+				nc.noteDependencies(nc.getDependency()); // TODO is this right?
+
+				for (EvaFunction generatedFunction : nc.functionMap.values()) {
+					generatedFunction.noteDependencies(nc.getDependency());
+				}
+				if (nc instanceof final @NotNull EvaClass evaClass) {
+
+					for (EvaConstructor evaConstructor : evaClass.constructors.values()) {
+						evaConstructor.noteDependencies(nc.getDependency());
+					}
+				}
+			}
+		}
+	}
+
+	public void handleDeferredMembers() {
+		for (@NotNull final DeferredMember deferredMember : deferredMembers) {
+			if (deferredMember.getParent().isNamespaceStatement()) {
+				final @NotNull NamespaceStatement parent = (NamespaceStatement) deferredMember.getParent().element();
+				final NamespaceInvocation         nsi    = registerNamespaceInvocation(parent);
+				nsi.resolveDeferred()
+						.done(result -> {
+							@NotNull Maybe<EvaContainer.VarTableEntry> v_m = result.getVariable(deferredMember.getVariableStatement().getName());
+
+							assert !v_m.isException();
+
+							EvaContainer.VarTableEntry v = v_m.o;
+
+							// TODO varType, potentialTypes and _resolved: which?
+							//final OS_Type varType = v.varType;
+
+							assert v != null;
+							v.resolve_varType_cb((varType) -> {
+								final @NotNull GenType genType = _inj().new_GenTypeImpl();
+								genType.set(varType);
+
+//								if (deferredMember.getInvocation() instanceof NamespaceInvocation) {
+//									((NamespaceInvocation) deferredMember.getInvocation()).resolveDeferred().done(new DoneCallback<EvaNamespace>() {
+//										@Override
+//										public void onDone(EvaNamespace result) {
+//											result;
+//										}
+//									});
+//								}
+
+								deferredMember.externalRefDeferred().resolve(result);
+/*
+							if (genType.resolved == null) {
+								// HACK need to resolve, but this shouldn't be here
+								try {
+									@NotNull OS_Type rt = DeduceTypes2.resolve_type(null, varType, varType.getTypeName().getContext());
+									genType.set(rt);
+								} catch (ResolveError aResolveError) {
+									aResolveError.printStackTrace();
+								}
+							}
+							deferredMember.typeResolved().resolve(genType);
+*/
+							});
+						});
+			} else if (deferredMember.getParent().element() instanceof ClassStatement) {
+				// TODO do something
+				final ClassStatement parent = (ClassStatement) deferredMember.getParent().element();
+				final String         name   = deferredMember.getVariableStatement().getName();
+
+				// because deferredMember.invocation is null, we must create one here
+				final @Nullable ClassInvocation ci = registerClassInvocation(parent, null, new NULL_DeduceTypes2());
+				assert ci != null;
+				ci.resolvePromise().then(result -> {
+					final List<EvaContainer.VarTableEntry> vt = result.varTable;
+					for (EvaContainer.VarTableEntry gc_vte : vt) {
+						if (gc_vte.nameToken.getText().equals(name)) {
+							// check connections
+							// unify pot. types (prol. shuld be done already -- we don't want to be reporting errors here)
+							// call typePromises and externalRefPromisess
+
+							// TODO just getting first element here (without processing of any kind); HACK
+							final List<EvaContainer.VarTableEntry.ConnectionPair> connectionPairs = gc_vte.connectionPairs;
+							if (connectionPairs.size() > 0) {
+								final GenType ty = connectionPairs.get(0).vte.getType().genType;
+								assert ty.getResolved() != null;
+								gc_vte.varType = ty.getResolved(); // TODO make sure this is right in all cases
+								if (deferredMember.typeResolved().isPending())
+									deferredMember.typeResolved().resolve(ty);
+								break;
+							} else {
+								NotImplementedException.raise();
+							}
+						}
+					}
+				});
+			} else
+				throw new NotImplementedException();
+		}
+	}
+
+	private void sanityChecks() {
+		for (EvaNode evaNode : generatedClasses) {
+			if (evaNode instanceof final @NotNull EvaClass evaClass) {
+				sanityChecks(evaClass.functionMap.values());
+//				sanityChecks(generatedClass.constructors.values()); // TODO reenable
+			} else if (evaNode instanceof final @NotNull EvaNamespace generatedNamespace) {
+				sanityChecks(generatedNamespace.functionMap.values());
+//				sanityChecks(generatedNamespace.constructors.values());
+			}
+		}
+	}
+
+	public void handleFunctionMapHooks() {
+		for (final Map.@NotNull Entry<FunctionDef, Collection<EvaFunction>> entry : functionMap.asMap().entrySet()) {
+			for (final IFunctionMapHook functionMapHook : ca.functionMapHooks()) {
+				if (functionMapHook.matches(entry.getKey())) {
+					functionMapHook.apply(entry.getValue());
+				}
+			}
+		}
+	}
+
+	public NamespaceInvocation registerNamespaceInvocation(NamespaceStatement aNamespaceStatement) {
+		if (namespaceInvocationMap.containsKey(aNamespaceStatement))
+			return namespaceInvocationMap.get(aNamespaceStatement);
+
+		@NotNull NamespaceInvocation nsi = _inj().new_NamespaceInvocation(aNamespaceStatement);
+		namespaceInvocationMap.put(aNamespaceStatement, nsi);
+		return nsi;
+	}
+
+	// helper function. no generics!
+	public @Nullable ClassInvocation registerClassInvocation(@NotNull ClassStatement aParent, String aConstructorName, final Supplier<DeduceTypes2> aDeduceTypes2) {
+		//@Nullable ClassInvocation ci = _inj().new_ClassInvocation(aParent, aConstructorName, aDeduceTypes2);
+		@Nullable ClassInvocation ci = _inj().new_ClassInvocation(aParent, aConstructorName, aDeduceTypes2); // !! 08/28
+		if (ci != null) {
+			ci = registerClassInvocation(ci);
+		}
+		return ci;
 	}
 
 	private void sanityChecks(@NotNull Collection<EvaFunction> aGeneratedFunctions) {
@@ -746,13 +769,8 @@ public class DeducePhase extends _RegistrationTarget implements ReactiveDimensio
 		}
 	}
 
-	public NamespaceInvocation registerNamespaceInvocation(NamespaceStatement aNamespaceStatement) {
-		if (namespaceInvocationMap.containsKey(aNamespaceStatement))
-			return namespaceInvocationMap.get(aNamespaceStatement);
-
-		@NotNull NamespaceInvocation nsi = _inj().new_NamespaceInvocation(aNamespaceStatement);
-		namespaceInvocationMap.put(aNamespaceStatement, nsi);
-		return nsi;
+	public void modulePromise(final OS_Module aModule, final Consumer<DeduceTypes2> con) {
+		iWantModules.put(aModule, con);
 	}
 
 	public void addActives(@NotNull List<DE3_Active> activesList) {
@@ -763,10 +781,35 @@ public class DeducePhase extends _RegistrationTarget implements ReactiveDimensio
 		return functionMap;
 	}
 
-	class Country1 implements Country {
-		@Override
-		public void sendClasses(final @NotNull Consumer<List<EvaNode>> ces) {
-			ces.accept(generatedClasses.copy());
+	enum DeducePhaseProvenance {
+		DeduceTypes_create // 196
+	}
+
+	public interface Country {
+		void sendClasses(Consumer<List<EvaNode>> ces);
+	}
+
+	static class DRS {
+		private final List<Pair<BaseEvaFunction, DR_Item>> drs = new ArrayList<>();
+
+		public void add(final Pair<BaseEvaFunction, DR_Item> aDrp) {
+			drs.add(aDrp);
+		}
+
+		public Iterable<Pair<BaseEvaFunction, DR_Item>> iterator() {
+			return drs;
+		}
+	}
+
+	static class WAITS {
+		private final Set<DeduceTypes2> waits = new HashSet<>();
+
+		public void add(final DeduceTypes2 aDeduceTypes2) {
+			waits.add(aDeduceTypes2);
+		}
+
+		public Iterable<DeduceTypes2> iterator() {
+			return waits;
 		}
 	}
 
@@ -781,6 +824,13 @@ public class DeducePhase extends _RegistrationTarget implements ReactiveDimensio
 			identTableEntry = aIdentTableEntry;
 			parent          = aParent;
 			varName         = aVarName;
+		}
+	}
+
+	class Country1 implements Country {
+		@Override
+		public void sendClasses(final @NotNull Consumer<List<EvaNode>> ces) {
+			ces.accept(generatedClasses.copy());
 		}
 	}
 
@@ -918,7 +968,13 @@ public class DeducePhase extends _RegistrationTarget implements ReactiveDimensio
 	}
 
 	public class GeneratedClasses implements Iterable<EvaNode> {
-		@NotNull List<EvaNode> generatedClasses = _inj().new_ArrayList__EvaNode();
+		private @NotNull List<EvaNode> generatedClasses = new ArrayList<>();//new ConcurrentLinkedQueue<>();
+		private  int           generation;
+
+		@Override
+		public String toString() {
+			return "GeneratedClasses{size=%d, generation=%d}".formatted(generatedClasses.size(), generation);
+		}
 
 		public void add(EvaNode aClass) {
 			pa._send_GeneratedClass(aClass);
@@ -932,7 +988,8 @@ public class DeducePhase extends _RegistrationTarget implements ReactiveDimensio
 		}
 
 		public @NotNull List<EvaNode> copy() {
-			return _inj().new_ArrayList__EvaNode(generatedClasses);
+			++generation;
+			return new ArrayList<>(generatedClasses);
 		}
 
 		@Override
@@ -950,55 +1007,6 @@ public class DeducePhase extends _RegistrationTarget implements ReactiveDimensio
 
 		public @NotNull ClassInvocation registerClassInvocation(@NotNull ClassInvocation aClassInvocation) {
 			return registerClassInvocation(new RegisterClassInvocation_env(aClassInvocation, null, null));
-		}
-
-		private @NotNull ClassInvocation part2(final @NotNull ClassInvocation aClassInvocation, boolean put, final @NotNull RegisterClassInvocation_env aEnv) {
-			// 2. Check and see if already done
-			Collection<ClassInvocation> cls = classInvocationMultimap.get(aClassInvocation.getKlass());
-			for (@NotNull ClassInvocation ci : cls) {
-				if (equivalentGenericPart(ci, aClassInvocation)) {
-					return ci;
-				}
-			}
-
-			if (put) {
-				classInvocationMultimap.put(aClassInvocation.getKlass(), aClassInvocation);
-			}
-
-			// 3. Generate new EvaClass
-			final @NotNull WorkList  wl  = _inj().new_WorkList();
-
-			var x = getClassInvocation(aClassInvocation, null, wl, aEnv);
-
-			// 4. Return it
-			//final ClassDefinition[] yy = new ClassDefinition[1];
-			//x.then(y -> yy[0] =y);
-			//return yy[0];
-			return x;
-		}
-
-		private @NotNull ClassInvocation getClassInvocation(final @NotNull ClassInvocation aClassInvocation, OS_Module mod, final WorkList wl, final @NotNull RegisterClassInvocation_env aEnv) {
-			if (mod == null)
-				mod = aClassInvocation.getKlass().getContext().module();
-
-			if (false) {
-				var prom = generateClass(generatePhase.getGenerateFunctions(mod), aClassInvocation, generatePhase.getWm());
-
-				//return prom;
-				return null;
-			} else {
-				DeferredObject<ClassDefinition, Diagnostic, Void> prom = new DeferredObject<>();
-
-				final GenerateFunctions generateFunctions = generatePhase.getGenerateFunctions(mod);
-				wl.addJob(_inj().new_WlGenerateClass(generateFunctions, aClassInvocation, generatedClasses, codeRegistrar, aEnv)); // TODO why add now?
-				generatePhase.getWm().addJobs(wl);
-				generatePhase.getWm().drain(); // TODO find a better place to put this
-
-				prom.resolve(new ClassDefinition(aClassInvocation));
-
-				//return prom;
-				return aClassInvocation;
-			}
 		}
 
 		public ClassInvocation registerClassInvocation(final @NotNull RegisterClassInvocation_env env) {
@@ -1033,6 +1041,55 @@ public class DeducePhase extends _RegistrationTarget implements ReactiveDimensio
 			}
 
 			return part2(aClassInvocation, true, env);
+		}
+
+		private @NotNull ClassInvocation part2(final @NotNull ClassInvocation aClassInvocation, boolean put, final @NotNull RegisterClassInvocation_env aEnv) {
+			// 2. Check and see if already done
+			Collection<ClassInvocation> cls = classInvocationMultimap.get(aClassInvocation.getKlass());
+			for (@NotNull ClassInvocation ci : cls) {
+				if (equivalentGenericPart(ci, aClassInvocation)) {
+					return ci;
+				}
+			}
+
+			if (put) {
+				classInvocationMultimap.put(aClassInvocation.getKlass(), aClassInvocation);
+			}
+
+			// 3. Generate new EvaClass
+			final @NotNull WorkList wl = _inj().new_WorkList();
+
+			var x = getClassInvocation(aClassInvocation, null, wl, aEnv);
+
+			// 4. Return it
+			//final ClassDefinition[] yy = new ClassDefinition[1];
+			//x.then(y -> yy[0] =y);
+			//return yy[0];
+			return x;
+		}
+
+		private @NotNull ClassInvocation getClassInvocation(final @NotNull ClassInvocation aClassInvocation, OS_Module mod, final WorkList wl, final @NotNull RegisterClassInvocation_env aEnv) {
+			if (mod == null)
+				mod = aClassInvocation.getKlass().getContext().module();
+
+			if (false) {
+				var prom = generateClass(generatePhase.getGenerateFunctions(mod), aClassInvocation, generatePhase.getWm());
+
+				//return prom;
+				return null;
+			} else {
+				DeferredObject<ClassDefinition, Diagnostic, Void> prom = new DeferredObject<>();
+
+				final GenerateFunctions generateFunctions = generatePhase.getGenerateFunctions(mod);
+				wl.addJob(_inj().new_WlGenerateClass(generateFunctions, aClassInvocation, generatedClasses, codeRegistrar, aEnv)); // TODO why add now?
+				generatePhase.getWm().addJobs(wl);
+				generatePhase.getWm().drain(); // TODO find a better place to put this
+
+				prom.resolve(new ClassDefinition(aClassInvocation));
+
+				//return prom;
+				return aClassInvocation;
+			}
 		}
 	}
 
@@ -1103,10 +1160,6 @@ public class DeducePhase extends _RegistrationTarget implements ReactiveDimensio
 
 		public ElLog new_ElLog(final String aS, final ElLog.Verbosity aVerbosity, final String aDeducePhase) {
 			return new ElLog(aS, aVerbosity, aDeducePhase);
-		}
-
-		public DeduceTypes2 new_DeduceTypes2(final OS_Module aM, final DeducePhase aDeducePhase, final ElLog.Verbosity aVerbosity) {
-			return new DeduceTypes2(aM, aDeducePhase, aVerbosity);
 		}
 
 		public List<EvaNode> new_ArrayList__EvaNode() {

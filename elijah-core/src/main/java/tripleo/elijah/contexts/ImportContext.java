@@ -12,8 +12,8 @@ import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.lang.i.*;
 import tripleo.elijah.lang.impl.ContextImpl;
+import tripleo.elijah.lang.impl.EN_Name_;
 import tripleo.elijah.lang.impl.QualidentImpl;
-import tripleo.elijah.lang.nextgen.names.i.EN_Name;
 import tripleo.elijah.lang.nextgen.names.impl.ENU_LookupResult;
 import tripleo.elijah.lang.nextgen.names.impl.ENU_PackageRef;
 
@@ -77,8 +77,8 @@ public class ImportContext extends ContextImpl implements Context {
 						final NamespaceContext namespaceContext = (NamespaceContext) element.getContext();
 						alreadySearched.add(namespaceContext);
 						namespaceContext.lookup(name, level, Result, alreadySearched, true);
-					} else if (element instanceof final @NotNull OS_Element2 element2) {
-						if (element2.name().equals(name)) {
+					} else if (element instanceof final @NotNull OS_NamedElement element2) {
+						if (element2.name().sameName(name)) {
 							Result.add(name, level, element, this);
 							break; // shortcut: should only have one in scope
 						}
@@ -125,7 +125,7 @@ public class ImportContext extends ContextImpl implements Context {
 
 					var pkg = compilation.getPackage(cl);
 					var pu  = new ENU_PackageRef(pkg);
-					EN_Name.assertUnderstanding(cl.parts().get(cl.parts().size() - 1), pu);
+					EN_Name_.assertUnderstanding(cl.parts().get(cl.parts().size() - 1), pu);
 
 					checkLastHelper(name, level, Result, alreadySearched, compilation, cl);
 				}
@@ -143,7 +143,7 @@ public class ImportContext extends ContextImpl implements Context {
 			for (final OS_Element element : aPackage.getElements()) {
 				//tripleo.elijah.util.Stupidity.println_err_2("4002 "+element);
 
-				if (!(element instanceof OS_Element2)) continue;
+				if (!(element instanceof OS_NamedElement)) continue;
 
 				if (isModuleNamespace(element)) {
 					//LogEvent.logEvent(4103, "");
@@ -154,13 +154,13 @@ public class ImportContext extends ContextImpl implements Context {
 						Result.add(result.getName(), result.getLevel(), result.getElement(), result.getContext());
 					}
 				} else {
-					final OS_Element2 classOrNamespace_Element = (OS_Element2) element;
+					final OS_NamedElement classOrNamespace_Element = (OS_NamedElement) element;
 
 					var enl2n = classOrNamespace_Element.getEnName();
 
-					final String element_name = classOrNamespace_Element.name();
+					final String element_name = classOrNamespace_Element.name().asString();
 					if (element_name.equals(name)) {
-						EN_Name.assertUnderstanding(enl2n, new ENU_LookupResult(Result, level, (alreadySearched.getList())));
+						EN_Name_.assertUnderstanding(enl2n, new ENU_LookupResult(Result, level, (alreadySearched.getList())));
 
 
 						Result.add(name, level, element, aPackage.getContext()); // TODO which context do we set it to?

@@ -124,9 +124,9 @@ public class EvaClass extends EvaContainerNC implements GNCoded {
 							if (resolvedClass1.getContext().module() == prelude
 									&& resolvedClass2.getContext().module() == prelude) {
 								// Favor String over ConstString
-								if (resolvedClass1.name().equals("ConstString") && resolvedClass2.name().equals("String")) {
+								if (resolvedClass1.name().sameName("ConstString") && resolvedClass2.name().sameName("String")) {
 									potentialTypes.remove(0);
-								} else if (resolvedClass2.name().equals("ConstString") && resolvedClass1.name().equals("String")) {
+								} else if (resolvedClass2.name().sameName("ConstString") && resolvedClass1.name().sameName("String")) {
 									potentialTypes.remove(1);
 								}
 							}

@@ -16,6 +16,7 @@ import org.junit.Test;
 import tripleo.elijah.contexts.ModuleContext;
 import tripleo.elijah.lang.i.*;
 import tripleo.elijah.lang.impl.*;
+import tripleo.elijah.nextgen.rosetta.DeduceTypes2.DeduceTypes2Request;
 import tripleo.elijah.stages.deduce.DeducePhase;
 import tripleo.elijah.stages.deduce.DeduceTypes2;
 import tripleo.elijah.stages.gen_fn.EvaFunction;
@@ -25,6 +26,7 @@ import tripleo.elijah.stages.gen_fn.TypeTableEntry;
 import tripleo.elijah.stages.instructions.IdentIA;
 import tripleo.elijah.stages.instructions.IntegerIA;
 import tripleo.elijah.stages.instructions.VariableTableType;
+import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.test_help.Boilerplate;
 import tripleo.elijah.test_help.XX;
 
@@ -86,7 +88,7 @@ public class GetRealTargetNameTest {
 		mod.setParent(boilerPlate.comp);
 
 		final DeducePhase  phase        = boilerPlate.getDeducePhase();
-		final DeduceTypes2 deduceTypes2 = new DeduceTypes2(mod, phase);
+		final DeduceTypes2 deduceTypes2 = new DeduceTypes2(new DeduceTypes2Request(mod, phase, ElLog.Verbosity.VERBOSE));
 		final Context      ctx          = mock(Context.class);
 
 		(gf.getIdentTableEntry(0)).setDeduceTypes2(deduceTypes2, ctx, gf);

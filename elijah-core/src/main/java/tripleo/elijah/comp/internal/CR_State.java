@@ -20,6 +20,7 @@ import tripleo.elijah.comp.notation.GN_Env;
 import tripleo.elijah.comp.notation.GN_Notable;
 import tripleo.elijah.lang.i.OS_Module;
 import tripleo.elijah.nextgen.output.NG_OutputItem;
+import tripleo.elijah.stages.deduce.DeducePhase;
 import tripleo.elijah.stages.gen_c.GenerateC;
 import tripleo.elijah.stages.gen_fn.BaseEvaFunction;
 import tripleo.elijah.stages.gen_fn.EvaClass;
@@ -92,7 +93,7 @@ public class CR_State {
 
 		private final @NotNull Map<Provenance, Pair<Class, Class>> installs = new HashMap<>();
 
-		private final DeferredObject<List<EvaNode>, Void, Void> nlp = new DeferredObject<>();
+		private final DeferredObject<List<EvaNode>, Void, Void> nodeListPromise = new DeferredObject<>();
 
 		private final List<NG_OutputItem> outputs = new ArrayList<NG_OutputItem>();
 
@@ -238,6 +239,11 @@ public class CR_State {
 		}
 
 		@Override
+		public DeducePhase getDeducePhase() {
+			return getCompilationEnclosure().getPipelineLogic().dp;
+		}
+
+		@Override
 		public void notate(final Provenance provenance, final @NotNull GN_Notable aNotable) {
 			var cb = getCompilationEnclosure().getCompilationBus();
 
@@ -258,7 +264,7 @@ public class CR_State {
 
 		@Override
 		public void registerNodeList(final DoneCallback<List<EvaNode>> done) {
-			nlp.then(done);
+			nodeListPromise.then(done);
 		}
 
 		@Override
@@ -285,7 +291,7 @@ public class CR_State {
 
 		@Override
 		public void setNodeList(final @NotNull List<EvaNode> aEvaNodeList) {
-			nlp/*;)*/.resolve(new ArrayList<>(aEvaNodeList));
+			nodeListPromise.resolve(aEvaNodeList);
 		}
 
 		@Override

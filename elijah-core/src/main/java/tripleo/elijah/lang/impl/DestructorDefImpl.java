@@ -26,7 +26,7 @@ public class DestructorDefImpl extends BaseFunctionDef implements tripleo.elijah
 	public DestructorDefImpl(final ClassStatement aClassStatement, final Context context) {
 		parent = aClassStatement;
 		if (aClassStatement instanceof OS_Container) {
-			((OS_Container) parent).add(this);
+			((OS_Container) parent).addToContainer(this);
 		} else {
 			throw new IllegalStateException("adding DestructorDef to " + aClassStatement.getClass().getName());
 		}
@@ -36,7 +36,7 @@ public class DestructorDefImpl extends BaseFunctionDef implements tripleo.elijah
 
 	@Override
 	public void add(final FunctionItem seq) {
-		items().add((OS_Element2) seq);
+		items().add((OS_NamedElement) seq);
 	}
 
 	@Override

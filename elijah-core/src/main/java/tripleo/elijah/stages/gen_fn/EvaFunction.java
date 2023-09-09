@@ -72,9 +72,10 @@ public class EvaFunction extends BaseEvaFunction implements GNCoded {
 	}
 
 	public String name() {
-		if (fd == null)
-			throw new IllegalArgumentException("null fd");
-		return fd.name();
+		if (fd == null) {
+            throw new IllegalArgumentException("null fd");
+        }
+		return fd.name().asString();
 	}
 
 	@Override

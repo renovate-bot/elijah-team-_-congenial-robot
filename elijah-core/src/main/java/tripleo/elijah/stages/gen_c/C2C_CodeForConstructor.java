@@ -59,7 +59,7 @@ class C2C_CodeForConstructor implements Generate_Code_For_Method.C2C_Results {
 			final int    class_code = x.getCode();
 
 			assert gf.cd != null;
-			final String constructorName_ = gf.cd.name();
+			final String constructorName_ = gf.cd.name().asString();
 			final String constructorName;
 			if (constructorName_.equals("<>"))
 				constructorName = "";

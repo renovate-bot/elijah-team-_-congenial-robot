@@ -1,61 +1,40 @@
-Elijah almost-septagon
+Elijah congenial-robot
 =======================
 
 The elijah-lang compiler.
 
-https://git.sr.ht/~tripleo/el-almost
+[https://github.com/elijah-team/congenial-robot](https://github.com/elijah-team/congenial-robot)
 
-This project is licensed under LGPL, read [LICENSE.LGPL](LICENSE.LGPL)
+```shell
+git clone https://github.com/elijah-team/congenial-robot
+cd congenial-robot
+mkdir COMP
+# nix-shell -p maven jdk17 --pure --command "mvn test"
+mvn test
+```
 
-For instructions on how to build and run the compiler, read the HACKING
-document. Please don't use this project in production, it's still under
-development.
+This project is licensed under LGPL.
 
-ABOUT
+You will need JVM 17 and Maven.
+
+
+GOALS
 ------
 
-Elijjah is a high-level language suitable for piecemeal replacement in Java
-and C/C++ programs, as well as new projects. It is meant to integrate into
-your project without much hassle.
+- Less noise
+- More verification
+  - on the road to correctness
 
-It is free software intended for use on all systems, including GNU/Linux.
-
-`almost-septagon` is a silly name for the current incarnation, implemented in
-Java.
-
-You will need JVM 17 and Maven or Gradle.
-
-Much work is needed.
-
-See [Language Overview](docs/language-overview.md) for more details on the language.
-
-All of this is a work in progress and your support would be appreciated.
-
-
-DOCUMENTATION
+PLACEHOLDER 1
 --------------
 
-[wiki -- https://man.sr.ht/~tripleo/el-technical/Home.md](https://man.sr.ht/~tripleo/el-technical/Home.md)
+> What seems to work best is leaning into annoyance or anger, and ❤-fixing it.
 
-INTERACT
----------
+LINEAGE
+--------
 
-### DISCUSSIONS
+`Septagon` - Starting over, again
 
-If you want to contribute to the source code, send plain text patch to:
+`Rosetta` - Encapsulating state/environment. Pull model.
 
-    ~tripleo/el-fluffy-umbrella-devel@lists.sr.ht
-
-Please use git-sendmail to send the patches. You might want to configure your
-git to prevent silly mistakes:
-
-    $ git config sendmail.to "~tripleo/el-fluffy-umbrella-devel@lists.sr.ht"
-    $ git config format.subjectPrefix "PATCH el-fluffy-umbrella"
-
-----
-
-## TODO
-
-- (libera) chat channel. (meh)
-- nix/guix
-- learn sr.ht flow
+`Congenial` - Testablility/verification

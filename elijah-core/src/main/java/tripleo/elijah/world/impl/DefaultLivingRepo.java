@@ -13,17 +13,21 @@ import tripleo.elijah.lang.impl.OS_PackageImpl;
 import tripleo.elijah.stages.gen_fn.BaseEvaFunction;
 import tripleo.elijah.stages.gen_fn.EvaClass;
 import tripleo.elijah.stages.gen_fn.EvaNamespace;
+import tripleo.elijah.util.CompletableProcess;
+import tripleo.elijah.util.ObservableCompletableProcess;
 import tripleo.elijah.world.i.*;
 
 import java.util.*;
 
 public class DefaultLivingRepo implements LivingRepo {
-	private       int                                              _classCode    = 101;
-	private       int                                              _functionCode = 1001;
-	private final Map<String, OS_Package>                          _packages     = new HashMap<String, OS_Package>();
-	@NotNull      List<LivingNode>                                 repo          = new ArrayList<>();
-	private       int                                              _packageCode  = 1;
-	@NotNull      Multimap<BaseEvaFunction, DefaultLivingFunction> functionMap   = ArrayListMultimap.create();
+	private final          Map<String, OS_Package>                          _packages     = new HashMap<String, OS_Package>();
+	private final @NotNull ObservableCompletableProcess<WorldModule>        wmo           = new ObservableCompletableProcess<>();
+	private final @NotNull List<LivingNode>                                 repo          = new ArrayList<>();
+	private final @NotNull Multimap<BaseEvaFunction, DefaultLivingFunction> functionMap   = ArrayListMultimap.create();
+	private final          Set<WorldModule>                                 _modules    = new HashSet<>();
+	private                int                                              _classCode    = 101;
+	private                int                                              _functionCode = 1001;
+	private                int      _packageCode  = 1;
 
 	@Override
 	public @NotNull DefaultLivingClass addClass(final @NotNull EvaClass aClass, final @NotNull Add addFlag) {
@@ -185,6 +189,23 @@ public class DefaultLivingRepo implements LivingRepo {
 	}
 
 	@Override
+	public void addModuleProcess(CompletableProcess<WorldModule> wmcp) {
+		wmo.subscribe(wmcp);
+	}
+
+	@Override
+	public Collection<WorldModule> modules() {
+		return _modules;
+	}
+
+	@Override
+	public void addModule2(final WorldModule aWorldModule) {
+		_modules.add(aWorldModule);
+
+		wmo.onNext(aWorldModule);
+	}
+
+	@Override
 	public OS_Package makePackage(final @NotNull Qualident pkg_name) {
 		final String pkg_name_s = pkg_name.toString();
 		if (!isPackage(pkg_name_s)) {
@@ -238,11 +259,20 @@ public class DefaultLivingRepo implements LivingRepo {
 
 		for (LivingNode livingNode : repo) {
 			if (livingNode instanceof final @NotNull LivingClass livingClass) {
-				if (livingClass.getElement().name().equals(className))
+				if (livingClass.getElement().name().sameName(className))
 					lcs.add(livingClass);
 			}
 		}
 
 		return lcs;
 	}
+
+	@Override
+	public @Nullable WorldModule getModule(final OS_Module aModule) {
+		return _modules.stream()
+				.filter(module -> module.module() == aModule)
+				.findFirst()
+				.orElse(null);
+	}
+
 }

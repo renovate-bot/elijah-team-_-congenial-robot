@@ -125,6 +125,8 @@ public interface Compilation {
 
 	CompilerBeginning beginning(final CompilationRunner compilationRunner);
 
+	Finally reports();
+
 	enum CompilationAlways {
 		;
 

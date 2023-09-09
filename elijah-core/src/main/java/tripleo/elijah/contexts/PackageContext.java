@@ -33,8 +33,8 @@ public class PackageContext extends ContextImpl {
 	public LookupResultList lookup(final String name, final int level, final @NotNull LookupResultList Result, final @NotNull SearchList alreadySearched, final boolean one) {
 		alreadySearched.add(this);
 		for (OS_Element element : carrier.getElements()) {
-			if (element instanceof final @NotNull OS_Element2 element2) {
-				if (element2.name().equals(name)) {
+			if (element instanceof final @NotNull OS_NamedElement element2) {
+				if (element2.name().sameName(name)) {
 					Result.add(name, level, element, this);
 				}
 			}

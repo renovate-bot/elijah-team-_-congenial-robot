@@ -13,6 +13,8 @@ import org.jdeferred2.DoneCallback;
 import org.jdeferred2.Promise;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.comp.Finally;
 import tripleo.elijah.lang.i.Context;
 import tripleo.elijah.lang.i.FunctionDef;
 import tripleo.elijah.lang.i.OS_Type;
@@ -158,7 +160,12 @@ public enum VTE_TypePromises {
 			public void onDone(@NotNull GenType result) {
 				//assert result.resolved.getClassOf() == fd.getParent();
 				if (result.getResolved().getClassOf() != fd.getParent()) {
-					System.err.println("EVTE-159 violation (likely String vs ConstString)");
+
+					final Compilation c = fd.getContext().compilation();
+					if (c.reports().outputOn(Finally.Outs.Out_EVTE_159)) {
+						System.err.println("EVTE-159 violation (likely String vs ConstString)");
+					}
+
 				}
 
 				final GenType genType1 = aVariableTableEntry.getType().genType;

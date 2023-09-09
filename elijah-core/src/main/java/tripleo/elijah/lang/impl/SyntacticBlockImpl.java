@@ -37,11 +37,17 @@ public class SyntacticBlockImpl
 		_parent = aParent;
 	}
 
-	@Override
-	public void add(final OS_Element anElement) {
-		if (!(anElement instanceof FunctionItem))
-			return; // TODO throw?
+	@Override // OS_Container
+	public void addToContainer(final OS_Element anElement) {
+		if (!(anElement instanceof FunctionItem)) {
+            return; // TODO throw?
+        }
 		scope3.add(anElement);
+	}
+
+	@Override
+	public void add(OS_Element anElement) {
+		addToContainer(anElement);
 	}
 
 	@Override
@@ -71,21 +77,21 @@ public class SyntacticBlockImpl
 	}
 
 	@Override
-	public @NotNull List<OS_Element2> items() {
+	public @NotNull List<OS_NamedElement> items() {
 		final Collection<OS_Element> items = Collections2.filter(scope3.items(), new Predicate<OS_Element>() {
 			@Override
 			public boolean apply(@Nullable OS_Element input) {
-				return input instanceof OS_Element2;
+				return input instanceof OS_NamedElement;
 			}
 		});
-		Collection<OS_Element2> c = Collections2.transform(items, new Function<OS_Element, OS_Element2>() {
+		Collection<OS_NamedElement> c = Collections2.transform(items, new Function<OS_Element, OS_NamedElement>() {
 			@Nullable
 			@Override
-			public @org.jetbrains.annotations.Nullable OS_Element2 apply(@Nullable OS_Element input) {
-				return (OS_Element2) input;
+			public @org.jetbrains.annotations.Nullable OS_NamedElement apply(@Nullable OS_Element input) {
+				return (OS_NamedElement) input;
 			}
 		});
-		return new ArrayList<OS_Element2>(c);
+		return new ArrayList<OS_NamedElement>(c);
 	}
 
 	@Override

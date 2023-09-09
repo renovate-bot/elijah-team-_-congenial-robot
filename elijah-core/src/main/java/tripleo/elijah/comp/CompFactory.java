@@ -1,10 +1,5 @@
 package tripleo.elijah.comp;
 
-import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.ci.LibraryStatementPart;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import tripleo.elijah.ci.LibraryStatementPart;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.ci.LibraryStatementPart;
 import tripleo.elijah.lang.i.OS_Module;
@@ -22,6 +17,8 @@ public interface CompFactory {
 	Qualident createQualident(List<String> sl);
 
 	InputRequest createInputRequest(File aFile, final boolean aDo_out, final @Nullable LibraryStatementPart aLsp);
+
+	WorldModule createWorldModule(OS_Module aM);
 
 	class InputRequest {
 		private final File    _file;

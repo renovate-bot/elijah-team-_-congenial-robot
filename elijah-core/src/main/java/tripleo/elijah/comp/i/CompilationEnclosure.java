@@ -114,6 +114,39 @@ public class CompilationEnclosure {
 
 			this.pa = pa;
 		});
+	//
+	//	compilation.world().addModuleProcess(new CompletableProcess<WorldModule>() {
+	//		@Override
+	//		public void add(final WorldModule item) {
+	//			// TODO Reactive pattern (aka something ala ReplaySubject)
+	//			for (final ModuleListener moduleListener : _moduleListeners) {
+	//				moduleListener.listen(item);
+	//			}
+	//		}
+	//
+	//		@Override
+	//		public void complete() {
+	//			// TODO Reactive pattern (aka something ala ReplaySubject)
+	//			for (final ModuleListener moduleListener : _moduleListeners) {
+	//				moduleListener.close();
+	//			}
+	//		}
+	//
+	//		@Override
+	//		public void error(final Diagnostic d) {
+	//
+	//		}
+	//
+	//		@Override
+	//		public void preComplete() {
+	//
+	//		}
+	//
+	//		@Override
+	//		public void start() {
+	//
+	//		}
+	//	});
 	}
 
 	@Contract(pure = true)
@@ -333,9 +366,10 @@ public class CompilationEnclosure {
 		aMirrorEntryPoint.generate(dcg);
 	}
 
-	@FunctionalInterface
 	public interface ModuleListener {
 		void listen(WorldModule module);
+
+		void close();
 	}
 }
 

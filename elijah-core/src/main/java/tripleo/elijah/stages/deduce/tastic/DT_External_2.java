@@ -4,6 +4,8 @@ import org.jdeferred2.DoneCallback;
 import org.jdeferred2.Promise;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.comp.Finally;
 import tripleo.elijah.lang.i.*;
 import tripleo.elijah.lang.impl.AliasStatementImpl;
 import tripleo.elijah.lang.nextgen.names.i.EN_Understanding;
@@ -158,7 +160,7 @@ public class DT_External_2 implements DT_External {
 					|| resolved_element1 == null
 					;
 
-			if (e instanceof OS_Element2 el2) {
+			if (e instanceof OS_NamedElement el2) {
 				var name = el2.getEnName();
 				if (set_alias)
 					name.addUnderstanding(_inj().new_ENU_AliasedFrom((AliasStatement) orig_e));
@@ -187,8 +189,35 @@ public class DT_External_2 implements DT_External {
 		});
 	}
 
-	private DeduceTypes2.DeduceTypes2Injector _inj() {
-		return dc._deduceTypes2();
+	private /*static*/ void __make2_1__hasFunctionInvocation(final @NotNull ProcTableEntry pte, final @NotNull FunctionInvocation fi) {
+		fi.generateDeferred().then((BaseEvaFunction ef) -> {
+			var result = _inj().new_GenTypeImpl();
+			result.setFunctionInvocation(fi);
+			result.setNode(ef);
+
+			assert fi.pte != pte;
+
+			if (fi.pte == null) {
+				final Compilation c = dc._deduceTypes2().module.getCompilation();
+				if (c.reports().outputOn(Finally.Outs.Out_252)) {
+					System.err.println("******************************* Unexpected error");
+				}
+				return;
+			}
+
+			if (fi.pte.typeResolvePromise().isResolved()) {
+				fi.pte.typeResolvePromise().then(gt -> {
+					result.setResolved(gt.getResolved());
+					gt.copy(result);
+				});
+			}
+
+			LOG.info("2717c " + ef.getFD() + " " + result);
+
+			if (pte.typeDeferred().isPending()) {
+				pte.typeDeferred().resolve(result);
+			}
+		});
 	}
 
 	@Override
@@ -240,32 +269,8 @@ public class DT_External_2 implements DT_External {
 		});
 	}
 
-	private /*static*/ void __make2_1__hasFunctionInvocation(final @NotNull ProcTableEntry pte, final @NotNull FunctionInvocation fi) {
-		fi.generateDeferred().then((BaseEvaFunction ef) -> {
-			var result = _inj().new_GenTypeImpl();
-			result.setFunctionInvocation(fi);
-			result.setNode(ef);
-
-			assert fi.pte != pte;
-
-			if (fi.pte == null) {
-				System.err.println("******************************* Unexpected error");
-				return;
-			}
-
-			if (fi.pte.typeResolvePromise().isResolved()) {
-				fi.pte.typeResolvePromise().then(gt -> {
-					result.setResolved(gt.getResolved());
-					gt.copy(result);
-				});
-			}
-
-			LOG.info("2717c " + ef.getFD() + " " + result);
-
-			if (pte.typeDeferred().isPending()) {
-				pte.typeDeferred().resolve(result);
-			}
-		});
+	private DeduceTypes2.DeduceTypes2Injector _inj() {
+		return dc._inj();
 	}
 
 	public void onResolve(DoneCallback<OS_Element> cb) {

@@ -47,7 +47,7 @@ public class Implement_construct {
 			if (constructorName != null) {
 				Collection<ConstructorDef> cs = best.getConstructors();
 				for (@NotNull ConstructorDef c : cs) {
-					if (c.name().equals(constructorName)) {
+					if (c.name().sameName(constructorName)) {
 						cc = c;
 						break;
 					}
@@ -378,7 +378,7 @@ public class Implement_construct {
 				{
 					Collection<ConstructorDef> cs = classStatement.getConstructors();
 					for (@NotNull ConstructorDef c : cs) {
-						if (c.name().equals(constructorName)) {
+						if (c.name().sameName(constructorName)) {
 							cc = c;
 							break;
 						}

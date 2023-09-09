@@ -1,6 +1,7 @@
 package tripleo.elijah.lang.i;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.ci.LibraryStatementPart;
 import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.contexts.ModuleContext;
@@ -11,32 +12,25 @@ import java.util.Collection;
 import java.util.List;
 
 public interface OS_Module extends OS_Element {
-	void add(OS_Element anElement);
+	void add(ModuleItem anElement);
 
-	@NotNull
-	List<EntryPoint> entryPoints();
+	@NotNull List<EntryPoint> entryPoints();
 
-	@org.jetbrains.annotations.Nullable
-	OS_Element findClass(String aClassName);
+	@Nullable OS_Element findClass(String aClassName);
 
 	void finish();
 
-	@NotNull
-	Compilation getCompilation();
+	@NotNull Compilation getCompilation();
 
-	@Override
-	Context getContext();
+	@Override Context getContext();
 
 	String getFileName();
 
-	@NotNull
-	Collection<ModuleItem> getItems();
+	@Override @Nullable OS_Element getParent();
 
 	LibraryStatementPart getLsp();
 
-	@Override
-	@org.jetbrains.annotations.Nullable
-	OS_Element getParent();
+	@Override void visitGen(@NotNull ElElementVisitor visit);
 
 	boolean hasClass(String className); // OS_Container
 
@@ -62,9 +56,7 @@ public interface OS_Module extends OS_Element {
 
 	void setPrelude(OS_Module success);
 
-	@Override
-	void visitGen(@NotNull ElElementVisitor visit);
+	@Override void serializeTo(SmallWriter sw);
 
-	@Override
-	void serializeTo(SmallWriter sw);
+	@NotNull Collection<ModuleItem> getItems();
 }

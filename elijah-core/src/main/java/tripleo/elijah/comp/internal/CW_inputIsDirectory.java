@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.ci.CompilerInstructions;
 import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.comp.CompilerInput;
+import tripleo.elijah.comp.Finally;
 import tripleo.elijah.comp.diagnostic.TooManyEz_ActuallyNone;
 import tripleo.elijah.comp.diagnostic.TooManyEz_BeSpecific;
 import tripleo.elijah.comp.i.CompilationClosure;
@@ -54,6 +55,8 @@ public class CW_inputIsDirectory {
 			x.accept(input);
 			break;
 		}
+
+		c.reports().addInput(input, Finally.Out2.EZ);
 	}
 
 	private List<CompilerInstructions> searchEzFiles(final @NotNull File directory, final @NotNull CompilationClosure ccl) {

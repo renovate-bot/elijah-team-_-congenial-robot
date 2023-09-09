@@ -2,7 +2,7 @@ package tripleo.elijah.lang.i;
 
 import tripleo.elijah.lang2.ElElementVisitor;
 
-public interface PropertyStatement extends OS_Element, OS_Element2, ClassItem {
+public interface PropertyStatement extends OS_Element, OS_NamedElement, ClassItem {
 	void addGet();
 
 	void addSet();
@@ -21,7 +21,7 @@ public interface PropertyStatement extends OS_Element, OS_Element2, ClassItem {
 	TypeName getTypeName();
 
 	@Override
-	String name();
+	OS_ElementName name();
 
 	FunctionDef set_fn();
 

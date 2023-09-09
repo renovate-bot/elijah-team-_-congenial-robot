@@ -57,8 +57,8 @@ public class LoopContext extends ContextImpl implements Context {
 					!(item instanceof VariableSequenceImpl) &&
 					!(item instanceof AliasStatementImpl)
 			) continue;
-			if (item instanceof OS_Element2) {
-				if (((OS_Element2) item).name().equals(name)) {
+			if (item instanceof OS_NamedElement) {
+				if (((OS_NamedElement) item).name().sameName(name)) {
 					Result.add(name, level, (OS_Element) item, this);
 				}
 			}

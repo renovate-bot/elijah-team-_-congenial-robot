@@ -19,7 +19,7 @@ public interface SyntacticBlock extends FunctionItem {
 	@Override
 	OS_Element getParent();
 
-	List<OS_Element2> items();
+	List<OS_NamedElement> items();
 
 	void postConstruct();
 

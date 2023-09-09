@@ -13,9 +13,11 @@ import org.junit.Ignore;
 import org.junit.Test;
 import tripleo.elijah.lang.i.*;
 import tripleo.elijah.lang.impl.*;
+import tripleo.elijah.nextgen.rosetta.DeduceTypes2.DeduceTypes2Request;
 import tripleo.elijah.stages.deduce.*;
 import tripleo.elijah.stages.instructions.IdentIA;
 import tripleo.elijah.stages.instructions.InstructionArgument;
+import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.test_help.Boilerplate;
 import tripleo.elijah.util.NotImplementedException;
 
@@ -75,7 +77,7 @@ public class TestIdentNormal {
 		final IdentIA identIA = new IdentIA(1, generatedFunction);
 
 		final DeducePhase  phase = boilerplate.getDeducePhase();
-		final DeduceTypes2 d2    = new DeduceTypes2(boilerplate.defaultMod(), phase);
+		final DeduceTypes2 d2    = new DeduceTypes2(new DeduceTypes2Request(boilerplate.defaultMod(), phase, ElLog.Verbosity.VERBOSE));
 
 		final List<InstructionArgument> ss = BaseEvaFunction._getIdentIAPathList(identIA);
 		d2.resolveIdentIA2_(ctx2, null, ss/*identIA*/, generatedFunction, new FoundElement(phase) {
@@ -200,7 +202,7 @@ public class TestIdentNormal {
 
 		IdentIA identIA = new IdentIA(0, generatedFunction);
 
-		DeduceTypes2 d2 = new DeduceTypes2(mod, phase);
+		DeduceTypes2 d2 = new DeduceTypes2(new DeduceTypes2Request(mod, phase, ElLog.Verbosity.VERBOSE));
 
 		generatedFunction.getVarTableEntry(0).setConstructable(generatedFunction.getProcTableEntry(0));
 		identIA.getEntry().setCallablePTE(generatedFunction.getProcTableEntry(1));

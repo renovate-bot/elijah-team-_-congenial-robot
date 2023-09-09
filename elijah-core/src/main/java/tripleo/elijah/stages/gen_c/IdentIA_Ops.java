@@ -31,7 +31,7 @@ public class IdentIA_Ops {
 			if (resolved_element != null) { // FIXME stop accepting null here
 				switch (DecideElObjectType.getElObjectType(resolved_element)) {
 				case CONSTRUCTOR -> {
-					ctorName = ((ConstructorDef) resolved_element).name();
+					ctorName = ((ConstructorDef) resolved_element).name().asString();
 				}
 				case CLASS -> {
 					int y = 2;

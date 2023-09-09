@@ -110,7 +110,7 @@ public class ProcTableListener implements BaseTableEntry.StatusListener {
 
 	private static void resolved_element_pte_ClassStatement_EvaClass(final EvaClass result, final @NotNull ClassStatement e, final @NotNull Constructable co, final @NotNull DG_ClassStatement dcs) {
 		//System.err.println("828282 "+((ClassStatement) e).name());
-		if ((e.name()).equals("Foo")) {
+		if ((e.name()).sameName("Foo")) {
 			System.out.println("828282 Foo found");
 		}
 
@@ -251,7 +251,7 @@ public class ProcTableListener implements BaseTableEntry.StatusListener {
 
 	private void resolved_element_pte_FunctionDef_FormalArgListItem(Constructable co, ProcTableEntry pte, AbstractDependencyTracker depTracker, @NotNull FunctionDef fd, FormalArgListItem parent) {
 		final FormalArgListItem       fali   = parent;
-		@Nullable InstructionArgument vte_ia = generatedFunction.vte_lookup(fali.name());
+		@Nullable InstructionArgument vte_ia = generatedFunction.vte_lookup(fali.name().asString());
 		assert vte_ia != null;
 		final @NotNull VariableTableEntry variableTableEntry = ((IntegerIA) vte_ia).getEntry();
 		VTE_TypePromises.resolved_element_pte(co, pte, depTracker, fd, variableTableEntry, this);

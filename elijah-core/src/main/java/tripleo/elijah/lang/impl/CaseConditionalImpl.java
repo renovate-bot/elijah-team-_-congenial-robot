@@ -123,7 +123,7 @@ public class CaseConditionalImpl implements tripleo.elijah.lang.i.CaseConditiona
 		 * OS_Element)
 		 */
 		@Override
-		public void add(final OS_Element anElement) {
+		public void addToContainer(final OS_Element anElement) {
 			cscope3.add(anElement);
 		}
 
@@ -212,7 +212,7 @@ public class CaseConditionalImpl implements tripleo.elijah.lang.i.CaseConditiona
 		 * @see tripleo.elijah.lang.impl.CaseConditional#items()
 		 */
 		@Override
-		public List<OS_Element2> items() {
+		public List<OS_NamedElement> items() {
 			throw new NotImplementedException();
 		}
 

@@ -21,7 +21,7 @@ public class DeduceUtils {
 		}
 	}
 
-	static class MatchArgs implements Predicate<OS_Element2> {
+	static class MatchArgs implements Predicate<OS_NamedElement> {
 		private final ExpressionList args;
 
 		public MatchArgs(final ExpressionList args) {
@@ -29,7 +29,7 @@ public class DeduceUtils {
 		}
 
 		@Override
-		public boolean test(@Nullable final OS_Element2 input) {
+		public boolean test(@Nullable final OS_NamedElement input) {
 			if (input instanceof final FunctionDef functionDef) {//
 				final FormalArgList fal = functionDef.fal();
 				if (args == null && fal.falis().isEmpty()) {
@@ -96,7 +96,7 @@ public class DeduceUtils {
 			{
 				//o filter isCtor each (each args isCompat)
 				final @NotNull FunctionDef fd = (FunctionDef) (/*(LookupResult)*/o)/*.getElement()*/;
-				final List<OS_Element2> matching_functions = fd.items()
+				final List<OS_NamedElement> matching_functions = fd.items()
 						.stream()
 						.filter(_inj().new_MatchArgs(pce.getArgs()))
 						.collect(Collectors.toList());
@@ -121,7 +121,7 @@ public class DeduceUtils {
 			return new MatchFunctionArgs(aPce);
 		}
 
-		public Predicate<OS_Element2> new_MatchArgs(ExpressionList aExpressionList) {
+		public Predicate<OS_NamedElement> new_MatchArgs(ExpressionList aExpressionList) {
 			return new MatchArgs(aExpressionList);
 		}
 	}

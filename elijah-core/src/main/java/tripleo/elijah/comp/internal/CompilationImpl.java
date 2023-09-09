@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.ci.CompilerInstructions;
 import tripleo.elijah.comp.Compilation1;
 import tripleo.elijah.comp.CompilerInput;
+import tripleo.elijah.comp.Finally;
 import tripleo.elijah.comp.IO;
 import tripleo.elijah.comp.i.CompilationFlow;
 import tripleo.elijah.comp.i.ErrSink;
@@ -30,6 +31,7 @@ public class CompilationImpl extends Compilation1 {
 
 	private final @NotNull FluffyCompImpl _fluffyComp;
 	private @Nullable      EOT_OutputTree _output_tree = null;
+	private final Finally _f = new Finally();
 
 	public CompilationImpl(final ErrSink aEee, final IO aIo) {
 		super(aEee, aIo);
@@ -74,6 +76,11 @@ public class CompilationImpl extends Compilation1 {
 	@Override
 	public CompilerBeginning beginning(final @NotNull CompilationRunner compilationRunner) {
 		return new CompilerBeginning(this, rootCI, getInputs(), compilationRunner.progressSink, cfg());
+	}
+
+	@Override
+	public Finally reports() {
+		return _f;
 	}
 
 	public void testMapHooks(final List<IFunctionMapHook> aMapHooks) {

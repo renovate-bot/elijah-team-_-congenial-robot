@@ -22,7 +22,7 @@ public interface WithStatement extends FunctionItem {
 
 	Collection<VariableStatement> getVarItems();
 
-	List<OS_Element2> items();
+	List<OS_NamedElement> items();
 
 	VariableStatement nextVarStmt();
 

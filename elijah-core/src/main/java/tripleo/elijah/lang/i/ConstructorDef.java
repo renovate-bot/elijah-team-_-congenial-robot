@@ -7,7 +7,7 @@ public interface ConstructorDef extends FunctionDef {
 	OS_Element getParent();
 
 	@Override
-	String name();
+    OS_ElementName name();
 
 	@Override
 	void postConstruct();

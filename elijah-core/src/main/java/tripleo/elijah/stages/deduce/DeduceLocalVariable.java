@@ -13,6 +13,7 @@ import org.jdeferred2.DoneCallback;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tripleo.elijah.comp.Finally;
 import tripleo.elijah.lang.i.*;
 import tripleo.elijah.lang.impl.AliasStatementImpl;
 import tripleo.elijah.lang.impl.BaseFunctionDef;
@@ -481,7 +482,10 @@ public class DeduceLocalVariable {
 
 					pdm.resolve(dm2);
 				} else {
-					System.err.println("********************************* not a Constructor");
+					var c = deduceTypes2.module.getCompilation();
+					if (c.reports().outputOn(Finally.Outs.Out_486)) {
+						System.err.println("********************************* not a Constructor");
+					}
 				}
 			});
 		}

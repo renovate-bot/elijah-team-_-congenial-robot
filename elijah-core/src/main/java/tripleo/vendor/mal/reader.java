@@ -17,7 +17,7 @@ public class reader {
 		while (matcher.find()) {
 			final String token = matcher.group(1);
 			if (token != null &&
-					!token.equals("") &&
+                    !token.isEmpty() &&
 					!(token.charAt(0) == ';')) {
 				tokens.add(token);
 			}

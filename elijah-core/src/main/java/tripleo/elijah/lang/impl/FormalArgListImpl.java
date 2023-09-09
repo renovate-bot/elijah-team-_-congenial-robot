@@ -49,7 +49,7 @@ public class FormalArgListImpl implements tripleo.elijah.lang.i.FormalArgList {
 	public void serializeTo(final @NotNull SmallWriter sw) {
 		var i = 1;
 		for (FormalArgListItem fali : falis) {
-			sw.fieldString("fali%d".formatted(i++), fali.name());
+			sw.fieldString("fali%d".formatted(i++), fali.name().asString());
 		}
 
 		throw new NotImplementedException();

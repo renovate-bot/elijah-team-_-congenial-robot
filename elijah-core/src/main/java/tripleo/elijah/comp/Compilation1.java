@@ -29,6 +29,7 @@ import tripleo.elijah.util.Operation2;
 import tripleo.elijah.world.i.LivingRepo;
 import tripleo.elijah.world.i.WorldModule;
 import tripleo.elijah.world.impl.DefaultLivingRepo;
+import tripleo.elijah.world.impl.DefaultWorldModule;
 
 import java.io.File;
 import java.util.*;
@@ -62,6 +63,14 @@ public abstract class Compilation1 implements Compilation {
 		@Override
 		public @NotNull InputRequest createInputRequest(final File aFile, final boolean aDo_out, final @Nullable LibraryStatementPart aLsp) {
 			return new InputRequest(aFile, aDo_out, aLsp);
+		}
+
+		@Override
+		public @NotNull WorldModule createWorldModule(final OS_Module m) {
+			CompilationEnclosure ce = getCompilationEnclosure();
+			final WorldModule    R  = new DefaultWorldModule(m, ce);
+
+			return R;
 		}
 	};
 	public @NotNull LivingRepo                        _repo   = new DefaultLivingRepo();

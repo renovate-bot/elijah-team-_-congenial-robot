@@ -27,4 +27,11 @@ public class Eventual<P> {
 	public boolean isResolved() {
 		return prom.isResolved();
 	}
+
+	/**
+	 * Please overload this
+	 */
+	public String description() {
+		return "GENERIC-DESCRIPTION";
+	}
 }

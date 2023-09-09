@@ -3,6 +3,7 @@ package tripleo.vendor.batoull22;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 record EK_Factarray(String st, EK_Fact[] ch) {
@@ -13,7 +14,7 @@ record EK_Factarray(String st, EK_Fact[] ch) {
 		if (obj == null || obj.getClass() != this.getClass()) return false;
 		var that = (EK_Factarray) obj;
 		return Objects.equals(this.st, that.st) &&
-				Objects.equals(this.ch, that.ch);
+                Arrays.equals(this.ch, that.ch);
 	}
 
 	@Override

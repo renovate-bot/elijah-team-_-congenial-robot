@@ -14,6 +14,8 @@ import org.jdeferred2.FailCallback;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.comp.Finally;
 import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.lang.i.Context;
 import tripleo.elijah.lang.i.LookupResultList;
@@ -136,7 +138,11 @@ public class DeducePath {
 			// TODO 06/19 maybe redundant
 
 			var drIdent = identTableEntry.getDefinedIdent();
-			System.err.println(drIdent);
+
+			final Compilation c = this.base._deduceTypes2().module.getCompilation();
+			if (c.reports().outputOn(Finally.Outs.Out_141)) {
+				System.err.println(drIdent);
+			}
 
 //			identTableEntry.elementPromise((x)->{}, null);
 			identTableEntry.getDeduceElement().resolvedElementPromise().then((x) -> {

@@ -38,7 +38,7 @@ public class FluffyCompImpl implements FluffyComp {
 				.forEach(item -> {
 					// README likely for member functions.
 					// README Also note elijah has single namespace
-					items_map.put(item.name(), item);
+					items_map.put(item.name().asString(), item);
 				});
 
 		for (final String key : items_map.keys()) {

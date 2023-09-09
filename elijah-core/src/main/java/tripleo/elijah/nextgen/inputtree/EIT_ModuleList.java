@@ -6,6 +6,7 @@ import tripleo.elijah.comp.Coder;
 import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.entrypoints.EntryPointList;
 import tripleo.elijah.lang.i.OS_Module;
+import tripleo.elijah.nextgen.rosetta.DeducePhase.DeducePhase_deduceModule_Request;
 import tripleo.elijah.stages.deduce.DeducePhase;
 import tripleo.elijah.stages.gen_fn.EvaNode;
 import tripleo.elijah.stages.gen_fn.GenerateFunctions;
@@ -148,7 +149,9 @@ public class EIT_ModuleList {
 		}
 
 		public void deduceModule() {
-			deducePhase.deduceModule(mod, getLgc(), getVerbosity());
+			final DeducePhase_deduceModule_Request rq = new DeducePhase_deduceModule_Request(mod, getLgc(), getVerbosity(), deducePhase);
+
+			deducePhase.deduceModule(rq);
 		}
 
 		@Contract(pure = true)

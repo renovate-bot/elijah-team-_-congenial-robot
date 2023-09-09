@@ -34,7 +34,7 @@ public class NamespaceStatementImpl extends _CommonNC
 			_packageName.addElement(this);
 			module.add(this);
 		} else if (aElement instanceof OS_Container) {
-			((OS_Container) aElement).add(this);
+			((OS_Container) aElement).addToContainer(this);
 		} else {
 			throw new IllegalStateException(String.format("Cant add NamespaceStatement to %s", aElement));
 		}
@@ -42,7 +42,7 @@ public class NamespaceStatementImpl extends _CommonNC
 	}
 
 	@Override // OS_Container
-	public void add(final OS_Element anElement) {
+	public void addToContainer(final OS_Element anElement) {
 		if (anElement instanceof ClassItem)
 			items.add((ClassItem) anElement);
 		else
@@ -62,8 +62,9 @@ public class NamespaceStatementImpl extends _CommonNC
 
 	@Override
 	public NamespaceTypes getKind() {
-		if (_kind == null && name().equals("__MODULE__"))
-			return NamespaceTypes.MODULE; // semi HACK
+		if (_kind == null && name().sameName("__MODULE__")) {
+            return NamespaceTypes.MODULE; // semi HACK
+        }
 
 		return _kind;
 	}
@@ -78,7 +79,7 @@ public class NamespaceStatementImpl extends _CommonNC
 		return new AbstractStatementClosure(new AbstractScope2(this) {
 			@Override
 			public void add(final StatementItem aItem) {
-				NamespaceStatementImpl.this.add((OS_Element) aItem);
+				NamespaceStatementImpl.this.addToContainer((OS_Element) aItem);
 			}
 
 			@Override
@@ -113,6 +114,7 @@ public class NamespaceStatementImpl extends _CommonNC
 		}
 	}
 
+	@Override
 	public void setContext(final NamespaceContext ctx) {
 		_a.setContext(ctx);
 	}

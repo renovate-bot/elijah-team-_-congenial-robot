@@ -158,7 +158,7 @@ public class PropertyStatementImpl implements PropertyStatement {
 	@Override
 	public @NotNull EN_Name getEnName() {
 		if (__n == null) {
-			__n = EN_Name.create(name());
+			__n = EN_Name_.create(name());
 		}
 		return __n;
 	}
@@ -169,8 +169,8 @@ public class PropertyStatementImpl implements PropertyStatement {
 	}
 
 	@Override
-	public @NotNull String name() {
-		return prop_name.getText();
+	public OS_ElementName name() {
+		return OS_ElementName_.ofString(prop_name.getText());
 	}
 
 	@Override // OS_Element

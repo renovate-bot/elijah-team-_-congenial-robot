@@ -18,6 +18,7 @@ import tripleo.elijah.contexts.FunctionContext;
 import tripleo.elijah.lang.i.*;
 import tripleo.elijah.lang.impl.*;
 import tripleo.elijah.lang.types.OS_UserType;
+import tripleo.elijah.nextgen.rosetta.DeducePhase.DeducePhase_deduceModule_Request;
 import tripleo.elijah.stages.gen_fn.GenType;
 import tripleo.elijah.test_help.Boilerplate;
 import tripleo.elijah.util.Helpers;
@@ -80,7 +81,7 @@ public class DeduceTypesTest2 {
 		assert c.getCompilationEnclosure().getCompilationRunner().crState != null; // always true
 
 		final DeducePhase  dp = b.getDeducePhase();
-		final DeduceTypes2 d  = dp.deduceModule(mod);
+		final DeduceTypes2 d  = dp.deduceModule(new DeducePhase_deduceModule_Request(mod, dp.generatedClasses, Compilation.gitlabCIVerbosity(), dp));
 
 		final GenType x = DeduceLookupUtils.deduceExpression(d, x1, fc);
 		tripleo.elijah.util.Stupidity.println_out_2("-- deduceExpression >>" + x);

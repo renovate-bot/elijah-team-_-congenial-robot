@@ -5,6 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.ci.CompilerInstructions;
 import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.comp.CompilerInput;
+import tripleo.elijah.comp.Finally;
 import tripleo.elijah.comp.queries.QueryEzFileToModule;
 import tripleo.elijah.comp.queries.QueryEzFileToModuleParams;
 import tripleo.elijah.util.Helpers;
@@ -60,7 +61,10 @@ class EzM {
 				if (input != null) {
 					input.accept_hash(hash.success());
 				} else {
-					System.err.println("***** 6262 " + f);
+					final Compilation c = p.cc().getCompilation();
+					if (c.reports().outputOn(Finally.Outs.Out_6262)) {
+						System.err.println("***** 6262 " + f);
+					}
 				}
 			}
 

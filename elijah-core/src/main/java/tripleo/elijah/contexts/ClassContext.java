@@ -81,8 +81,8 @@ public class ClassContext extends ContextImpl implements Context {
 					!(item instanceof AliasStatement) &&
 					!(item instanceof PropertyStatement)
 			) continue;
-			if (item instanceof OS_Element2) {
-				if (((OS_Element2) item).name().equals(name)) {
+			if (item instanceof OS_NamedElement) {
+				if (((OS_NamedElement) item).name().sameName(name)) {
 					Result.add(name, level, item, this);
 				}
 			}

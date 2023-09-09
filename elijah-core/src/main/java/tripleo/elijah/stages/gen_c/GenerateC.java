@@ -623,7 +623,7 @@ public class GenerateC implements CodeGenerator, GenerateFiles, ReactiveDimensio
 			if (input.getStatus() == BaseTableEntry.Status.UNCHECKED)
 				return "Error_UNCHECKED_Type";
 			if (attached.getType() == OS_Type.Type.USER_CLASS) {
-				return attached.getClassOf().name();
+				return attached.getClassOf().name().asString();
 			} else if (attached.getType() == OS_Type.Type.USER) {
 				TypeName typeName = attached.getTypeName();
 				String   name;

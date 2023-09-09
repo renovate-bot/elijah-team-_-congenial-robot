@@ -33,7 +33,7 @@ public class ConstructorDefImpl extends BaseFunctionDef implements tripleo.elija
 		parent = (OS_Element) aParent;
 		if (parent != null) {
 			if (aParent instanceof OS_Container) {
-				((OS_Container) parent).add(this);
+				((OS_Container) parent).addToContainer(this);
 			} else {
 				throw new IllegalStateException("adding FunctionDef to " + aParent.getClass().getName());
 			}
@@ -46,12 +46,12 @@ public class ConstructorDefImpl extends BaseFunctionDef implements tripleo.elija
 			setName(WorldGlobals.emptyConstructorName); // hack for Context#lookup
 		setSpecies(Species.CTOR);
 
-		__n = EN_Name.create(funName.getText()); // !!
+		__n = EN_Name_.create(funName.getText()); // !!
 	}
 
 	@Override
 	public void add(final FunctionItem seq) {
-		items().add((OS_Element2) seq);
+		items().add((OS_NamedElement) seq);
 	}
 
 	@Override // OS_Element

@@ -25,7 +25,7 @@ public class AliasStatementImpl extends __Access implements AliasStatement {
 	public AliasStatementImpl(final @NotNull OS_Element aParent) {
 		this.parent = aParent;
 		if (parent instanceof OS_Container) {
-			((OS_Container) parent).add(this);
+			((OS_Container) parent).addToContainer(this);
 		} else {
 			throw new IllegalStateException("adding AliasStatement to " + aParent.getClass().getName());
 		}
@@ -77,8 +77,8 @@ public class AliasStatementImpl extends __Access implements AliasStatement {
 	}
 
 	@Override // OS_Element2
-	public @NotNull String name() {
-		return this.nameToken.getText();
+	public OS_ElementName name() {
+		return OS_ElementName_.ofString(this.nameToken.getText());
 	}
 
 	@Override
@@ -111,7 +111,7 @@ public class AliasStatementImpl extends __Access implements AliasStatement {
 	@Override
 	public @NotNull EN_Name getEnName() {
 		if (__n == null) {
-			__n = EN_Name.create(name());
+			__n = EN_Name_.create(name());
 		}
 		return __n;
 	}

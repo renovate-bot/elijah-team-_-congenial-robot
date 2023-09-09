@@ -56,7 +56,7 @@ public class FunctionDefImpl extends BaseFunctionDef
 	public FunctionDefImpl(OS_Element element, Context context) {
 		parent = element;
 		if (element instanceof OS_Container) {
-			((OS_Container) parent).add(this);
+			((OS_Container) parent).addToContainer(this);
 		} else if (element instanceof PropertyStatement) {
 			// do nothing
 		} else {

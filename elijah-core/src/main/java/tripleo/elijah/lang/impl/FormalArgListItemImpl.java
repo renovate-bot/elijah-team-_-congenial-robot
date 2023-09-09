@@ -54,7 +54,7 @@ public class FormalArgListItemImpl implements FormalArgListItem {
 	@Override
 	public @NotNull EN_Name getEnName() {
 		if (__n == null) {
-			__n = EN_Name.create(name());
+			__n = EN_Name_.create(name());
 		}
 		return __n;
 	}
@@ -86,8 +86,8 @@ public class FormalArgListItemImpl implements FormalArgListItem {
 	}
 
 	@Override // OS_Element2
-	public @NotNull String name() {
-		return name.getText();
+	public OS_ElementName name() {
+		return OS_ElementName_.ofString(name.getText());
 	}
 
 	@Override

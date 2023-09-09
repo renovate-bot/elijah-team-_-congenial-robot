@@ -8,14 +8,12 @@
  */
 package tripleo.elijah.comp;
 
+import com.google.common.base.Preconditions;
 import io.reactivex.rxjava3.annotations.NonNull;
-import io.reactivex.rxjava3.core.Observer;
-import io.reactivex.rxjava3.disposables.Disposable;
-import org.jdeferred2.Promise;
-import org.jdeferred2.impl.DeferredObject;
-import org.jetbrains.annotations.Contract;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.comp.diagnostic.ExceptionDiagnostic;
+import tripleo.elijah.Eventual;
+import tripleo.elijah.EventualRegister;
 import tripleo.elijah.comp.i.CompilationEnclosure;
 import tripleo.elijah.comp.i.ICompilationAccess;
 import tripleo.elijah.comp.i.IPipelineAccess;
@@ -30,6 +28,7 @@ import tripleo.elijah.stages.gen_fn.GenerateFunctions;
 import tripleo.elijah.stages.gen_fn.GeneratePhase;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.util.CompletableProcess;
+import tripleo.elijah.util.NotImplementedException;
 import tripleo.elijah.world.i.WorldModule;
 import tripleo.elijah.world.impl.DefaultWorldModule;
 
@@ -39,15 +38,18 @@ import java.util.function.Consumer;
 /**
  * Created 12/30/20 2:14 AM
  */
-public class PipelineLogic {
-	public final          List<ElLog>                                                              elLogs         = new LinkedList<>();
-	public final @NotNull DeducePhase                                                              dp;
-	public final @NotNull GeneratePhase                                                            generatePhase;
-	private final         List<OS_Module>                                                          __mods_BACKING = new ArrayList<>();
-	private final         EIT_ModuleList                                                           mods           = new EIT_ModuleList(__mods_BACKING);
-	private final         Map<OS_Module, DeferredObject<DeducePhase.GeneratedClasses, Void, Void>> modMap         = new HashMap<>();
-	private final         IPipelineAccess                                                          pa;
-	private final         ElLog.Verbosity                                                          verbosity;
+public class PipelineLogic implements EventualRegister {
+	public final          List<ElLog>                                            elLogs                  = new LinkedList<>();
+	public final @NotNull DeducePhase                                            dp;
+	public final @NotNull GeneratePhase                                          generatePhase;
+	public final          ModuleCompletableProcess                               mcp                     = new ModuleCompletableProcess();
+	private final         List<OS_Module>                                        __mods_BACKING          = new ArrayList<>();
+	private final         EIT_ModuleList                                         mods                    = new EIT_ModuleList(__mods_BACKING);
+	private final         Map<OS_Module, Eventual<DeducePhase.GeneratedClasses>> modMap                  = new HashMap<>();
+	private final         IPipelineAccess                                        pa;
+	@Getter
+	private final         ElLog.Verbosity                                        verbosity;
+	private final         DefaultEventualRegister                                defaultEventualRegister = new DefaultEventualRegister();
 
 	public PipelineLogic(final IPipelineAccess aPa, final @NotNull ICompilationAccess ca) {
 		pa = aPa;
@@ -66,11 +68,34 @@ public class PipelineLogic {
 				final OS_Module         mod = module.module();
 				final GenerateFunctions gfm = getGenerateFunctions(mod);
 
-				gfm.generateFromEntryPoints(module.rq());
+				final Compilation c = pa.getCompilationEnclosure().getCompilation();
 
-				final DeducePhase.@NotNull GeneratedClasses lgc = dp.generatedClasses;
+				final GN_PL_Run2.GenerateFunctionsRequest rq = module.rq();
+				if (rq != null) {
+					if (c.reports().outputOn(Finally.Outs.Out_727)) {
+						System.err.println("7270 **GOT** request for " + mod.getFileName());
+					}
+					gfm.generateFromEntryPoints(rq);
+				} else {
+					if (c.reports().outputOn(Finally.Outs.Out_727)) {
+						System.err.println("7272 **NO**  request for " + mod.getFileName());
+					}
+					NotImplementedException.raise_stop();
+				}
 
-				modMap.get(mod).resolve(lgc);
+				final var modMapEventual = modMap.get(mod);
+
+				if (modMapEventual != null && !modMapEventual.isResolved()) {
+					Preconditions.checkNotNull(modMapEventual);
+
+					final DeducePhase.@NotNull GeneratedClasses lgc = dp.generatedClasses;
+					modMapEventual.resolve(lgc);
+				}
+			}
+
+			@Override
+			public void close() {
+
 			}
 		});
 	}
@@ -78,18 +103,6 @@ public class PipelineLogic {
 	@NotNull
 	public GenerateFunctions getGenerateFunctions(@NotNull OS_Module mod) {
 		return generatePhase.getGenerateFunctions(mod);
-	}
-
-	public Promise<DeducePhase.GeneratedClasses, Void, Void> handle(final GN_PL_Run2.@NotNull GenerateFunctionsRequest rq) {
-		final OS_Module          mod         = rq.mod();
-		final DefaultWorldModule worldModule = new DefaultWorldModule(mod, rq);
-
-		final DeferredObject<DeducePhase.GeneratedClasses, Void, Void> p = new DeferredObject<>();
-		modMap.put(mod, p);
-
-		pa.getCompilationEnclosure().addModule(worldModule);
-
-		return p.promise();
 	}
 
 	public void addLog(ElLog aLog) {
@@ -100,25 +113,49 @@ public class PipelineLogic {
 		mods.add(m);
 	}
 
-	public ElLog.Verbosity getVerbosity() {
-		return verbosity;
-	}
-
 	public @NotNull EIT_ModuleList mods() {
 		return mods;
 	}
 
-	public final ModuleCompletableProcess mcp = new ModuleCompletableProcess();
+	public @NonNull IPipelineAccess _pa() {
+		return pa;
+	}
 
-	public final class ModuleCompletableProcess implements CompletableProcess<OS_Module> {
+	public ModuleCompletableProcess _mcp() {
+		return mcp;
+	}
+
+	public Eventual<DeducePhase.GeneratedClasses> handle(final GN_PL_Run2.@NotNull GenerateFunctionsRequest rq) {
+		final OS_Module          mod         = rq.mod();
+		final DefaultWorldModule worldModule = rq.worldModule();
+
+		final Eventual<DeducePhase.GeneratedClasses> modMapEventual = worldModule.getEventual();
+		modMap.put(mod, modMapEventual);
+
+		pa.getCompilationEnclosure().addModule(worldModule);
+
+		return modMapEventual;
+	}
+
+	@Override
+	public <P> void register(final Eventual<P> e) {
+		defaultEventualRegister.register(e);
+	}
+
+	@Override
+	public void checkFinishEventuals() {
+		defaultEventualRegister.checkFinishEventuals();
+	}
+
+	public final class ModuleCompletableProcess implements CompletableProcess<WorldModule> {
 
 		@Override
-		public void add(final @NotNull OS_Module mod) {
+		public void add(final @NotNull WorldModule aWorldModule) {
 			//System.err.printf("7070 %s %d%n", mod.getFileName(), mod.entryPoints.size());
 
 			final CompilationEnclosure  ce            = pa.getCompilationEnclosure();
 			final Consumer<WorldModule> worldConsumer = ce::noteAccept; // FIXME not data...
-			final GN_PL_Run2_Env        pl_run2       = new GN_PL_Run2_Env(PipelineLogic.this, mod, ce, worldConsumer);
+			final GN_PL_Run2_Env        pl_run2       = new GN_PL_Run2_Env(PipelineLogic.this, aWorldModule, ce, worldConsumer);
 
 			pa.notate(Provenance.PipelineLogic__nextModule, pl_run2);
 		}
@@ -143,6 +180,7 @@ public class PipelineLogic {
 
 		}
 	}
+
 }
 
 //

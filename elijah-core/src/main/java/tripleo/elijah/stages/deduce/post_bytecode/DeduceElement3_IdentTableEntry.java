@@ -4,6 +4,8 @@ import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.comp.Finally;
 import tripleo.elijah.contexts.ModuleContext;
 import tripleo.elijah.lang.i.*;
 import tripleo.elijah.lang.impl.BaseFunctionDef;
@@ -420,11 +422,17 @@ public class DeduceElement3_IdentTableEntry extends DefaultStateful implements I
 											if (resl != null) {
 												var ci11 = deduceTypes2.phase.registerClassInvocation(resl.getClassOf());
 
-												printString(350, ""+ resl);
+												final Compilation c = deduceTypes2.module.getCompilation();
+												if (c.reports().outputOn(Finally.Outs.Out_350)) {
+													printString(350, ""+ resl);
+												}
 												var pt2 = dt2._inj().new_DR_PossibleTypeCI(ci11, null);
 												b.addPossibleType(pt2);
 											} else {
-												//System.err.println("364 " + principal.getIdent().getText());
+												final Compilation c = deduceTypes2.module.getCompilation();
+												if (c.reports().outputOn(Finally.Outs.Out_364)) {
+													System.err.println("364 " + principal.getIdent().getText());
+												}
 											}
 										}
 									}

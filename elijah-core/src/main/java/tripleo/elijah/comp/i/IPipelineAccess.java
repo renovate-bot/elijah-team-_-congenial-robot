@@ -9,6 +9,7 @@ import tripleo.elijah.comp.notation.GN_Env;
 import tripleo.elijah.comp.notation.GN_Notable;
 import tripleo.elijah.lang.i.OS_Module;
 import tripleo.elijah.nextgen.output.NG_OutputItem;
+import tripleo.elijah.stages.deduce.DeducePhase;
 import tripleo.elijah.stages.gen_c.GenerateC;
 import tripleo.elijah.stages.gen_fn.BaseEvaFunction;
 import tripleo.elijah.stages.gen_fn.EvaClass;
@@ -86,4 +87,6 @@ public interface IPipelineAccess {
 	void notate(Provenance aProvenance, GN_Env aPlRun2);
 
 	void resolvePipelinePromise(PipelineLogic aPipelineLogic);
+
+	DeducePhase getDeducePhase();
 }

@@ -22,6 +22,7 @@ import tripleo.elijah.lang.types.OS_BuiltinType;
 import tripleo.elijah.lang.types.OS_UserType;
 import tripleo.elijah.lang2.BuiltInTypes;
 import tripleo.elijah.nextgen.query.Mode;
+import tripleo.elijah.nextgen.rosetta.DeducePhase.DeducePhase_deduceModule_Request;
 import tripleo.elijah.stages.deduce.Resolve_Ident_IA.DeduceElementIdent;
 import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_IdentTableEntry;
 import tripleo.elijah.stages.gen_fn.BaseEvaFunction;
@@ -85,7 +86,7 @@ public class DeduceTypesTest {
 
 		final ElLog.Verbosity verbosity = Compilation.gitlabCIVerbosity();
 		final DeducePhase     dp        = boilerplate.getDeducePhase();
-		final DeduceTypes2    d         = dp.deduceModule(mod, dp.generatedClasses, verbosity);
+		final DeduceTypes2    d         = dp.deduceModule(new DeducePhase_deduceModule_Request(mod, dp.generatedClasses, verbosity, dp));
 
 		//final @NotNull GenerateFunctions gf = boilerplate.pr.pipelineLogic().generatePhase.getGenerateFunctions(mod);
 

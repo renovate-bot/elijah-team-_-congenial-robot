@@ -23,7 +23,7 @@ public class MainClassEntryPoint implements EntryPoint {
 		switch (aFunctionDef.getSpecies()) {
 		case REG_FUN:
 		case DEF_FUN:
-			if (aFunctionDef.name().equals("main")) {
+			if (aFunctionDef.name().sameName("main")) {
 				return !aFunctionDef.getArgs().iterator().hasNext();
 			}
 			break;
@@ -37,7 +37,9 @@ public class MainClassEntryPoint implements EntryPoint {
 
 	public static boolean isMainClass(@NotNull ClassStatement classStatement) {
 		// TODO what about Library (for windows dlls) etc?
-		return classStatement.getPackageName() == OS_Package.default_package && classStatement.name().equals("Main");
+		boolean b = classStatement.getPackageName() == OS_Package.default_package;
+		boolean main = classStatement.name().sameName("Main");
+		return b && main;
 	}
 
 	public MainClassEntryPoint(@NotNull ClassStatement aKlass) {

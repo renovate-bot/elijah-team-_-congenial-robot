@@ -40,6 +40,7 @@ import static tripleo.elijah.util.Helpers.List_of;
 /**
  * @author Tripleo(envy)
  */
+@SuppressWarnings("MagicNumber")
 public class TestBasic {
 
 	@Ignore
@@ -168,14 +169,36 @@ public class TestBasic {
 		final ErrSink     eee = new StdErrSink();
 		final Compilation c   = new CompilationImpl(eee, new IO());
 
+		c.reports().turnAllOutputOff();
+
 		c.feedCmdLine(List_of(s, "-sO"));
 
 		if (c.errorCount() != 0)
 			System.err.printf("Error count should be 0 but is %d for %s%n", c.errorCount(), s);
 
 		Assert.assertEquals(25, c.errorCount()); // TODO Error count obviously should be 0
-		Assert.assertTrue(c.getOutputTree().getList().size() > 0);
-		Assert.assertTrue(c.getIO().recordedwrites.size() > 0);
+
+		final List<EOT_OutputFile> outputFileList = c.getOutputTree().getList();
+		Assert.assertEquals(15, outputFileList.size());
+
+		final List<EOT_OutputFile> outputFileList1 = outputFileList.stream().filter(ofq -> ofq.getType() == EOT_OutputType.SOURCES).toList();
+		Assert.assertEquals(4, outputFileList1.size());
+
+		//for (EOT_OutputFile outputFile : outputFileList) {
+		//	System.err.println("187 "+outputFile.toString());
+		//}
+		for (EOT_OutputFile outputFile : outputFileList1) {
+			System.err.println("182 "+outputFile.toString());
+		}
+
+		final List<File> recordedwrites = c.getIO().recordedwrites;
+/*
+		for (File recordedwrite : recordedwrites) {
+			System.err.println("194 "+recordedwrite.toString());
+		}
+*/
+
+		Assert.assertEquals(15, recordedwrites.size());
 	}
 
 	@Test
@@ -238,6 +261,8 @@ public class TestBasic {
 			String s = "test/basic/fact1/main2";
 
 			c = CompilationFactory.mkCompilation(new StdErrSink(), new IO());
+
+			c.reports().turnAllOutputOff();;
 
 			c.feedCmdLine(List_of(s, "-sO"));
 

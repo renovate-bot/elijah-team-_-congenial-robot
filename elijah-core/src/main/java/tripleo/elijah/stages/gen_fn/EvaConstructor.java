@@ -57,7 +57,7 @@ public class EvaConstructor extends BaseEvaFunction {
 	public String name() {
 		if (cd == null)
 			throw new IllegalArgumentException("null cd");
-		return cd.name();
+		return cd.name().asString();
 	}
 
 	public void setFunctionInvocation(@NotNull FunctionInvocation fi) {

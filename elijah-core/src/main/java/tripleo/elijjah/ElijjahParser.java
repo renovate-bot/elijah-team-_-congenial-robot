@@ -1409,7 +1409,7 @@ public class ElijjahParser extends antlr.LLkParser implements ElijjahTokenTypes 
 						} else if ((LA(1) == LITERAL_type) && (LA(2) == LITERAL_alias)) {
 							tal = typeAlias(cr);
 							if (inputState.guessing == 0) {
-								cr.add(tal);
+								cr.addToContainer(tal);
 							}
 						} else if ((_tokenSet_15.member(LA(1))) && (_tokenSet_16.member(LA(2)))) {
 							programStatement(/*cr.XXX(),*/ cr);
@@ -4434,7 +4434,7 @@ public class ElijjahParser extends antlr.LLkParser implements ElijjahTokenTypes 
 							case LITERAL_type: {
 								tal = typeAlias(cr);
 								if (inputState.guessing == 0) {
-									cr.add(tal);
+									cr.addToContainer(tal);
 								}
 								break;
 							}

@@ -46,7 +46,8 @@ class CB_FindStdLibAction implements ICompilationBus.CB_Action {
 		if (oci.mode() == Mode.SUCCESS) {
 			final Compilation c = ce.getCompilation();
 
-			c.pushItem(oci.success());
+			// README 09/09 not double
+			//c.pushItem(oci.success());
 			c.use(oci.success(), true);
 		} else {
 			throw new IllegalStateException(oci.failure());

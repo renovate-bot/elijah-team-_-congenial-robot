@@ -8,7 +8,8 @@ import tripleo.elijah.comp.nextgen.CP_Paths;
 import tripleo.elijah.lang.i.OS_Module;
 import tripleo.elijah.nextgen.inputtree.EIT_Input;
 import tripleo.elijah.nextgen.inputtree.EIT_ModuleInput;
-import tripleo.elijah.nextgen.output.*;
+import tripleo.elijah.nextgen.output.NG_OutputItem;
+import tripleo.elijah.nextgen.output.NG_OutputStatement;
 import tripleo.elijah.nextgen.outputstatement.EG_Naming;
 import tripleo.elijah.nextgen.outputstatement.EG_SequenceStatement;
 import tripleo.elijah.nextgen.outputstatement.EG_Statement;
@@ -16,7 +17,9 @@ import tripleo.elijah.nextgen.outputstatement.EX_Explanation;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputFile;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputType;
 import tripleo.elijah.stages.gen_c.GenerateC;
-import tripleo.elijah.stages.gen_fn.*;
+import tripleo.elijah.stages.gen_fn.BaseEvaFunction;
+import tripleo.elijah.stages.gen_fn.EvaClass;
+import tripleo.elijah.stages.gen_fn.EvaNamespace;
 import tripleo.elijah.stages.gen_generic.GenerateResult;
 import tripleo.elijah.stages.generate.OutputStrategy;
 import tripleo.elijah.stages.generate.OutputStrategyC;
@@ -97,11 +100,26 @@ public class WPIS_GenerateOutputs implements WP_Indiviual_Step {
 		this.st.pa.waitGenC(mod, cb);
 	}
 
+	interface Writable {
+		String filename();
+
+		EG_Statement statement();
+
+		List<EIT_Input> inputs();
+
+		EOT_OutputFile.FileNameProvider getFilenameProvider();
+	}
+
+	@FunctionalInterface
+	public interface WPIS_GenerateOutputs_Behavior_PrintDBLString {
+		void print(String sps);
+	}
+
 	// TODO 09/04 Duplication madness
 	private static class MyWritable implements Writable {
-		final          Collection<EG_Statement> value;
-		final          String                   filename;
-		final @NotNull List<EG_Statement>       list;
+		final          Collection<EG_Statement>        value;
+		final          EOT_OutputFile.FileNameProvider filename;
+		final @NotNull List<EG_Statement>              list;
 		final @NotNull EG_SequenceStatement     statement;
 		private final  NG_OutputRequest         outputRequest;
 
@@ -117,7 +135,7 @@ public class WPIS_GenerateOutputs implements WP_Indiviual_Step {
 
 		@Override
 		public String filename() {
-			return filename;
+			return filename.getFilename();
 		}
 
 		@Override
@@ -136,19 +154,10 @@ public class WPIS_GenerateOutputs implements WP_Indiviual_Step {
 			return Helpers.List_of(moduleInput);
 		}
 
-	}
-
-	@FunctionalInterface
-	public interface WPIS_GenerateOutputs_Behavior_PrintDBLString {
-		void print(String sps);
-	}
-
-	interface Writable {
-		String filename();
-
-		EG_Statement statement();
-
-		List<EIT_Input> inputs();
+		@Override
+		public EOT_OutputFile.FileNameProvider getFilenameProvider() {
+			return this.filename;
+		}
 	}
 
 	static class Default_WPIS_GenerateOutputs_Behavior_PrintDBLString implements WPIS_GenerateOutputs_Behavior_PrintDBLString {
@@ -179,11 +188,7 @@ public class WPIS_GenerateOutputs implements WP_Indiviual_Step {
 
 						EOT_OutputFile.FileNameProvider s = o.outName(outputStrategyC, oxt);
 
-						var or = new NG_OutputRequest(
-								s.getFilename(),
-								ox,
-								ox,
-								o);
+						var or = new NG_OutputRequest(s, ox, ox, o);
 						ors1.add(or);
 					}
 				}
@@ -203,12 +208,12 @@ public class WPIS_GenerateOutputs implements WP_Indiviual_Step {
 				}
 
 				for (Writable writable : writables) {
-					final String             filename   = writable.filename();
-					final EG_Statement       statement0 = writable.statement();
+					final EOT_OutputFile.FileNameProvider filename   = writable.getFilenameProvider();
+					final EG_Statement                    statement0 = writable.statement();
 					final List<EG_Statement> list2      = relist3(statement0);
 					final EG_Statement       statement;
 
-					if (filename.endsWith(".h")) {
+					if (filename.getFilename().endsWith(".h")) {
 						final String uuid = "elinc_%s".formatted(UUID.randomUUID().toString().replace('-', '_'));
 
 						var b = EG_Statement.of("#ifndef %s\n#define %s 1\n\n".formatted(uuid, uuid), EX_Explanation.withMessage("Header file prefix"));
@@ -224,6 +229,9 @@ public class WPIS_GenerateOutputs implements WP_Indiviual_Step {
 					}
 
 					var off = new EOT_OutputFile(writable.inputs(), filename, EOT_OutputType.SOURCES, statement);
+
+					st.c.reports().addCodeOutput(filename, off);
+
 					cot.add(off);
 				}
 			}

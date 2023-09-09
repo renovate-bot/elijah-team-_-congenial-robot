@@ -15,6 +15,7 @@ import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.comp.EvaPipeline;
+import tripleo.elijah.comp.Finally;
 import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.comp.i.IPipelineAccess;
 import tripleo.elijah.comp.notation.GN_PL_Run2;
@@ -412,7 +413,7 @@ public class GenerateFunctions implements ReactiveDimension {
 				final @NotNull TypeTableEntry tte = gf.newTypeTableEntry(TypeTableEntry.Type.SPECIFIED, attached1, fali.getNameToken());
 //				assert attached != null; // TODO this fails
 
-				gf.addVariableTableEntry(fali.name(), VariableTableType.ARG, tte, fali);
+				gf.addVariableTableEntry(fali.name().asString(), VariableTableType.ARG, tte, fali);
 			}
 		}
 
@@ -634,7 +635,7 @@ public class GenerateFunctions implements ReactiveDimension {
 				final @NotNull TypeTableEntry tte = gf.newTypeTableEntry(TypeTableEntry.Type.SPECIFIED, attached1, fali.getNameToken());
 //				assert attached != null; // TODO this fails
 
-				gf.addVariableTableEntry(fali.name(), VariableTableType.ARG, tte, fali);
+				gf.addVariableTableEntry(fali.name().asString(), VariableTableType.ARG, tte, fali);
 			}
 		}
 
@@ -1055,6 +1056,8 @@ public class GenerateFunctions implements ReactiveDimension {
 		final @NotNull IClassGenerator  dcg = rq.classGenerator();
 		final @NotNull ModuleThing      mt  = rq.mt();
 
+		if (epl.isEmpty()) return;
+
 		epl.forEach(entryPoint -> pa.getCompilationEnclosure().addEntryPoint(getMirrorEntryPoint(entryPoint, mt), dcg));
 
 		// FIXME looking too hard into phase...
@@ -1064,7 +1067,11 @@ public class GenerateFunctions implements ReactiveDimension {
 		final WorkList wl = dcg.wl();
 
 		if (!wl.isEmpty()) {
-			System.err.println("** 1070 WorkList not empty");
+			var c = module.getCompilation();
+			if (c.reports().outputOn(Finally.Outs.Out_1069)) {
+				System.err.println("** 1070 WorkList not empty");
+			}
+
 			wm.addJobs(wl);
 			wm.drain();
 		}
