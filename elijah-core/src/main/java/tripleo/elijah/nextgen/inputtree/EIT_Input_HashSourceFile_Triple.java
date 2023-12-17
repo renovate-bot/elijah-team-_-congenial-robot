@@ -1,7 +1,7 @@
 package tripleo.elijah.nextgen.inputtree;
 
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.nextgen.query.Mode;
+import tripleo.elijah.util.Mode;
 import tripleo.elijah.util.Helpers;
 import tripleo.elijah.util.Operation;
 
@@ -31,7 +31,8 @@ public record EIT_Input_HashSourceFile_Triple(String hash,
 				throw new IllegalStateException("Error"); // Operation??
 			}
 
-			EIT_Input_HashSourceFile_Triple yy2 = new EIT_Input_HashSourceFile_Triple(hh, x, fn);
+			//noinspection UnnecessaryLocalVariable
+			final EIT_Input_HashSourceFile_Triple yy2 = new EIT_Input_HashSourceFile_Triple(hh, x, fn);
 			return yy2;
 		}
 		throw new IllegalStateException("hash failure"); // Operation??

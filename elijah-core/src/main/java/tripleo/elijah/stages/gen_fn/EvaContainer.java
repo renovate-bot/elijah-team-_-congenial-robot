@@ -9,23 +9,31 @@
 
 package tripleo.elijah.stages.gen_fn;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.jdeferred2.DoneCallback;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tripleo.elijah.lang.i.*;
-import tripleo.elijah.lang.types.OS_UserType;
-import tripleo.elijah.nextgen.query.Mode;
-import tripleo.elijah.stages.deduce.DeduceTypes2;
-import tripleo.elijah.stages.deduce.RegisterClassInvocation_env;
-import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_VarTableEntry;
-import tripleo.elijah.util.Maybe;
-import tripleo.elijah.util.Operation;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import tripleo.elijah.lang.i.IExpression;
+import tripleo.elijah.lang.i.IdentExpression;
+import tripleo.elijah.lang.i.OS_Element;
+import tripleo.elijah.lang.i.OS_Type;
+import tripleo.elijah.lang.i.TypeName;
+import tripleo.elijah.lang.i.VariableStatement;
+import tripleo.elijah.lang.types.OS_UserType;
+import tripleo.elijah.stages.deduce.DeduceTypes2;
+import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_VarTableEntry;
+import tripleo.elijah.stages.gen_fn_r.RegisterClassInvocation_env;
+import tripleo.elijah.util.Maybe;
+import tripleo.elijah.util.Mode;
+import tripleo.elijah.util.Ok;
+import tripleo.elijah.util.Operation;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 /**
  * Created 2/28/21 3:23 AM
@@ -68,7 +76,7 @@ public interface EvaContainer extends EvaNode {
 			passthruEnv = aPassthruEnv;
 
 			{
-				final DeduceTypes2 deduceTypes2 = passthruEnv.deduceTypes2();
+				final DeduceTypes2 deduceTypes2 = passthruEnv.getDeduceTypes2(); // NPE. yay kotlin!
 				if (deduceTypes2 != null) {
 					_de3 = new DeduceElement3_VarTableEntry(this, deduceTypes2);
 				} else {
@@ -120,11 +128,11 @@ public interface EvaContainer extends EvaNode {
 		}
 
 		public interface UpdatePotentialTypesCB {
-			Operation<Boolean> call(final @NotNull EvaContainer aEvaContainer);
+			@NotNull Operation<Ok> call(final @NotNull EvaContainer aEvaContainer);
 		}
 
 		public void resolve(@NotNull EvaNode aResolvedType) {
-			tripleo.elijah.util.Stupidity.println_out_2(String.format("** [GeneratedContainer 56] resolving VarTableEntry %s to %s", nameToken, aResolvedType.identityString()));
+			SimplePrintLoggerToRemoveSoon.println_out_2(String.format("** [GeneratedContainer 56] resolving VarTableEntry %s to %s", nameToken, aResolvedType.identityString()));
 			_resolvedType = aResolvedType;
 		}
 
@@ -153,7 +161,7 @@ public interface EvaContainer extends EvaNode {
 			_p_updatePotentialTypesCBPromise.then(new DoneCallback<UpdatePotentialTypesCB>() {
 				@Override
 				public void onDone(final @NotNull UpdatePotentialTypesCB result) {
-					Operation<Boolean> s;
+					Operation<Ok> s;
 
 					s = result.call(aEvaContainer);
 

@@ -1,5 +1,6 @@
 package tripleo.elijah.nextgen.rosetta.DeduceTypes2;
 
+import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.comp.i.ErrSink;
 import tripleo.elijah.lang.i.OS_Module;
 import tripleo.elijah.stages.deduce.DeducePhase;
@@ -29,7 +30,7 @@ public class DeduceTypes2Rosetta {
 		return new ElLog(getModule().getFileName(), getVerbosity(), DeduceTypes2.PHASE);
 	}
 
-	private ElLog.Verbosity getVerbosity() {
+	private ElLog.@NotNull Verbosity getVerbosity() {
 		return request.getVerbosity();
 	}
 

@@ -2,22 +2,22 @@ package tripleo.elijah.comp.internal;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tripleo.elijah.ci.CompilerInstructions;
-import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.ci.i.CompilerInstructions;
+import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.comp.CompilerInput;
 import tripleo.elijah.comp.Finally;
 import tripleo.elijah.comp.queries.QueryEzFileToModule;
 import tripleo.elijah.comp.queries.QueryEzFileToModuleParams;
 import tripleo.elijah.util.Helpers;
 import tripleo.elijah.util.Operation;
-import tripleo.elijah.util.Stupidity;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-import static tripleo.elijah.nextgen.query.Mode.SUCCESS;
+import static tripleo.elijah.util.Mode.SUCCESS;
 
 class EzM {
 	@NotNull Operation<CompilerInstructions> parseEzFile1(final @NotNull SourceFileParserParams p) {
@@ -98,7 +98,7 @@ class EzM {
 				final Exception e = cio.failure();
 				assert e != null;
 
-				Stupidity.println_err_2(("parser exception: " + e));
+				SimplePrintLoggerToRemoveSoon.println_err_2(("parser exception: " + e));
 				e.printStackTrace(System.err);
 				//s.close();
 				return cio;

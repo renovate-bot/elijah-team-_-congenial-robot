@@ -6,7 +6,7 @@
 
 	<groupId>tripleo.elijah</groupId>
 	<artifactId>elijah-compiler-gen</artifactId>
-	<version>0.9.1-SNAPSHOT</version>
+	<version>2023.congenial.11.something-after-rosetta</version>
 
 	<properties>
 		<maven.compiler.source>17</maven.compiler.source>
@@ -23,7 +23,7 @@
 		<dependency>
 			<groupId>tripleo.elijah</groupId>
 			<artifactId>tripleo.elijah.core</artifactId>
-			<version>0.9.1-SNAPSHOT</version>
+			<version>2023.congenial.11.something-after-rosetta</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>

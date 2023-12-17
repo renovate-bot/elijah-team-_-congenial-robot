@@ -25,7 +25,7 @@ public class C2C_CodeForMethod implements Generate_Code_For_Method.C2C_Results {
 		fileGen               = aFileGen;
 		gr                    = fileGen.gr();
 
-		final GenerateC gc = aGenerateCodeForMethod.gc;
+		final GenerateC gc = aGenerateCodeForMethod._gc();
 		whyNotGarishFunction = gc.a_lookup(aGf);
 	}
 
@@ -45,24 +45,28 @@ public class C2C_CodeForMethod implements Generate_Code_For_Method.C2C_Results {
 			final BufferTabbedOutputStream tosHdr = generateCodeForMethod.tosHdr;
 
 
-			final Generate_Method_Header gmh = new Generate_Method_Header(whyNotGarishFunction.cheat(), generateCodeForMethod.gc, generateCodeForMethod.LOG);
-
-			tos.put_string_ln(String.format("%s {", gmh.header_string));
-			tosHdr.put_string_ln(String.format("%s;", gmh.header_string));
-
-			generateCodeForMethod.action_invariant(whyNotGarishFunction, gmh);
-
-			tos.flush();
-			tos.close();
-			generateCodeForMethod.tosHdr.flush();
-			generateCodeForMethod.tosHdr.close();
+			_write_nad_flush(tos, tosHdr);
 			final Buffer buf1    = tos.getBuffer();
-			final Buffer bufHdr1 = generateCodeForMethod.tosHdr.getBuffer();
+			final Buffer bufHdr1 = tosHdr.getBuffer();
 
 			buf    = new Default_C2C_Result(buf1, GenerateResult.TY.IMPL, "C2C_CodeForMethod IMPL", whyNotGarishFunction);
 			bufHdr = new Default_C2C_Result(bufHdr1, GenerateResult.TY.HEADER, "C2C_CodeForMethod HEADER", whyNotGarishFunction);
 
 			_calculated = true;
 		}
+	}
+
+	private void _write_nad_flush(final BufferTabbedOutputStream tos, final BufferTabbedOutputStream tosHdr) {
+		final Generate_Method_Header gmh = new Generate_Method_Header(whyNotGarishFunction.cheat(), generateCodeForMethod._gc(), generateCodeForMethod.LOG);
+
+		tos.put_string_ln(String.format("%s {", gmh.header_string));
+		tosHdr.put_string_ln(String.format("%s;", gmh.header_string));
+
+		generateCodeForMethod.action_invariant(whyNotGarishFunction, gmh);
+
+		tos.flush();
+		tos.close();
+		tosHdr.flush();
+		tosHdr.close();
 	}
 }

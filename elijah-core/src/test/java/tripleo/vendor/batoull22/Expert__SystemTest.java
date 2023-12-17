@@ -2,7 +2,7 @@ package tripleo.vendor.batoull22;
 
 import org.junit.Ignore;
 import tripleo.elijah.util.Operation;
-import tripleo.elijah.nextgen.query.Mode;
+import tripleo.elijah.util.Mode;
 
 import static org.junit.Assert.assertNotSame;
 

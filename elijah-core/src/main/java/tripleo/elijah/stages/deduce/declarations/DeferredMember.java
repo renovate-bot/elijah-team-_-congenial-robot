@@ -14,6 +14,7 @@ import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.lang.i.NamespaceStatement;
+import tripleo.elijah.lang.i.VariableStatement;
 import tripleo.elijah.lang.impl.VariableStatementImpl;
 import tripleo.elijah.stages.deduce.DeduceElementWrapper;
 import tripleo.elijah.stages.deduce.IInvocation;
@@ -80,6 +81,18 @@ public class DeferredMember {
 		public DeferredObject<GenType, Diagnostic, Void> new_DeferredObject__GenType() {
 			return new DeferredObject<GenType, Diagnostic, Void>();
 		}
+	}
+
+	public IInvocation getInvocation() {
+		return this.invocation;
+	}
+
+	public DeduceElementWrapper getParent() {
+		return this.parent;
+	}
+
+	public VariableStatement getVariableStatement() {
+		return this.variableStatement;
 	}
 }
 

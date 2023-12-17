@@ -1,7 +1,7 @@
 package tripleo.elijah.comp.impl;
 
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.comp.i.CompilationChange;
 
 public class CC_SetDoOut implements CompilationChange {

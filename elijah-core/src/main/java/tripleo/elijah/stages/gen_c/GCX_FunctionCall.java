@@ -3,14 +3,24 @@ package tripleo.elijah.stages.gen_c;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 import tripleo.elijah.lang.i.IdentExpression;
+
 import tripleo.elijah.nextgen.outputstatement.EG_CompoundStatement;
 import tripleo.elijah.nextgen.outputstatement.EG_SingleStatement;
 import tripleo.elijah.nextgen.outputstatement.EG_Statement;
 import tripleo.elijah.nextgen.outputstatement.EX_Explanation;
+
 import tripleo.elijah.stages.deduce.ExpressionConfession;
+
 import tripleo.elijah.stages.gen_fn.ProcTableEntry;
-import tripleo.elijah.stages.instructions.*;
+
+import tripleo.elijah.stages.instructions.IdentIA;
+import tripleo.elijah.stages.instructions.Instruction;
+import tripleo.elijah.stages.instructions.InstructionArgument;
+import tripleo.elijah.stages.instructions.IntegerIA;
+import tripleo.elijah.stages.instructions.ProcIA;
+
 import tripleo.elijah.util.Helpers;
 
 import java.util.List;
@@ -60,7 +70,12 @@ public class GCX_FunctionCall implements EG_Statement {
 
 			sb.append(Emit.emit("/*424*/") + realTargetName);
 			sb.append('(');
-			final List<String> sl3 = gc.getArgumentStrings(gf, instruction);
+
+			final List<String> sl3;
+			//sl3 = gc.getArgumentStrings(gf, instruction);
+			final WhyNotGarish_Function yf = (WhyNotGarish_Function) gf;
+			sl3 = yf.getArgumentStrings(instruction).getLeft();
+
 			sb.append(Helpers.String_join(", ", sl3));
 			sb.append(");");
 
@@ -77,7 +92,7 @@ public class GCX_FunctionCall implements EG_Statement {
 			System.out.println(ss);
 		}
 		case exp -> {
-			final CReference reference = new CReference(gc.repo(), gc.ce);
+			final CReference reference = new CReference(gc.repo(), gc._ce());
 			final IdentIA    ia2       = (IdentIA) pte.expression_num;
 			reference.getIdentIAPath(ia2, Generate_Code_For_Method.AOG.GET, null);
 			final List<String> sl3 = gc.getArgumentStrings(gf, instruction);
@@ -104,7 +119,7 @@ public class GCX_FunctionCall implements EG_Statement {
 				sb.append(Helpers.String_join(", ", sl3));
 				sb.append(");");
 			} else {
-				final CReference reference = new CReference(gc.repo(), gc.ce);
+				final CReference reference = new CReference(gc.repo(), gc._ce());
 				final IdentIA    ia2       = (IdentIA) pte.expression_num;
 				reference.getIdentIAPath(ia2, Generate_Code_For_Method.AOG.GET, null);
 				final List<String> sl3 = gc.getArgumentStrings(gf, instruction);

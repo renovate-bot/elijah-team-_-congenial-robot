@@ -5,12 +5,12 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>annotation-processing</artifactId>
 	<name>annotation-processing</name>
-	<version>0.9.1-SNAPSHOT</version>
+	<version>2023.congenial.11.something-after-rosetta</version>
 
 	<parent>
 		<groupId>tripleo.elijah</groupId>
-		<version>0.91.1-SNAPSHOT</version>
-		<artifactId>elijah-v2</artifactId>
+		<version>2023.congenial.11.something-after-rosetta</version>
+		<artifactId>congenial-robot</artifactId>
 	</parent>
 
 	<dependencies>

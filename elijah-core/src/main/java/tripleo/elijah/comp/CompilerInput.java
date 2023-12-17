@@ -1,5 +1,6 @@
 package tripleo.elijah.comp;
 
+import com.google.common.base.MoreObjects;
 import tripleo.elijah.comp.i.ILazyCompilerInstructions;
 import tripleo.elijah.util.Maybe;
 
@@ -52,6 +53,17 @@ public class CompilerInput {
 
 	public void accept_hash(final String hash) {
 		this.hash = hash;
+	}
+
+	@Override
+	public String toString() {
+		return MoreObjects.toStringHelper(this)
+				.add("ty", ty)
+				.add("inp", inp)
+				.add("accept_ci", accept_ci.toString())
+				.add("dir_carrier", dir_carrier)
+				.add("hash", hash)
+				.toString();
 	}
 
 	public enum Ty {NULL, SOURCE_ROOT, ARG}

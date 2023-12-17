@@ -1,7 +1,7 @@
 package tripleo.elijah.comp.internal;
 
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.comp.i.CompilerDriven;
 import tripleo.elijah.comp.i.DriverToken;
 import tripleo.elijah.comp.i.ICompilationBus;

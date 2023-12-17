@@ -3,9 +3,9 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>tripleo.elijah</groupId>
-	<artifactId>elijah-v2</artifactId>
+	<artifactId>congenial-robot</artifactId>
 	<packaging>pom</packaging>
-	<version>0.91.1-SNAPSHOT</version>
+	<version>2023.congenial.11.something-after-rosetta</version>
 
 	<name>eljc-almost</name>
 	<url>http://git.sr.ht/~tripleo/el-almost</url>
@@ -30,26 +30,39 @@
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
-		<kotlin.version>1.9.10</kotlin.version>
+
+		<!-- for edu 2022.2 -->
+<!--		<kotlin.version>1.7.10</kotlin.version>-->
+		<kotlin.version>1.9.21</kotlin.version>
 	</properties>
 
 	<modules>
-
 		<!--
 			<module>annotation-processing</module>
 			<module>annotation-user</module>
 			<module>elijah-compiler-gen</module>
 			<module>annotations</module>
 		-->
+
 		<module>tripleo-small</module>
 		<module>elijah-nextgen-outputstatement</module>
 		<module>elijah-stateful</module>
 		<module>tripleo-reactive</module>
+		<module>elijah-sourcemodel-api</module>
+		<module>elijah-sourcemodel-impl</module>
+		<module>elijah-good-api</module>
 		<module>elijah-core</module>
-<!--		<module>typeinf</module>-->
+		<!--		<module>typeinf</module>-->
 	</modules>
 
 	<dependencies>
+
+		<!-- https://smallrye.io/smallrye-mutiny/2.5.1/tutorials/getting-mutiny/ -->
+		<dependency>
+			<groupId>io.smallrye.reactive</groupId>
+			<artifactId>mutiny</artifactId>
+			<version>2.5.1</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -58,13 +71,13 @@
 			<scope>provided</scope>
 		</dependency>
 
-<!--
-		<dependency>
-			<groupId>com.github.dritter-hd</groupId>
-			<artifactId>dlog</artifactId>
-			<version>1.0.0</version>
-		</dependency>
--->
+		<!--
+				<dependency>
+					<groupId>com.github.dritter-hd</groupId>
+					<artifactId>dlog</artifactId>
+					<version>1.0.0</version>
+				</dependency>
+		-->
 
 		<!-- https://mvnrepository.com/artifact/javax.annotation/javax.annotation-api -->
 		<dependency>
@@ -92,12 +105,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.jdeferred.v2</groupId>
-			<artifactId>jdeferred-core</artifactId>
-			<version>${jdeferred.version}</version>
-		</dependency>
-
-		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
 			<version>5.2.0</version>
@@ -105,28 +112,32 @@
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.eclipse.jdt/org.eclipse.jdt.annotation -->
-<!--
-		<dependency>
-			<groupId>org.eclipse.jdt</groupId>
-			<artifactId>org.eclipse.jdt.annotation</artifactId>
-			<version>2.2.600</version>
-		</dependency>
--->
+		<!--
+				<dependency>
+					<groupId>org.eclipse.jdt</groupId>
+					<artifactId>org.eclipse.jdt.annotation</artifactId>
+					<version>2.2.600</version>
+				</dependency>
+		-->
 
 		<!-- https://mvnrepository.com/artifact/org.jetbrains/annotations -->
-		<dependency>
-			<groupId>org.jetbrains</groupId>
-			<artifactId>annotations</artifactId>
-			<version>24.0.1</version>
-		</dependency>
+		<!--
+				<dependency>
+					<groupId>org.jetbrains</groupId>
+					<artifactId>annotations</artifactId>
+					<version>24.0.1</version>
+				</dependency>
+		-->
 
 		<!-- https://mvnrepository.com/artifact/junit/junit -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.13.2</version>
-			<scope>test</scope>
-		</dependency>
+		<!--
+				<dependency>
+					<groupId>junit</groupId>
+					<artifactId>junit</artifactId>
+					<version>4.13.2</version>
+					<scope>test</scope>
+				</dependency>
+		-->
 
 		<dependency>
 			<groupId>com.github.spotbugs</groupId>
@@ -151,6 +162,7 @@
 			<artifactId>range-v1</artifactId>
 			<version>${range.version}</version>
 		</dependency>
+
 		<dependency>
 			<groupId>org.jetbrains.kotlin</groupId>
 			<artifactId>kotlin-stdlib-jdk8</artifactId>
@@ -162,21 +174,10 @@
 			<version>${kotlin.version}</version>
 			<scope>test</scope>
 		</dependency>
+
 	</dependencies>
 
 	<repositories>
-		<!--
-				<repository>
-					<id>ossrh</id>
-					<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-				</repository>
-		-->
-<!--
-		<repository>
-			<id>gitlab-maven-elijah</id>
-			<url>https://gitlab.com/api/v4/projects/10309690/packages/maven</url>
-		</repository>
--->
 		<repository>
 			<id>gitlab-maven-buffers</id>
 			<url>https://gitlab.com/api/v4/projects/20346374/packages/maven</url>
@@ -187,65 +188,16 @@
 		</repository>
 	</repositories>
 
-	<distributionManagement>
-		<!--
-			<snapshotRepository>
-				<id>ossrh</id>
-				<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-			</snapshotRepository>
-			<repository>
-				<id>ossrh</id>
-				<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-			</repository>
-		-->
-
-<!--
-		<repository>
-			<id>gitlab-maven</id>
-			<url>https://gitlab.com/api/v4/projects/10309690/packages/maven</url>
-		</repository>
-		<snapshotRepository>
-			<id>gitlab-maven</id>
-			<url>https://gitlab.com/api/v4/projects/10309690/packages/maven</url>
-		</snapshotRepository>
--->
-	</distributionManagement>
-
 	<build>
 		<plugins>
-			<!--
-			<plugin>
-					<groupId>org.antlr</groupId>
-					<artifactId>antlr4-maven-plugin</artifactId>
-					<version>4.7.1</version>
-					<executions>
-							<execution>
-									<goals>
-											<goal>antlr4</goal>
-									</goals>
-							</execution>
-					</executions>
-			</plugin>
-			-->
-
-			<!-- Setup Javadoc jar -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-project-info-reports-plugin</artifactId>
-				<version>3.0.0</version>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.0.0-M5</version>
-			</plugin>
-
 			<!-- To use the plugin goals in your POM or parent POM -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-report-plugin</artifactId>
-				<version>3.0.0-M5</version>
-			</plugin>
+			<!--
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-surefire-report-plugin</artifactId>
+							<version>3.0.0-M5</version>
+						</plugin>
+			-->
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -322,26 +274,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
-	<reporting>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-report-plugin</artifactId>
-				<version>3.0.0-M5</version>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>${maven-javadoc-plugin.version}</version>
-				<reportSets>
-					<reportSet>
-						<reports>
-							<report>javadoc</report>
-						</reports>
-					</reportSet>
-				</reportSets>
-			</plugin>
-		</plugins>
-	</reporting>
 </project>

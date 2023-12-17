@@ -2,8 +2,8 @@ package tripleo.elijah.comp.queries;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tripleo.elijah.ci.CompilerInstructions;
-import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.ci.i.CompilerInstructions;
+import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.comp.i.CompilationClosure;
 import tripleo.elijah.comp.internal.SourceFileParserParams;
 import tripleo.elijah.util.Operation2;

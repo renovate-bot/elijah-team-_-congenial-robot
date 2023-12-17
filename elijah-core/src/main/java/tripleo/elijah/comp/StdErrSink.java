@@ -13,6 +13,7 @@ package tripleo.elijah.comp;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.comp.i.ErrSink;
 import tripleo.elijah.diagnostic.Diagnostic;
 
@@ -22,6 +23,7 @@ import java.util.List;
  * @author tripleo(sb)
  */
 public class StdErrSink implements ErrSink {
+	private @Nullable Finally rep;
 
 	private int _errorCount;
 
@@ -30,20 +32,29 @@ public class StdErrSink implements ErrSink {
 		return _errorCount;
 	}
 
-	@NotNull List<Pair<Errors, Object>> _list = new java.util.ArrayList<>();
+	@NotNull
+	private List<Pair<Errors, Object>> _list = new java.util.ArrayList<>();
 
 	@Override
 	public void info(final String message) {
 		_list.add(Pair.of(Errors.INFO, message));
-		System.err.printf("INFO: %s%n", message);
+		if(reporting()) {
+			System.err.printf("INFO: %s%n", message);
+		}
 	}
 
 	@Override
 	public void exception(final @NotNull Exception e) {
 		_errorCount++;
-		System.err.println("exception: " + e);
-		e.printStackTrace(System.err);
+		if (reporting()) {
+			System.err.println("exception: " + e);
+			e.printStackTrace(System.err);
+		}
 		_list.add(Pair.of(Errors.EXCEPTION, e));
+	}
+
+	private boolean reporting() {
+		return rep != null;
 	}
 
 	@Override
@@ -63,14 +74,30 @@ public class StdErrSink implements ErrSink {
 	public void reportError(final String s) {
 		_errorCount++;
 		_list.add(Pair.of(Errors.ERROR, s));
-		System.err.printf("ERROR: %s%n", s);
+		if(reporting()) {
+			System.err.printf("ERROR: %s%n", s);
+		}
 	}
 
 	@Override
 	public void reportWarning(final String s) {
 		_list.add(Pair.of(Errors.WARNING, s));
-		System.err.printf("WARNING: %s%n", s);
+		if(reporting()) {
+			System.err.printf("WARNING: %s%n", s);
+		}
 	}
+
+	public void setRep(final Finally aRep) {
+		rep = aRep;
+	}
+
+	//public List<Pair<Errors, Object>> get_list() {
+	//	return _list;
+	//}
+	//
+	//public void set_list(List<Pair<Errors, Object>> a_list) {
+	//	_list = a_list;
+	//}
 }
 
 //

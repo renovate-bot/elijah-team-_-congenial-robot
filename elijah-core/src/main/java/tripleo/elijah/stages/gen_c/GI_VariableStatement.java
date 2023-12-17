@@ -107,7 +107,7 @@ public class GI_VariableStatement implements GenerateC_Item {
 
 				var ec = cs.get(0);
 
-				var world = repo.generateC.ce.getCompilation().livingRepo();
+				var world = repo.generateC._ce().getCompilation().livingRepo();
 
 //				var wcs = world.getClassesForClassStatement(cls);
 //				

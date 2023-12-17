@@ -3,6 +3,7 @@ package tripleo.elijah.stages.gen_c;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tripleo.elijah.comp.Finally;
 import tripleo.elijah.comp.diagnostic.ExceptionDiagnostic;
 import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.diagnostic.Diagnostic.Severity;
@@ -19,6 +20,7 @@ import tripleo.elijah.stages.instructions.Instruction;
 import tripleo.elijah.stages.instructions.InstructionArgument;
 import tripleo.elijah.stages.instructions.ProcIA;
 import tripleo.elijah.util.Operation2;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 import java.text.MessageFormat;
 import java.util.List;
@@ -74,15 +76,17 @@ class GI_ProcIA implements GenerateC_Item {
 
 		//return gc.getAssignmentValue(gf.getSelf(), aInstruction, clsinv, gf);
 
-		GenerateC.GetAssignmentValue gav = gc.new GetAssignmentValue();
-//		return gav.forClassInvocation(aInstruction, clsinv, gf, gc.LOG);
+		GenerateC.GetAssignmentValue gav = /*gc.*/new GenerateC.GetAssignmentValue(gc);
+		if (false) {
+			return gav.forClassInvocation(aInstruction, clsinv, gf, gc._LOG());
+		}
 
 		InstructionArgument     _arg0 = aInstruction.getArg(0);
 		@NotNull ProcTableEntry pte   = carrier.getEntry();
 
 		final CtorReference reference = new CtorReference();
 		reference.getConstructorPath(pte.expression_num, gf);
-		@NotNull List<String> x = gav.getAssignmentValueArgs(aInstruction, gf, gc.LOG);
+		@NotNull List<String> x = gav.getAssignmentValueArgs(aInstruction, gf, gc.elLog()).stringList();
 		reference.args(x);
 		final String build = reference.build(clsinv);
 		return build;
@@ -102,7 +106,7 @@ class GI_ProcIA implements GenerateC_Item {
 		final FunctionInvocation fi   = pte.getFunctionInvocation();
 
 		if (fi == null) {
-			tripleo.elijah.util.Stupidity.println_err_2("7777777777777777 fi getIdentIAPath_Proc " + pte);
+			SimplePrintLoggerToRemoveSoon.println_err_2("7777777777777777 fi getIdentIAPath_Proc " + pte);
 
 			return null;//throw new IllegalStateException();
 		}
@@ -112,7 +116,10 @@ class GI_ProcIA implements GenerateC_Item {
 		final DeduceElement3_ProcTableEntry de_pte    = (DeduceElement3_ProcTableEntry) pte.getDeduceElement3();
 
 		if (generated == null) {
-			System.err.println("6464 " + fi.pte);
+			var c = gc._ce().getCompilation();
+			if (c.reports().outputOn(Finally.Outs.Out_120)) {
+				System.err.println("6464 " + fi.pte);
+			}
 
 			final WlGenerateCtor wlgf = new WlGenerateCtor(de_pte.deduceTypes2().getGenerateFunctions(de_pte.getPrincipal().getContext().module()),
 														   fi,
@@ -129,16 +136,18 @@ class GI_ProcIA implements GenerateC_Item {
 		}
 
 		if (generated instanceof EvaConstructor ec) {
-			final WhyNotGarish_Constructor ac = gc.a_lookup(ec);
+			final WhyNotGarish_Constructor yf = gc.a_lookup(ec);
 
-			final String constructorNameText = ac.getConstructorNameText();
+			final String constructorNameText = yf.getConstructorNameText();
 
-			generated.onGenClass(genClass -> {
+			yf.pt_onGenClass(genClass -> {
 				text[0] = String.format("ZC%d%s", genClass.getCode(), constructorNameText);
 				addRef.accept(Pair.of(text[0], CReference.Ref.CONSTRUCTOR));
 			});
 		} else {
-			final IdentExpression functionName = generated.getFD().getNameNode();
+			final WhyNotGarish_Function yf     = gc.a_lookup(generated);
+
+			final IdentExpression functionName = yf.pt_getNameNode();
 			generated.onGenClass(genClass -> {
 				text[0] = String.format("z%d%s", genClass.getCode(), functionName.getText());
 				addRef.accept(Pair.of(text[0], CReference.Ref.FUNCTION));

@@ -3,7 +3,7 @@ package tripleo.elijah.comp.queries;
 import antlr.RecognitionException;
 import antlr.TokenStreamException;
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.ci.CompilerInstructions;
+import tripleo.elijah.ci.i.CompilerInstructions;
 import tripleo.elijah.lang.i.OS_Module;
 import tripleo.elijah.nextgen.query.QueryDatabase;
 import tripleo.elijah.util.NotImplementedException;

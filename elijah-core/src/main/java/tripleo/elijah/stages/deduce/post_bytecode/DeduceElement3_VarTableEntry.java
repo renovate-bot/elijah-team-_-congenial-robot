@@ -8,15 +8,16 @@ import tripleo.elijah.lang.i.*;
 import tripleo.elijah.lang.impl.AliasStatementImpl;
 import tripleo.elijah.stages.deduce.*;
 import tripleo.elijah.stages.gen_fn.*;
+import tripleo.elijah.stages.gen_fn_r.RegisterClassInvocation_env;
 import tripleo.elijah.stages.instructions.IdentIA;
 import tripleo.elijah.util.NotImplementedException;
-import tripleo.elijah.util.Stupidity;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 import java.util.List;
 
 public class DeduceElement3_VarTableEntry implements IDeduceElement3 {
 	private final EvaContainer.VarTableEntry _principal;
-	private final DeduceTypes2               _deduceTypes2;
+	private final DeduceTypes2                _deduceTypes2;
 	public        RegisterClassInvocation_env __passthru;
 
 	@Contract(pure = true)
@@ -85,7 +86,7 @@ public class DeduceElement3_VarTableEntry implements IDeduceElement3 {
 				WlGenerateClass            wgc = dt2._inj().new_WlGenerateClass(gf, xci, aDeducePhase.generatedClasses, aDeducePhase.codeRegistrar);
 				wgc.run(null); // !
 				potentialType.genType.setCi(xci); // just for completeness
-				potentialType.resolve(wgc.getResult());
+				wgc.resultPromise(potentialType::resolve);
 				sc = true;
 			} else if (attachedType == OS_Type.Type.BUILT_IN) {
 				// README be explicit about doing nothing
@@ -228,10 +229,10 @@ public class DeduceElement3_VarTableEntry implements IDeduceElement3 {
 	}
 
 	private static void noteNonsense(int code, String message) {
-		Stupidity.println_out_2(String.format("%d %s%n", code, message));
+		SimplePrintLoggerToRemoveSoon.println_out_2(String.format("%d %s%n", code, message));
 	}
 
 	private static void noteNonsenseErr(int code, String message) {
-		Stupidity.println_err2(String.format("** [noteNonsenseErr] %d %s%n", code, message));
+		SimplePrintLoggerToRemoveSoon.println_err2(String.format("** [noteNonsenseErr] %d %s%n", code, message));
 	}
 }

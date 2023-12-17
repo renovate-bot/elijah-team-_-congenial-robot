@@ -8,7 +8,7 @@ import tripleo.elijah.lang.i.*;
 import tripleo.elijah.lang.impl.BaseFunctionDef;
 import tripleo.elijah.lang.impl.VariableStatementImpl;
 import tripleo.elijah.lang.types.OS_FuncType;
-import tripleo.elijah.nextgen.query.Mode;
+import tripleo.elijah.util.Mode;
 import tripleo.elijah.stages.gen_fn.*;
 import tripleo.elijah.stages.gen_fn.IdentTableEntry.ITE_Resolver_Result;
 import tripleo.elijah.stages.instructions.IdentIA;
@@ -120,11 +120,13 @@ class Unnamed_ITE_Resolver1 implements ITE_Resolver {
 		if (true) {
 			ite.addStatusListener(new BaseTableEntry.StatusListener() {
 				@Override
-				public void onChange(final @NotNull IElementHolder eh, final BaseTableEntry.Status newStatus) {
+				public void onChange(final @Nullable IElementHolder eh, final BaseTableEntry.Status newStatus) {
 					if (newStatus != BaseTableEntry.Status.KNOWN) return;
 
-					final OS_Element e = eh.getElement();
-					dt2.found_element_for_ite(generatedFunction, ite, e, ctx, dt2.central());
+					if (eh != null) {
+						final OS_Element e = eh.getElement();
+						dt2.found_element_for_ite(generatedFunction, ite, e, ctx, dt2.central());
+					}
 				}
 			});
 		}

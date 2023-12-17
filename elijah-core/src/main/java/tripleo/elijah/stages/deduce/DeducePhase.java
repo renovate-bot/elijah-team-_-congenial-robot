@@ -14,12 +14,12 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Multimap;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jdeferred2.DoneCallback;
-import org.jdeferred2.Promise;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.ElijahInternal;
-import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.Eventual;
+import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.comp.i.CompilationEnclosure;
 import tripleo.elijah.comp.i.ICompilationAccess;
@@ -40,7 +40,9 @@ import tripleo.elijah.stages.deduce.nextgen.DR_Item;
 import tripleo.elijah.stages.deduce.nextgen.DR_ProcCall;
 import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_IdentTableEntry;
 import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_VariableTableEntry;
+import tripleo.elijah.stages.deduce_c.ResolvedVariables;
 import tripleo.elijah.stages.gen_fn.*;
+import tripleo.elijah.stages.gen_fn_r.RegisterClassInvocation_env;
 import tripleo.elijah.stages.gen_generic.ICodeRegistrar;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.stages.post_deduce.DefaultCodeRegistrar;
@@ -89,9 +91,9 @@ public class DeducePhase extends _RegistrationTarget implements ReactiveDimensio
 	private final          List<DE3_Active>                             _actives                = _inj().new_ArrayList__DE3_Active();
 	private final @NotNull Multimap<ClassStatement, ClassInvocation>    classInvocationMultimap = ArrayListMultimap.create();
 	private final @NotNull List<DeferredMember>                         deferredMembers         = _inj().new_ArrayList__DeferredMember();
-	private final @NotNull Multimap<ClassStatement, OnClass>            onclasses               = ArrayListMultimap.create();
-	private final @NotNull Multimap<OS_Element, ResolvedVariables>      resolved_variables      = ArrayListMultimap.create();
-	private final @NotNull DRS                                          drs                     = _inj().new_DRS();
+	private final @NotNull Multimap<ClassStatement, OnClass>       onclasses          = ArrayListMultimap.create();
+	private final @NotNull Multimap<OS_Element, ResolvedVariables> resolved_variables = ArrayListMultimap.create();
+	private final @NotNull DRS                                     drs                = _inj().new_DRS();
 	private final @NotNull WAITS                                        waits                   = _inj().new_WAITS();
 	public                 IPipelineAccess                              pa;
 
@@ -210,7 +212,7 @@ public class DeducePhase extends _RegistrationTarget implements ReactiveDimensio
 		OS_Module         m   = aRequest.getModule();
 		Iterable<EvaNode> lgf = aRequest.getListOfEvaFunctions();
 
-		final @NotNull DeduceTypes2 deduceTypes2 = aRequest.createDeduceTypes2_singleton();
+		final @NotNull DeduceTypes2 deduceTypes2 = DeducePhase_deduceModule_Request.Companion.createDeduceTypes2Singleton(aRequest);
 
 		logProgress(DeducePhaseProvenance.DeduceTypes_create, List.of(deduceTypes2, lgf));
 
@@ -239,7 +241,7 @@ public class DeducePhase extends _RegistrationTarget implements ReactiveDimensio
 
 	@ElijahInternal
 	public void __DeduceTypes2_deduceFunctions_Request__run(final boolean b,
-																	final DeducePhase_deduceModule_Request aRequest) {
+															final DeducePhase_deduceModule_Request aRequest) {
 
 
 
@@ -250,7 +252,7 @@ public class DeducePhase extends _RegistrationTarget implements ReactiveDimensio
 
 
 
-		final @NotNull DeduceTypes2 deduceTypes2 = aRequest.createDeduceTypes2_singleton();
+		final @NotNull DeduceTypes2 deduceTypes2 = DeducePhase_deduceModule_Request.Companion.createDeduceTypes2Singleton(aRequest);
 
 		OS_Module         m   = aRequest.getModule();
 		Iterable<EvaNode> lgf = aRequest.getListOfEvaFunctions();
@@ -289,16 +291,16 @@ public class DeducePhase extends _RegistrationTarget implements ReactiveDimensio
 
 //	public List<ElLog> deduceLogs = new ArrayList<ElLog>();
 
-	public Promise<ClassDefinition, Diagnostic, Void> generateClass(final GenerateFunctions gf, final @NotNull ClassInvocation ci) {
+	public Eventual<ClassDefinition> generateClass(final GenerateFunctions gf, final @NotNull ClassInvocation ci) {
 		WorkManager wm = _inj().new_WorkManager();
 		// par { return promise ; finishQueue { wm.drain() ; } }
-		final Promise<ClassDefinition, Diagnostic, Void> x = generateClass(gf, ci, wm);
+		final Eventual<ClassDefinition> x = generateClass(gf, ci, wm);
 		wm.drain();
 		return x;
 	}
 
-	public @NotNull Promise<ClassDefinition, Diagnostic, Void> generateClass(final GenerateFunctions gf, final @NotNull ClassInvocation ci, final WorkManager wm) {
-		final DeferredObject<ClassDefinition, Diagnostic, Void> ret = new DeferredObject<>();
+	public @NotNull Eventual<ClassDefinition> generateClass(final GenerateFunctions gf, final @NotNull ClassInvocation ci, final WorkManager wm) {
+		final Eventual<ClassDefinition> ret = new Eventual<>();
 
 		classGenerator.submit(new Runnable() {
 			@Override
@@ -307,13 +309,19 @@ public class DeducePhase extends _RegistrationTarget implements ReactiveDimensio
 				gen.run(wm);
 
 				final ClassDefinition cd       = _inj().new_ClassDefinition(ci);
-				final EvaClass        genclass = gen.getResult();
-				if (genclass != null) {
-					cd.setNode(genclass);
-					ret.resolve(cd);
-				} else {
-					ret.reject(_inj().new_CouldntGenerateClass(cd, gf, ci));
-				}
+
+				gen.resultPromise(genclass -> {
+					if (genclass != null) {
+						cd.setNode(genclass);
+						ret.resolve(cd);
+					} else {
+						ret.reject(_inj().new_CouldntGenerateClass(cd, gf, ci));
+					}
+				});
+
+				gen.resultPromise(genclass -> {
+					int y=2;
+				});
 			}
 		});
 
@@ -337,16 +345,18 @@ public class DeducePhase extends _RegistrationTarget implements ReactiveDimensio
 	}
 
 	public void registerResolvedVariable(IdentTableEntry identTableEntry, OS_Element parent, String varName) {
-		resolved_variables.put(parent, _inj().new_ResolvedVariables(identTableEntry, parent, varName));
+		final ResolvedVariables resolvedVariable = _inj().new_ResolvedVariables(identTableEntry, parent, varName);
+		resolved_variables.put(parent, resolvedVariable);
 	}
 
 	public @NotNull ClassInvocation registerClassInvocation(final @NotNull ClassStatement aParent) {
-		//return registerClassInvocation(_inj().new_ClassInvocation(aParent, null, aDeduceTypes2));
-		return registerClassInvocation(_inj().new_ClassInvocation(aParent, null, new NULL_DeduceTypes2())); // !! 08/28
+		final Supplier<DeduceTypes2> deduceTypes2Supplier = new NULL_DeduceTypes2(); // !! 08/28
+		final ClassInvocation        classInvocation      = _inj().new_ClassInvocation(aParent, null, deduceTypes2Supplier);
+		return registerClassInvocation(classInvocation);
 	}
 
 	public @NotNull ClassInvocation registerClassInvocation(@NotNull ClassInvocation aClassInvocation) {
-		RegisterClassInvocation rci = _inj().new_RegisterClassInvocation(this);
+		final RegisterClassInvocation rci = _inj().new_RegisterClassInvocation(this);
 		return rci.registerClassInvocation(aClassInvocation);
 	}
 
@@ -537,21 +547,13 @@ public class DeducePhase extends _RegistrationTarget implements ReactiveDimensio
 	}
 
 	public void handleResolvedVariables() {
+		int y=2;
+
 		for (EvaNode evaNode : generatedClasses.copy()) {
 			if (evaNode instanceof final @NotNull EvaContainer evaContainer) {
 				Collection<ResolvedVariables> x = resolved_variables.get(evaContainer.getElement());
-				for (@NotNull DeducePhase.ResolvedVariables resolvedVariables : x) {
-					final @NotNull Maybe<EvaContainer.VarTableEntry> variable_m = evaContainer.getVariable(resolvedVariables.varName);
-
-					assert !variable_m.isException();
-
-					final @NotNull EvaContainer.VarTableEntry variable = variable_m.o;
-
-					final TypeTableEntry type = resolvedVariables.identTableEntry.type;
-					if (type != null)
-						variable.addPotentialTypes(List_of(type));
-					variable.addPotentialTypes(resolvedVariables.identTableEntry.potentialTypes());
-					variable.updatePotentialTypes(evaContainer);
+				for (@NotNull ResolvedVariables resolvedVariables : x) {
+					resolvedVariables.handle(evaContainer);
 				}
 			}
 		}
@@ -813,20 +815,6 @@ public class DeducePhase extends _RegistrationTarget implements ReactiveDimensio
 		}
 	}
 
-	static class ResolvedVariables {
-		final          IdentTableEntry identTableEntry;
-		final @NotNull OS_Element      parent; // README tripleo.elijah.lang._CommonNC, but that's package-private
-		final          String          varName;
-
-		public ResolvedVariables(IdentTableEntry aIdentTableEntry, OS_Element aParent, String aVarName) {
-			assert aParent instanceof ClassStatement || aParent instanceof NamespaceStatement;
-
-			identTableEntry = aIdentTableEntry;
-			parent          = aParent;
-			varName         = aVarName;
-		}
-	}
-
 	class Country1 implements Country {
 		@Override
 		public void sendClasses(final @NotNull Consumer<List<EvaNode>> ces) {
@@ -969,7 +957,7 @@ public class DeducePhase extends _RegistrationTarget implements ReactiveDimensio
 
 	public class GeneratedClasses implements Iterable<EvaNode> {
 		private @NotNull List<EvaNode> generatedClasses = new ArrayList<>();//new ConcurrentLinkedQueue<>();
-		private  int           generation;
+		private          int           generation;
 
 		@Override
 		public String toString() {
@@ -1010,7 +998,7 @@ public class DeducePhase extends _RegistrationTarget implements ReactiveDimensio
 		}
 
 		public ClassInvocation registerClassInvocation(final @NotNull RegisterClassInvocation_env env) {
-			var aClassInvocation = env.ci();
+			final ClassInvocation aClassInvocation = env.ci();
 
 			// 1. select which to return
 			final ClassStatement              c   = aClassInvocation.getKlass();

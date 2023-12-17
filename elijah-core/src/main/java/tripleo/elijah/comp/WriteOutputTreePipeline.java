@@ -1,6 +1,7 @@
 package tripleo.elijah.comp;
 
 import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.comp.i.IPipelineAccess;
 import tripleo.elijah.comp.internal.CB_Output;
 import tripleo.elijah.comp.internal.CR_State;
@@ -32,8 +33,8 @@ public class WriteOutputTreePipeline implements PipelineMember {
 
 	@Override
 	public void run(final @NotNull CR_State st, final CB_Output aOutput) throws Exception {
-		final Compilation          compilation = st.ca().getCompilation();
-		final EOT_OutputTree       ot          = compilation.getOutputTree();
+		final Compilation    compilation = st.ca().getCompilation();
+		final EOT_OutputTree ot          = compilation.getOutputTree();
 		final List<EOT_OutputFile> l           = ot.getList();
 
 		//

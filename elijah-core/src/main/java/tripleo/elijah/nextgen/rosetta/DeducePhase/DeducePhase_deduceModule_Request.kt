@@ -21,11 +21,26 @@ data class DeducePhase_deduceModule_Request(
         return Rosetta.create(deduceTypes2Request)
     }
 
-    fun createDeduceTypes2_singleton(): DeduceTypes2 {
-        if (this.createdDeduceTypes2 == null) {
-            this.createdDeduceTypes2 = createDeduceTypes2()
-        }
+    // Upon suggestion of idea, but here for reference
+    //
+    // https://www.baeldung.com/kotlin/companion-object
+    //
+    // There are times we need to use a companion object to define class members that are going to be used
+    // independently of any instance of that class. The Kotlin compiler guarantees we will have one and only one
+    // instance of a companion object. For those of us with a background in Java and C#, a companion object is
+    // similar to static declarations.
+    //
+    // Kinda like a namespace
+    //
+    // That being said, I think this particular refactor is unnecessary
+    //
+    companion object {
+        fun createDeduceTypes2Singleton(moduleRequest: DeducePhase_deduceModule_Request): DeduceTypes2 {
+            if (moduleRequest.createdDeduceTypes2 == null) {
+                moduleRequest.createdDeduceTypes2 = moduleRequest.createDeduceTypes2()
+            }
 
-        return createdDeduceTypes2!!
+            return moduleRequest.createdDeduceTypes2!!
+        }
     }
 }

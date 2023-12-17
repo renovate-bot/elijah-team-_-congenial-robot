@@ -9,6 +9,7 @@ import tripleo.elijah.ci.LibraryStatementPart;
 import tripleo.elijah.stages.gen_c.OutputFileC;
 import tripleo.elijah.stages.gen_fn.*;
 import tripleo.elijah.util.NotImplementedException;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 import tripleo.util.buffer.Buffer;
 
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
+//@Deprecated
 public class Sub_GenerateResult implements GenerateResult {
 	final         List<Old_GenerateResultItem> _res           = new ArrayList<Old_GenerateResultItem>();
 	private final List<IGenerateResultWatcher> _watchers      = new ArrayList<>();
@@ -38,7 +40,7 @@ public class Sub_GenerateResult implements GenerateResult {
 	@Override
 	public void add(@NotNull Buffer b, @NotNull EvaNode n, @NotNull TY ty, @Nullable LibraryStatementPart aLsp, @NotNull Dependency d) {
 		if (aLsp == null) {
-			tripleo.elijah.util.Stupidity.println_err_2("*************************** buffer --> " + b.getText());
+			SimplePrintLoggerToRemoveSoon.println_err_2("*************************** buffer --> " + b.getText());
 			return;
 		}
 

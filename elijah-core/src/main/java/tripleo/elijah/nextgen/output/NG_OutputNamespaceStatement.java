@@ -36,7 +36,7 @@ public class NG_OutputNamespaceStatement implements NG_OutputStatement {
 	@Override
 	@NotNull
 	public EIT_ModuleInput getModuleInput() {
-		var m = moduleDependency().module();
+		var m = moduleDependency().getModule();
 
 		final EIT_ModuleInput moduleInput = new EIT_ModuleInput(m, m.getCompilation());
 		return moduleInput;

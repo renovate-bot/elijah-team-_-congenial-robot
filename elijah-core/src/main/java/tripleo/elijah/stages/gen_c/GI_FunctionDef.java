@@ -57,6 +57,6 @@ class GI_FunctionDef implements GenerateC_Item {
 	@Override
 	public void setEvaNode(final EvaNode aEvaNode) {
 		_evaNode = aEvaNode;
-		_living  = _repo.generateC.ce.getCompilation().livingRepo().getFunction((BaseEvaFunction) _evaNode);
+		_living  = _repo.generateC._ce().getCompilation().livingRepo().getFunction((BaseEvaFunction) _evaNode);
 	}
 }

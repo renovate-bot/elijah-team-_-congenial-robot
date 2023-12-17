@@ -18,30 +18,28 @@ class ZoneVTE__1 implements ZoneVTE {
 	@NotNull
 	private String calculate() {
 		final String vte_name = _g_varTableEntry.getName();
-		switch (_g_varTableEntry.getVtt()) {
-		case TEMP -> {
+		return switch (_g_varTableEntry.getVtt()) {
+			//case SELF -> null;
+			case TEMP -> {
 			if (_g_varTableEntry.getName() == null) {
-				return "vt" + _g_varTableEntry.getTempNum();
+				yield "vt" + _g_varTableEntry.getTempNum();
 			} else {
-				return "vt" + _g_varTableEntry.getName();
+				yield "vt" + _g_varTableEntry.getName();
 			}
 		}
-		case ARG -> {
-			return "va" + vte_name;
-		}
-		case RESULT -> {
-			return "vsr";
-		}
-		default -> {
+		case ARG -> "va" + vte_name;
+		case RESULT -> "vsr";
+			//case VAR -> null;
+			default -> {
 			if (SpecialVariables.contains(vte_name)) {
-				return SpecialVariables.get(vte_name);
+				yield SpecialVariables.get(vte_name);
 			} else if (GenerateC.isValue(_g_gf, vte_name)) {
-				return "vsc->vsv";
+				yield "vsc->vsv";
 			} else {
-				return "vv" + vte_name;
+				yield "vv" + vte_name;
 			}
 		}
-		}
+		};
 	}
 
 	@Override

@@ -8,26 +8,40 @@
  */
 package tripleo.elijah.stages.gen_fn;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.lang.i.*;
-import tripleo.elijah.lang.impl.*;
-import tripleo.elijah.lang.types.OS_BuiltinType;
-import tripleo.elijah.lang.types.OS_GenericTypeNameType;
+
+import tripleo.elijah.lang.i.AccessNotation;
+import tripleo.elijah.lang.i.ClassStatement;
+import tripleo.elijah.lang.i.ConstructorDef;
+import tripleo.elijah.lang.i.Context;
+import tripleo.elijah.lang.i.ExpressionKind;
+import tripleo.elijah.lang.i.FunctionDef;
+import tripleo.elijah.lang.i.IExpression;
+import tripleo.elijah.lang.i.OS_Element;
+import tripleo.elijah.lang.i.OS_Module;
+import tripleo.elijah.lang.i.OS_Type;
+import tripleo.elijah.lang.i.Scope3;
+import tripleo.elijah.lang.i.TypeName;
+import tripleo.elijah.lang.impl.ConstructStatementImpl;
+import tripleo.elijah.lang.impl.ExpressionBuilder;
+import tripleo.elijah.lang.impl.FunctionDefImpl;
+import tripleo.elijah.lang.impl.Scope3Impl;
+import tripleo.elijah.lang.impl.StatementWrapperImpl;
 import tripleo.elijah.lang.types.OS_UnknownType;
-import tripleo.elijah.lang.types.OS_UserClassType;
-import tripleo.elijah.nextgen.query.Mode;
-import tripleo.elijah.stages.deduce.*;
+import tripleo.elijah.stages.deduce.ClassInvocation;
+import tripleo.elijah.stages.deduce.DeducePhase;
+import tripleo.elijah.stages.deduce.DeduceTypes2;
 import tripleo.elijah.stages.gen_generic.CodeGenerator;
-import tripleo.elijah.stages.gen_generic.GenerateResult;
 import tripleo.elijah.stages.gen_generic.GenerateResultEnv;
 import tripleo.elijah.stages.gen_generic.ICodeRegistrar;
-import tripleo.elijah.stages.gen_generic.pipeline_impl.GenerateResultSink;
 import tripleo.elijah.util.Helpers;
 import tripleo.elijah.util.NotImplementedException;
-import tripleo.elijah.util.Operation;
 import tripleo.elijah.world.impl.DefaultLivingClass;
-
-import java.util.*;
 
 /**
  * Created 10/29/20 4:26 AM
@@ -76,140 +90,8 @@ public class EvaClass extends EvaContainerNC implements GNCoded {
 
 	public void fixupUserClasses(final @NotNull DeduceTypes2 aDeduceTypes2, final Context aContext) {
 		for (VarTableEntry varTableEntry : varTable) {
-			varTableEntry.updatePotentialTypesCB = new VarTableEntry.UpdatePotentialTypesCB() {
-				@Override
-				public @NotNull Operation<Boolean> call(final @NotNull EvaContainer aEvaContainer) {
-					Operation<List<GenType>> potentialTypes00 = getPotentialTypes();
-
-					assert potentialTypes00.mode() == Mode.SUCCESS;
-
-					List<GenType> potentialTypes = getPotentialTypes().success();
-					//
-
-					//
-					// HACK TIME
-					//
-					if (potentialTypes.size() == 2) {
-						final ClassStatement resolvedClass1 = potentialTypes.get(0).getResolved().getClassOf();
-						final ClassStatement resolvedClass2 = potentialTypes.get(1).getResolved().getClassOf();
-						final OS_Module      prelude;
-						if (potentialTypes.get(1).getResolved() instanceof OS_BuiltinType && potentialTypes.get(0).getResolved() instanceof OS_UserClassType) {
-							OS_BuiltinType resolved = (OS_BuiltinType) potentialTypes.get(1).getResolved();
-
-							try {
-								@NotNull final GenType rt = ResolveType.resolve_type(resolvedClass1.getContext().module(), resolved, resolvedClass1.getContext(), aDeduceTypes2._LOG(), aDeduceTypes2);
-								int                    y  = 2;
-
-								potentialTypes = Helpers.List_of(rt);
-							} catch (ResolveError aE) {
-								return Operation.failure(aE);
-							}
-						} else if (potentialTypes.get(0).getResolved() instanceof OS_BuiltinType && potentialTypes.get(1).getResolved() instanceof OS_UserClassType) {
-							OS_BuiltinType resolved = (OS_BuiltinType) potentialTypes.get(0).getResolved();
-
-							try {
-								@NotNull final GenType rt = aDeduceTypes2.resolve_type(resolved, resolvedClass2.getContext());
-								int                    y  = 2;
-
-								potentialTypes = Helpers.List_of(rt);
-							} catch (ResolveError aE) {
-								return Operation.failure(aE);
-							}
-						} else {
-
-							prelude = resolvedClass1.getContext().module().prelude();
-
-							// TODO might not work when we split up prelude
-							//  Thats why I was testing for package name before
-							if (resolvedClass1.getContext().module() == prelude
-									&& resolvedClass2.getContext().module() == prelude) {
-								// Favor String over ConstString
-								if (resolvedClass1.name().sameName("ConstString") && resolvedClass2.name().sameName("String")) {
-									potentialTypes.remove(0);
-								} else if (resolvedClass2.name().sameName("ConstString") && resolvedClass1.name().sameName("String")) {
-									potentialTypes.remove(1);
-								}
-							}
-						}
-					}
-
-					if (potentialTypes.size() == 1) {
-						final ClassInvocation.CI_GenericPart genericPart = ci.genericPart();
-						if (genericPart != null) {
-							if (genericPart.hasGenericPart()) {
-								final OS_Type t = varTableEntry.varType;
-								if (t.getType() == OS_Type.Type.USER) {
-									try {
-										final @NotNull GenType genType = aDeduceTypes2.resolve_type(t, t.getTypeName().getContext());
-										if (genType.getResolved() instanceof OS_GenericTypeNameType) {
-											final ClassInvocation xxci = ((EvaClass) aEvaContainer).ci;
-
-											var v = xxci.genericPart().valueForKey(t.getTypeName());
-											if (v != null) {
-												varTableEntry.varType = v;
-											}
-
-										}
-									} catch (ResolveError aResolveError) {
-										aResolveError.printStackTrace();
-										//assert false;
-										return Operation.failure(aResolveError);
-									}
-								}
-							}
-						} else {
-							System.err.println("************************** no generic");
-						}
-					}
-					return Operation.success(true);
-				}
-
-				@NotNull
-				public Operation<List<GenType>> getPotentialTypes() {
-					List<GenType> potentialTypes = new ArrayList<>();
-					for (TypeTableEntry potentialType : varTableEntry.potentialTypes) {
-						int                    y = 2;
-						final @NotNull GenType genType;
-						try {
-							if (potentialType.genType.getTypeName() == null) {
-								final OS_Type attached = potentialType.getAttached();
-								if (attached == null) continue;
-
-								genType = aDeduceTypes2.resolve_type(attached, aContext);
-								if (genType.getResolved() == null && genType.getTypeName().getType() == OS_Type.Type.USER_CLASS) {
-									genType.setResolved(genType.getTypeName());
-									genType.setTypeName(null);
-								}
-							} else {
-								if (potentialType.genType.getResolved() == null && potentialType.genType.getResolvedn() == null) {
-									final OS_Type attached = potentialType.genType.getTypeName();
-
-									genType = aDeduceTypes2.resolve_type(attached, aContext);
-								} else
-									genType = potentialType.genType;
-							}
-							if (genType.getTypeName() != null) {
-								final TypeName typeName = genType.getTypeName().getTypeName();
-								if (typeName instanceof NormalTypeName) {
-									final TypeNameList genericPart = ((NormalTypeName) typeName).getGenericPart();
-									if (genericPart != null && genericPart.size() > 0) {
-										genType.setNonGenericTypeName(typeName);
-									}
-								}
-							}
-							genType.genCIForGenType2(aDeduceTypes2);
-							potentialTypes.add(genType);
-						} catch (ResolveError aResolveError) {
-							aResolveError.printStackTrace();
-							return Operation.failure(aResolveError);
-						}
-					}
-					//
-					Set<GenType> set = new HashSet<>(potentialTypes);
-//					final Set<GenType> s = Collections.unmodifiableSet(set);
-					return Operation.success(new ArrayList<>(set));
-				}
-			};
+			varTableEntry.updatePotentialTypesCB = new VarTableEntry_UpdatePotentialTypesCB(aDeduceTypes2,
+					varTableEntry, aContext, this);
 			/*=======================================*/
 			/*=======================================*/
 			/*=======================================*/
@@ -265,7 +147,7 @@ public class EvaClass extends EvaContainerNC implements GNCoded {
 	}
 
 	@NotNull
-	private String getNameHelper(@NotNull Map<TypeName, OS_Type> aGenericPart) {
+	private static String getNameHelper(@NotNull Map<TypeName, OS_Type> aGenericPart) {
 		final List<String> ls = new ArrayList<String>();
 		for (Map.Entry<TypeName, OS_Type> entry : aGenericPart.entrySet()) { // TODO Is this guaranteed to be in order?
 			final OS_Type value = entry.getValue(); // This can be another ClassInvocation using GenType

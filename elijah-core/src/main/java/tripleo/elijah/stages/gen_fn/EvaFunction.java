@@ -25,8 +25,6 @@ import java.util.List;
 public class EvaFunction extends BaseEvaFunction implements GNCoded {
 	public final @Nullable FunctionDef fd;
 
-	public @NotNull List<DR_Item> _idents = new ArrayList<>();
-
 	public EvaFunction(final @Nullable FunctionDef functionDef) {
 		fd = functionDef;
 	}

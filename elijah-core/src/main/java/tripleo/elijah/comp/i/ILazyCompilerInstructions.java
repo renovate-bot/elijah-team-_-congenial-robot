@@ -2,10 +2,10 @@ package tripleo.elijah.comp.i;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.ci.CompilerInstructions;
+import tripleo.elijah.ci.i.CompilerInstructions;
 import tripleo.elijah.comp.CompilerInput;
 import tripleo.elijah.comp.internal.SourceFileParserParams;
-import tripleo.elijah.nextgen.query.Mode;
+import tripleo.elijah.util.Mode;
 import tripleo.elijah.util.Operation;
 
 import java.io.File;

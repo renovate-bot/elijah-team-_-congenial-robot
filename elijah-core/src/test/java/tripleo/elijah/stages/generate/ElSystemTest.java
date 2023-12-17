@@ -12,7 +12,7 @@ package tripleo.elijah.stages.generate;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.comp.i.Compilation;
 
 public class ElSystemTest {
 

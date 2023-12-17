@@ -16,7 +16,7 @@ public class CR_AlmostComplete implements CR_Action {
 	@Override
 	public @NotNull Operation<Ok> execute(final CR_State st, final CB_Output aO) {
 		compilationRunner.cis.almostComplete();
-		return Operation.success(new Ok());
+		return Operation.success(Ok.instance());
 	}
 
 	@Override

@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.lang.i.*;
 import tripleo.elijah.util.NotImplementedException;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -63,7 +64,7 @@ public class DeduceUtils {
 
 				return !Lists.newArrayList(ctors2).isEmpty();
 			}
-			tripleo.elijah.util.Stupidity.println_out_2(String.valueOf(o));
+			SimplePrintLoggerToRemoveSoon.println_out_2(String.valueOf(o));
 			return false;
 		}
 

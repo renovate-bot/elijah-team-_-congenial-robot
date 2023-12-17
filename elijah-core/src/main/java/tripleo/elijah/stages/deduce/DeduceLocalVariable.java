@@ -26,6 +26,7 @@ import tripleo.elijah.stages.instructions.InstructionArgument;
 import tripleo.elijah.stages.instructions.IntegerIA;
 import tripleo.elijah.stages.instructions.VariableTableType;
 import tripleo.elijah.util.NotImplementedException;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 import java.util.List;
 import java.util.Map;
@@ -393,20 +394,20 @@ public class DeduceLocalVariable {
 		}
 
 		if (Self == null) {
-			tripleo.elijah.util.Stupidity.println_err_2("336 ======================================================");
-			tripleo.elijah.util.Stupidity.println_err_2("336 ======================================================");
-			tripleo.elijah.util.Stupidity.println_err_2("336 ======================================================");
-			tripleo.elijah.util.Stupidity.println_err_2("336 ======================================================");
-			tripleo.elijah.util.Stupidity.println_err_2("336 ======================================================");
-			tripleo.elijah.util.Stupidity.println_err_2("336 ======================================================");
-			tripleo.elijah.util.Stupidity.println_err_2("336 ======================================================");
-			tripleo.elijah.util.Stupidity.println_err_2("336 ======================================================");
-			tripleo.elijah.util.Stupidity.println_err_2("336 ======================================================");
-			tripleo.elijah.util.Stupidity.println_err_2("336 ======================================================");
-			tripleo.elijah.util.Stupidity.println_err_2("336 ======================================================");
-			tripleo.elijah.util.Stupidity.println_err_2("336 ======================================================");
-			tripleo.elijah.util.Stupidity.println_err_2("336 ======================================================");
-			tripleo.elijah.util.Stupidity.println_err_2("336 ======================================================");
+			SimplePrintLoggerToRemoveSoon.println_err_2("336 ======================================================");
+			SimplePrintLoggerToRemoveSoon.println_err_2("336 ======================================================");
+			SimplePrintLoggerToRemoveSoon.println_err_2("336 ======================================================");
+			SimplePrintLoggerToRemoveSoon.println_err_2("336 ======================================================");
+			SimplePrintLoggerToRemoveSoon.println_err_2("336 ======================================================");
+			SimplePrintLoggerToRemoveSoon.println_err_2("336 ======================================================");
+			SimplePrintLoggerToRemoveSoon.println_err_2("336 ======================================================");
+			SimplePrintLoggerToRemoveSoon.println_err_2("336 ======================================================");
+			SimplePrintLoggerToRemoveSoon.println_err_2("336 ======================================================");
+			SimplePrintLoggerToRemoveSoon.println_err_2("336 ======================================================");
+			SimplePrintLoggerToRemoveSoon.println_err_2("336 ======================================================");
+			SimplePrintLoggerToRemoveSoon.println_err_2("336 ======================================================");
+			SimplePrintLoggerToRemoveSoon.println_err_2("336 ======================================================");
+			SimplePrintLoggerToRemoveSoon.println_err_2("336 ======================================================");
 
 			return;
 		}

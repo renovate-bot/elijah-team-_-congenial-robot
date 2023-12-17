@@ -1,20 +1,10 @@
 package tripleo.elijah.nextgen.expansion;
 
 import junit.framework.TestCase;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import tripleo.elijah.comp.Compilation;
-import tripleo.elijah.comp.Compilation.CompilationAlways;
+import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.lang.i.OS_Module;
-import tripleo.elijah.nextgen.model.*;
-import tripleo.elijah.stages.gen_generic.GenerateFiles;
-import tripleo.elijah.stages.gen_generic.OutputFileFactory;
 import tripleo.elijah.stages.gen_generic.OutputFileFactoryParams;
 import tripleo.elijah.test_help.Boilerplate;
-
-import java.util.List;
-
-import static tripleo.elijah.util.Helpers.List_of;
 
 public class SX_NodeTest extends TestCase {
 

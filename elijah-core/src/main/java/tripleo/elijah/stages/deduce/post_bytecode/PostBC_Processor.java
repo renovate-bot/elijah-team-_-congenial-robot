@@ -16,6 +16,7 @@ import tripleo.elijah.stages.gen_fn.GenType;
 import tripleo.elijah.stages.gen_fn.VariableTableEntry;
 import tripleo.elijah.util.Maybe;
 import tripleo.elijah.util.NotImplementedException;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 import java.util.function.Supplier;
 
@@ -265,7 +266,7 @@ public interface PostBC_Processor {
 			case USER:
 				try {
 					final GenType aGenType = deduceTypes2.resolve_type(attached, fd_ctx);
-					tripleo.elijah.util.Stupidity.println2("xxxxxxxxxxxxxx " + aGenType);
+					SimplePrintLoggerToRemoveSoon.println2("xxxxxxxxxxxxxx " + aGenType);
 					r = new Maybe<>(aGenType.getResolved(), null); // TODO incomplete!! (send whole GenType)
 					// -------------------------- vte.type.setAttached(aGenType);
 				} catch (final ResolveError aResolveError) {

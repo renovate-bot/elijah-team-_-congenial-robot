@@ -4,21 +4,21 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>tripleo.elijah</groupId>
-		<artifactId>elijah-v2</artifactId>
-		<version>0.91.1-SNAPSHOT</version>
+		<artifactId>congenial-robot</artifactId>
+		<version>2023.congenial.11.something-after-rosetta</version>
 	</parent>
 
 	<artifactId>tripleo.elijah.reactive</artifactId>
 	<name>elijah-reactive</name>
 	<description>elijah-reactive</description>
 	<packaging>jar</packaging>
-	<version>0.9.1-SNAPSHOT</version>
+	<version>2023.congenial.11.something-after-rosetta</version>
 
 	<dependencies>
 		<dependency>
 			<groupId>tripleo.elijah</groupId>
 			<artifactId>tripleo.small</artifactId>
-			<version>0.9.1-SNAPSHOT</version>
+			<version>2023.congenial.11.something-after-rosetta</version>
 		</dependency>
 
 		<dependency>

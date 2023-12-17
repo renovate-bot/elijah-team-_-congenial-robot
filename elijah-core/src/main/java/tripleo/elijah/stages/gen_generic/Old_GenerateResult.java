@@ -16,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.ci.LibraryStatementPart;
 import tripleo.elijah.stages.gen_c.OutputFileC;
 import tripleo.elijah.stages.gen_fn.*;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 import tripleo.util.buffer.Buffer;
 
 import java.util.ArrayList;
@@ -49,7 +50,7 @@ public class Old_GenerateResult implements GenerateResult {
 		if (_closed) throw new IllegalStateException("closed GenerateResult");
 
 		if (aLsp == null) {
-			tripleo.elijah.util.Stupidity.println_err_3("*************************** buffer --> " + b.getText());
+			SimplePrintLoggerToRemoveSoon.println_err_3("*************************** buffer --> " + b.getText());
 			return;
 		}
 

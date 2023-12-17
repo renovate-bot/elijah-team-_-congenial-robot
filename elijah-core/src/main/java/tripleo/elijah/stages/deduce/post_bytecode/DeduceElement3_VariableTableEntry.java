@@ -37,6 +37,7 @@ import tripleo.elijah.stateful.State;
 import tripleo.elijah.stateful.StateRegistrationToken;
 import tripleo.elijah.util.NotImplementedException;
 import tripleo.elijah.util.Operation2;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -325,7 +326,7 @@ public class DeduceElement3_VariableTableEntry extends DefaultStateful implement
 			if (ci != null) {
 				pte.setClassInvocation(ci);
 			} else
-				tripleo.elijah.util.Stupidity.println_err2("542 Null ClassInvocation");
+				SimplePrintLoggerToRemoveSoon.println_err2("542 Null ClassInvocation");
 		}
 
 		pte.setFunctionInvocation(fi);
@@ -649,6 +650,60 @@ public class DeduceElement3_VariableTableEntry extends DefaultStateful implement
 		}
 		default -> throw new IllegalStateException("Unknown parent");
 		}
+	}
+
+	public void __dof_uc(final OS_Type aType) {
+
+		var phase = deduceTypes2._phase();
+
+		assert aType.getType() == OS_Type.Type.USER_CLASS;
+
+		final ClassStatement classStatement = aType.getClassOf();
+		final List<TypeName> genericPart    = classStatement.getGenericPart();
+		if (genericPart.isEmpty()) {
+			@Nullable ClassInvocation ci = new ClassInvocation(classStatement, null, ()->deduceTypes2);
+			ci = phase.registerClassInvocation(ci);
+
+			principal.getGenType().setResolved(aType); // README assuming OS_Type cannot represent namespaces
+			principal.getGenType().setCi(ci);
+
+			ci.resolvePromise().then(principal::resolveTypeToClass);
+		} else {
+			// TODO 11/06
+			@Nullable ClassInvocation ci = new ClassInvocation(classStatement, null, ()->deduceTypes2);
+			ci = phase.registerClassInvocation(ci);
+
+			principal.getGenType().setResolved(aType); // README assuming OS_Type cannot represent namespaces
+			principal.getGenType().setCi(ci);
+
+			ci.resolvePromise().then(principal::resolveTypeToClass);
+		}
+	}
+
+	public void __post_vte_list_001() {
+		principal.typeResolvePromise().then((GenType gt) -> {
+			principal.resolvedTypePromise().then((EvaNode resolvedNode) -> {
+				if (resolvedNode instanceof EvaClass evaClass) {
+					if (gt.getCi() == null) {
+						gt.setCi(evaClass.ci);
+					}
+
+					gt.setResolved(evaClass.getKlass().getOS_Type());
+					gt.setTypeName(gt.getResolved());
+
+					principal.getType().setAttached(gt);
+				} else if (resolvedNode instanceof EvaConstructor evaConstructor) {
+					if (gt.getCi() == null) {
+//						gt.ci = evaConstructor.ci;
+					}
+
+					gt.setResolved(evaConstructor.fi.getClassInvocation().getKlass().getOS_Type());
+					gt.setTypeName(gt.getResolved());
+
+					principal.getType().setAttached(gt);
+				}
+			});
+		});
 	}
 
 	public enum ST {

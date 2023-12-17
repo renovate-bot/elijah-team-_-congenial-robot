@@ -10,7 +10,7 @@
 package tripleo.elijah.slir;
 
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.comp.i.Compilation;
 
 import java.util.ArrayList;
 import java.util.List;

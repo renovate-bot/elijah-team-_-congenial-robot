@@ -11,10 +11,14 @@ package tripleo.elijah.stages.gen_fn;
 import org.jdeferred2.DoneCallback;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.Eventual;
 import tripleo.elijah.lang.i.ClassStatement;
+import tripleo.elijah.nextgen.rosetta.Rosetta;
 import tripleo.elijah.stages.deduce.ClassInvocation;
 import tripleo.elijah.stages.deduce.DeducePhase;
-import tripleo.elijah.stages.deduce.RegisterClassInvocation_env;
+import tripleo.elijah.stages.gen_fn_r.GenerateEvaClassResponse;
+import tripleo.elijah.stages.gen_fn_r.RegisterClassInvocation_env;
+import tripleo.elijah.stages.gen_fn_r.GenerateEvaClassRequest;
 import tripleo.elijah.stages.gen_generic.ICodeRegistrar;
 import tripleo.elijah.util.Holder;
 import tripleo.elijah.util.NotImplementedException;
@@ -32,7 +36,8 @@ public class WlGenerateClass implements WorkJob {
 	private final @NotNull RegisterClassInvocation_env  __passthru_env;
 	private       boolean        _isDone = false;
 	private final ICodeRegistrar cr;
-	private       EvaClass       Result;
+	//private       EvaClass       Result;
+	private final Eventual<EvaClass> resultPromise = new Eventual<>();
 
 	public WlGenerateClass(GenerateFunctions aGenerateFunctions,
 						   @NotNull ClassInvocation aClassInvocation,
@@ -63,9 +68,9 @@ public class WlGenerateClass implements WorkJob {
 		__passthru_env = aEnv;
 	}
 
-	public EvaClass getResult() {
-		return Result;
-	}
+	//public EvaClass getResult() {
+	//	return Result;
+	//}
 
 	@Override
 	public boolean isDone() {
@@ -75,34 +80,46 @@ public class WlGenerateClass implements WorkJob {
 	@Override
 	public void run(WorkManager aWorkManager) {
 		final DeferredObject<EvaClass, Void, Void> resolvePromise = classInvocation.resolveDeferred();
+
+		resolvePromise.then(resultPromise::resolve);
+
+		// README 11/10 Could uncomment, but failure is Void, not Diagnostic
+		//resolvePromise.fail(resultPromise::fail(x));
+
 		switch (resolvePromise.state()) {
 		case PENDING:
-			@NotNull EvaClass kl = generateFunctions.generateClass(classStatement, classInvocation, __passthru_env);
-			//kl.setCode(generateFunctions.module.getCompilation().nextClassCode());
+			GenerateEvaClassRequest rq = new GenerateEvaClassRequest(generateFunctions, classStatement, classInvocation, __passthru_env);
+			GenerateEvaClassResponse rsp = new GenerateEvaClassResponse();
+			Rosetta.GECR rosetta = Rosetta.create(rq, rsp);
 
-			cr.registerClass1(kl);
+			rosetta.apply();
 
-			if (coll != null)
-				coll.add(kl);
+			rsp.getEvaClassPromise().then(kl -> {
+				//kl.setCode(generateFunctions.module.getCompilation().nextClassCode());
 
-			resolvePromise.resolve(kl);
-			Result = kl;
+				cr.registerClass1(kl);
+
+				if (coll != null)
+					coll.add(kl);
+
+				resolvePromise.resolve(kl);
+				//Result = kl;
+			});
+
 			break;
 		case RESOLVED:
 			Holder<EvaClass> hgc = new Holder<EvaClass>();
-			resolvePromise.then(new DoneCallback<EvaClass>() {
-				@Override
-				public void onDone(EvaClass result) {
-//					assert result == kl;
-					hgc.set(result);
-				}
-			});
-			Result = hgc.get();
+			resolvePromise.then(hgc::set);
+			//Result = hgc.get();
 			break;
 		case REJECTED:
 			throw new NotImplementedException();
 		}
 		_isDone = true;
+	}
+
+	public void resultPromise(final DoneCallback<EvaClass> cb) {
+		resultPromise.then(cb);
 	}
 }
 

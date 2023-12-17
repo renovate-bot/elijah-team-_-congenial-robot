@@ -1,9 +1,8 @@
 package tripleo.elijah.comp.i;
 
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.comp.Compilation;
 import tripleo.elijah.comp.internal.CompilationImpl;
-import tripleo.elijah.nextgen.query.Mode;
+import tripleo.elijah.util.Mode;
 import tripleo.elijah.util.Operation2;
 import tripleo.elijah.world.i.WorldModule;
 

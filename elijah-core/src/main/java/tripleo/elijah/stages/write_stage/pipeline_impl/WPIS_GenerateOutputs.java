@@ -1,21 +1,18 @@
 package tripleo.elijah.stages.write_stage.pipeline_impl;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
+import lombok.Getter;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.comp.nextgen.CP_Paths;
 import tripleo.elijah.lang.i.OS_Module;
 import tripleo.elijah.nextgen.inputtree.EIT_Input;
 import tripleo.elijah.nextgen.inputtree.EIT_ModuleInput;
 import tripleo.elijah.nextgen.output.NG_OutputItem;
-import tripleo.elijah.nextgen.output.NG_OutputStatement;
 import tripleo.elijah.nextgen.outputstatement.EG_Naming;
 import tripleo.elijah.nextgen.outputstatement.EG_SequenceStatement;
 import tripleo.elijah.nextgen.outputstatement.EG_Statement;
-import tripleo.elijah.nextgen.outputstatement.EX_Explanation;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputFile;
-import tripleo.elijah.nextgen.outputtree.EOT_OutputType;
 import tripleo.elijah.stages.gen_c.GenerateC;
 import tripleo.elijah.stages.gen_fn.BaseEvaFunction;
 import tripleo.elijah.stages.gen_fn.EvaClass;
@@ -25,12 +22,15 @@ import tripleo.elijah.stages.generate.OutputStrategy;
 import tripleo.elijah.stages.generate.OutputStrategyC;
 import tripleo.elijah.util.Helpers;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.function.Consumer;
 
 public class WPIS_GenerateOutputs implements WP_Indiviual_Step {
 	private final List<NG_OutputRequest>   ors = new ArrayList<>();
 	private       WritePipelineSharedState st;
+	private       List<Amazing>            amazings;
 
 	@Override
 	public void act(final @NotNull WritePipelineSharedState st, final WP_State_Control sc) {
@@ -67,8 +67,6 @@ public class WPIS_GenerateOutputs implements WP_Indiviual_Step {
 		}
 	}
 
-	private List<Amazing> amazings;
-
 	private void act3(final GenerateResult result,
 					  final @NotNull List<EvaClass> cs,
 					  final @NotNull List<EvaNamespace> ns,
@@ -100,7 +98,7 @@ public class WPIS_GenerateOutputs implements WP_Indiviual_Step {
 		this.st.pa.waitGenC(mod, cb);
 	}
 
-	interface Writable {
+	interface Writeable {
 		String filename();
 
 		EG_Statement statement();
@@ -116,14 +114,15 @@ public class WPIS_GenerateOutputs implements WP_Indiviual_Step {
 	}
 
 	// TODO 09/04 Duplication madness
-	private static class MyWritable implements Writable {
-		final          Collection<EG_Statement>        value;
-		final          EOT_OutputFile.FileNameProvider filename;
-		final @NotNull List<EG_Statement>              list;
-		final @NotNull EG_SequenceStatement     statement;
-		private final  NG_OutputRequest         outputRequest;
+	static class MyWriteable implements Writeable {
+		private final          Collection<EG_Statement>        value;
+		private final          EOT_OutputFile.FileNameProvider filename;
+		private final @NotNull List<EG_Statement>              list;
+		private final @NotNull EG_SequenceStatement            statement;
+		@Getter
+		private final          NG_OutputRequest                outputRequest;
 
-		public MyWritable(final Map.@NotNull Entry<NG_OutputRequest, Collection<EG_Statement>> aEntry) {
+		public MyWriteable(final @NotNull Pair<NG_OutputRequest, Collection<EG_Statement>> aEntry) {
 			this.outputRequest = aEntry.getKey();
 			filename           = outputRequest.fileName();
 			value              = aEntry.getValue();
@@ -168,85 +167,31 @@ public class WPIS_GenerateOutputs implements WP_Indiviual_Step {
 	}
 
 	class OutputItems {
-		final   OutputStrategy         osg             = st.sys.outputStrategyCreator.get();
-		final   OutputStrategyC        outputStrategyC = new OutputStrategyC(osg);
-		final   List<NG_OutputRequest> ors1            = new ArrayList<>();
-		final   List<NG_OutputItem>    itms            = new ArrayList<>();
-		private int                    _readyCount;
-		private int                    _addTally;
+		@Getter
+		private final OutputStrategy         osg;
+		@Getter
+		private final List<NG_OutputRequest> outputRequestList;
+		@Getter
+		private final List<NG_OutputItem>    itms;
+		private final OutputStrategyC        outputStrategyC;
+		private       int                    _readyCount;
+		private       int                    _addTally;
+
+		public OutputItems() {
+			osg               = st.sys.outputStrategyCreator.get();
+			outputStrategyC   = new OutputStrategyC(osg);
+			outputRequestList = new ArrayList<>();
+			itms              = new ArrayList<>();
+		}
 
 		public void addItem(final NG_OutputItem aOutputItem) {
 			itms.add(aOutputItem);
 
 			++_addTally;
+
 			if (_addTally == _readyCount) {
-				for (NG_OutputItem o : itms) {
-					var oxs = o.getOutputs();
-					for (NG_OutputStatement ox : oxs) {
-						GenerateResult.TY oxt = ox.getTy();
-						String            oxb = ox.getText();
-
-						EOT_OutputFile.FileNameProvider s = o.outName(outputStrategyC, oxt);
-
-						var or = new NG_OutputRequest(s, ox, ox, o);
-						ors1.add(or);
-					}
-				}
-
-				final Multimap<NG_OutputRequest, EG_Statement> mfss = ArrayListMultimap.create();
-				var                                            cot  = st.c.getOutputTree();
-
-				// README combine output requests into file requests
-				for (NG_OutputRequest or : ors1) {
-					mfss.put(or, or.statement());
-				}
-
-				final List<Writable> writables = new ArrayList<>();
-
-				for (Map.Entry<NG_OutputRequest, Collection<EG_Statement>> entry : mfss.asMap().entrySet()) {
-					writables.add(new MyWritable(entry));
-				}
-
-				for (Writable writable : writables) {
-					final EOT_OutputFile.FileNameProvider filename   = writable.getFilenameProvider();
-					final EG_Statement                    statement0 = writable.statement();
-					final List<EG_Statement> list2      = relist3(statement0);
-					final EG_Statement       statement;
-
-					if (filename.getFilename().endsWith(".h")) {
-						final String uuid = "elinc_%s".formatted(UUID.randomUUID().toString().replace('-', '_'));
-
-						var b = EG_Statement.of("#ifndef %s\n#define %s 1\n\n".formatted(uuid, uuid), EX_Explanation.withMessage("Header file prefix"));
-
-						final List<EG_Statement> list3 = new ArrayList<>(list2.size() + 2);
-						list3.add(b);
-						list3.addAll(list2);
-						final EG_Statement e = EG_Statement.of("\n#endif\n", EX_Explanation.withMessage("Header file postfix"));
-						list3.add(e);
-						statement = new EG_SequenceStatement(new EG_Naming("relist3"), list3);
-					} else {
-						statement = statement0;
-					}
-
-					var off = new EOT_OutputFile(writable.inputs(), filename, EOT_OutputType.SOURCES, statement);
-
-					st.c.reports().addCodeOutput(filename, off);
-
-					cot.add(off);
-				}
+				WPIS_GenerateOutputsFinalizer._finalizeItems(itms, outputRequestList, outputStrategyC, st.c.getCompilationAccess2());
 			}
-		}
-
-		private static @NotNull List<EG_Statement> relist3(final EG_Statement sequence) {
-			var llll = new ArrayList<EG_Statement>();
-
-			if (sequence instanceof EG_SequenceStatement seqst) {
-				llll.addAll(seqst._list());
-			} else {
-				llll.add(sequence);
-			}
-
-			return llll;
 		}
 
 		public void readyCount(final int aI) {

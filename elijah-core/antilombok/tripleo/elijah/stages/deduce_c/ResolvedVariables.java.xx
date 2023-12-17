@@ -1,0 +1,43 @@
+package tripleo.elijah.stages.deduce_c;
+
+import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.lang.i.ClassStatement;
+import tripleo.elijah.lang.i.NamespaceStatement;
+import tripleo.elijah.lang.i.OS_Element;
+import tripleo.elijah.stages.gen_fn.EvaContainer;
+import tripleo.elijah.stages.gen_fn.IdentTableEntry;
+import tripleo.elijah.stages.gen_fn.TypeTableEntry;
+import tripleo.elijah.util.Helpers;
+import tripleo.elijah.util.Maybe;
+
+public class ResolvedVariables {
+   final IdentTableEntry identTableEntry;
+   final @NotNull OS_Element parent;
+   final String varName;
+
+   public ResolvedVariables(IdentTableEntry aIdentTableEntry, @NotNull OS_Element aParent, String aVarName) {
+      assert aParent instanceof ClassStatement || aParent instanceof NamespaceStatement;
+
+      this.identTableEntry = aIdentTableEntry;
+      this.parent = aParent;
+      this.varName = aVarName;
+   }
+
+   public void handle(EvaContainer evaContainer) {
+      Maybe variable_m = evaContainer.getVariable(this.varName);
+      if (!variable_m.isException()) {
+         assert variable_m.o != null;
+
+         EvaContainer.VarTableEntry variable = (EvaContainer.VarTableEntry)variable_m.o;
+         TypeTableEntry type = this.identTableEntry.type;
+         if (type != null) {
+            variable.addPotentialTypes(Helpers.List_of(new TypeTableEntry[]{type}));
+         }
+
+         variable.addPotentialTypes(this.identTableEntry.potentialTypes());
+         variable.updatePotentialTypes(evaContainer);
+      } else {
+         throw new AssertionError();
+      }
+   }
+}

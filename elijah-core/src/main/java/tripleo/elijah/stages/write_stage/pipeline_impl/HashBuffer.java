@@ -2,7 +2,7 @@ package tripleo.elijah.stages.write_stage.pipeline_impl;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tripleo.elijah.nextgen.query.Mode;
+import tripleo.elijah.util.Mode;
 import tripleo.elijah.stages.gen_generic.DoubleLatch;
 import tripleo.elijah.util.Helpers;
 import tripleo.elijah.util.Operation;

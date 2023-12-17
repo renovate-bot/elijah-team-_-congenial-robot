@@ -1,6 +1,5 @@
 package tripleo.elijah.lang.nextgen.names.i;
 
-import org.jdeferred2.Promise;
 import tripleo.elijah.Eventual;
 
 import java.util.List;

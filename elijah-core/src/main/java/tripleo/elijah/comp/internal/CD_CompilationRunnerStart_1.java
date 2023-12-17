@@ -1,12 +1,13 @@
 package tripleo.elijah.comp.internal;
 
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.ci.CompilerInstructions;
-import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.ci.i.CompilerInstructions;
+import tripleo.elijah.comp.CompilerInput;
 import tripleo.elijah.comp.i.CD_CompilationRunnerStart;
 import tripleo.elijah.comp.i.CR_Action;
-import tripleo.elijah.comp.i.IPipelineAccess;
-import tripleo.elijah.nextgen.query.Mode;
+import tripleo.elijah.comp.i.Compilation;
+import tripleo.elijah.comp.i.CompilationEnclosure;
+import tripleo.elijah.util.Mode;
 import tripleo.elijah.util.Ok;
 import tripleo.elijah.util.Operation;
 
@@ -21,12 +22,17 @@ public class CD_CompilationRunnerStart_1 implements CD_CompilationRunnerStart {
 	public void start(final @NotNull CompilerInstructions aCompilerInstructions,
 					  final @NotNull CR_State crState,
 					  final @NotNull CB_Output out) {
-		final @NotNull CompilationRunner             cr  = crState.runner();
-		final @NotNull IPipelineAccess               pa  = crState.ca.getCompilation().getCompilationEnclosure().getPipelineAccess();
-		final @NotNull Compilation.CompilationConfig cfg = crState.ca.getCompilation().cfg();
+		final @NotNull CompilationRunner             cr             = crState.runner();
+		final Compilation                            compilation    = crState.ca().getCompilation();
+		final @NotNull Compilation.CompilationConfig cfg            = compilation.cfg();
+		final CompilationEnclosure                   ce             = compilation.getCompilationEnclosure();
+		final List<CompilerInput>                    compilerInputs = ce.getCompilerInput();
 
-		final CompilerBeginning beginning = new CompilerBeginning(cr._accessCompilation(), aCompilerInstructions, pa.getCompilerInput(), cr.progressSink, cfg);
+		// TODO 11/16 ca3??
+		//  also this maybe wanted to be progressive (see other )
+		final CompilerBeginning beginning = new CompilerBeginning(compilation, aCompilerInstructions, compilerInputs, cr.progressSink, cfg);
 
+		// TODO 11/16 pa.notate (? -> prob)
 		___start(crState, beginning, out);
 	}
 
@@ -55,7 +61,7 @@ public class CD_CompilationRunnerStart_1 implements CD_CompilationRunnerStart {
 		}
 
 		for (int i = 0; i < crActionResultList.size(); i++) {
-			var                      action           = crActionList.get(i);
+			var                 action           = crActionList.get(i);
 			final Operation<Ok> booleanOperation = crActionResultList.get(i);
 
 			final String s = ("5959 %s %b").formatted(action.name(), (booleanOperation.mode() == Mode.SUCCESS));

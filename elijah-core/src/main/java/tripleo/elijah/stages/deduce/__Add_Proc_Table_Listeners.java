@@ -9,6 +9,7 @@ import tripleo.elijah.stages.instructions.IdentIA;
 import tripleo.elijah.stages.instructions.InstructionArgument;
 import tripleo.elijah.stages.instructions.IntegerIA;
 import tripleo.elijah.util.NotImplementedException;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 public class __Add_Proc_Table_Listeners {
 	void add_proc_table_listeners(final @NotNull BaseEvaFunction generatedFunction, final @NotNull ProcTableEntry pte, final DeduceTypes2 aDeduceTypes2) {
@@ -66,9 +67,14 @@ public class __Add_Proc_Table_Listeners {
 		}
 
 		@Override
-		public void onChange(@NotNull IElementHolder eh, BaseTableEntry.Status newStatus) {
-			if (newStatus != BaseTableEntry.Status.KNOWN)
+		public void onChange(IElementHolder eh, BaseTableEntry.Status newStatus) {
+			if (newStatus != BaseTableEntry.Status.KNOWN) {
 				return;
+			}
+
+			if (eh == null) {
+				return;
+			}
 
 			final OS_Element el = eh.getElement();
 
@@ -95,7 +101,7 @@ public class __Add_Proc_Table_Listeners {
 				if (identIA2 != null) {
 					@NotNull IdentTableEntry idte2          = identIA.getEntry();
 					@Nullable ProcTableEntry procTableEntry = idte2.getCallablePTE();
-					if (procTableEntry == pte) tripleo.elijah.util.Stupidity.println_err_2("940 procTableEntry == pte");
+					if (procTableEntry == pte) SimplePrintLoggerToRemoveSoon.println_err_2("940 procTableEntry == pte");
 					if (procTableEntry != null) {
 						// TODO doesn't seem like we need this
 						procTableEntry.onFunctionInvocation(new DoneCallback<FunctionInvocation>() {
@@ -112,7 +118,7 @@ public class __Add_Proc_Table_Listeners {
 									if (functionInvocation.getClassInvocation() == fi.getClassInvocation() &&
 											functionInvocation.getFunction() == fi.getFunction() &&
 											functionInvocation.pte == fi.pte)
-										tripleo.elijah.util.Stupidity.println_err_2("955 It seems like we are generating the same thing...");
+										SimplePrintLoggerToRemoveSoon.println_err_2("955 It seems like we are generating the same thing...");
 									else {
 										int ok = 2;
 									}

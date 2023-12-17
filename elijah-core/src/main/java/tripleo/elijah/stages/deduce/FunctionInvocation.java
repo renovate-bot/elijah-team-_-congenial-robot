@@ -14,16 +14,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.Eventual;
 import tripleo.elijah.EventualRegister;
+import tripleo.elijah.lang.LangGlobals;
 import tripleo.elijah.lang.i.ConstructorDef;
 import tripleo.elijah.lang.i.FunctionDef;
 import tripleo.elijah.lang.i.OS_Element;
 import tripleo.elijah.lang.i.OS_Module;
-import tripleo.elijah.lang.impl.ConstructorDefImpl;
-import tripleo.elijah.stages.deduce.nextgen.DeduceCreationContext;
 import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_ProcTableEntry;
 import tripleo.elijah.stages.gen_fn.*;
 import tripleo.elijah.work.WorkList;
-import tripleo.elijah.world.WorldGlobals;
 
 import java.util.List;
 
@@ -136,7 +134,7 @@ public class FunctionInvocation implements IInvocation {
 		final DeduceElement3_ProcTableEntry.__LFOE_Q q        = new DeduceElement3_ProcTableEntry.__LFOE_Q(null, new WorkList(), deduceTypes2);
 		final DeduceTypes2.DeduceTypes2Injector      injector = deduceTypes2._inj();
 
-		if (fd == WorldGlobals.defaultVirtualCtor) {
+		if (fd == LangGlobals.defaultVirtualCtor) {
 			eef.resolve(xxx___forDefaultVirtualCtor(cl, injector, module));
 			return eef;
 		} else if (fd instanceof ConstructorDef cd) {

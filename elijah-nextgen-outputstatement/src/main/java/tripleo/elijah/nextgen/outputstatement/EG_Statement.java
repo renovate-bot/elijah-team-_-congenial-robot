@@ -9,17 +9,7 @@ import org.jetbrains.annotations.NotNull;
 public interface EG_Statement {
 	@Contract(value = "_, _ -> new", pure = true)
 	static @NotNull EG_Statement of(@NotNull String aText, @NotNull EX_Explanation aExplanation) {
-		return new EG_Statement() {
-			@Override
-			public EX_Explanation getExplanation() {
-				return aExplanation;
-			}
-
-			@Override
-			public String getText() {
-				return aText;
-			}
-		};
+		return new EG_SingleStatement(aText, aExplanation);
 	}
 
 	EX_Explanation getExplanation();

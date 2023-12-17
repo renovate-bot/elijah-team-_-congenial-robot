@@ -14,6 +14,7 @@ import org.jdeferred2.FailCallback;
 import org.jdeferred2.Promise;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tripleo.elijah.Eventual;
 import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.lang.i.OS_Element;
 import tripleo.elijah.stages.deduce.*;
@@ -54,6 +55,8 @@ public abstract class BaseTableEntry {
 	public void _fix_table(final DeduceTypes2 aDeduceTypes2, final @NotNull BaseEvaFunction aEvaFunction) {
 		__dt2 = aDeduceTypes2;
 		__gf  = aEvaFunction;
+
+		//aEvaFunction._informGF((GenerateFunctions gf11)->{});
 	}
 
 	public Status getStatus() {
@@ -62,14 +65,22 @@ public abstract class BaseTableEntry {
 
 	public void setStatus(Status newStatus, /*@NotNull*/ IElementHolder eh) {
 		status = newStatus;
-		assert newStatus != Status.KNOWN || eh != null && eh.getElement() != null;
+		if (newStatus == Status.KNOWN) {
+			if (eh == null || eh.getElement() == null) {
+				throw new AssertionError();
+			}
+		}
+
 		for (int i = 0; i < statusListenerList.size(); i++) {
 			final StatusListener statusListener = statusListenerList.get(i);
 			statusListener.onChange(eh, newStatus);
 		}
-		if (newStatus == Status.UNKNOWN)
-			if (!_p_elementPromise.isRejected())
+
+		if (newStatus == Status.UNKNOWN) {
+			if (_p_elementPromise.isPending()) {
 				_p_elementPromise.reject(new ResolveUnknown());
+			}
+		}
 	}
 
 	public void addStatusListener(StatusListener sl) {
@@ -97,7 +108,7 @@ public abstract class BaseTableEntry {
 
 	// endregion resolved_element
 
-	public Promise<GenType, ResolveError, Void> typeResolvePromise() {
+	public Eventual<GenType> typeResolvePromise() {
 		return typeResolve.typeResolution();
 	}
 

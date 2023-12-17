@@ -2,11 +2,11 @@ package tripleo.elijah.comp.internal;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.ci.CompilerInstructions;
+import tripleo.elijah.ci.i.CompilerInstructions;
 import tripleo.elijah.ci.LibraryStatementPart;
 import tripleo.elijah.ci.LibraryStatementPartImpl;
 import tripleo.elijah.comp.CompFactory;
-import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.comp.Finally;
 import tripleo.elijah.comp.IO;
 import tripleo.elijah.comp.diagnostic.ExceptionDiagnostic;
@@ -32,8 +32,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import static tripleo.elijah.nextgen.query.Mode.FAILURE;
-import static tripleo.elijah.nextgen.query.Mode.SUCCESS;
+import static tripleo.elijah.util.Mode.FAILURE;
+import static tripleo.elijah.util.Mode.SUCCESS;
 
 public class USE {
 	private static final FilenameFilter         accept_source_files = new FilenameFilter() {

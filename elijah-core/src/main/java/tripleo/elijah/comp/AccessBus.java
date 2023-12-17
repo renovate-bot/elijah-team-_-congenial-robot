@@ -4,6 +4,7 @@ import org.jdeferred2.DoneCallback;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.comp.i.IPipelineAccess;
 import tripleo.elijah.comp.internal.CR_State;
 import tripleo.elijah.comp.internal.CR_State.PipelinePlugin;
@@ -18,9 +19,9 @@ import java.util.Map;
 import java.util.function.Function;
 
 public class AccessBus {
-	public final  Old_GenerateResult                             gr                    = new Old_GenerateResult();
-	private final Compilation                                    _c;
-	private final IPipelineAccess                                _pa;
+	public final  Old_GenerateResult gr                    = new Old_GenerateResult();
+	private final Compilation        _c;
+	private final IPipelineAccess    _pa;
 	private final stepA_mal.@NotNull MalEnv2                     env;
 	private final DeferredObject<Old_GenerateResult, Void, Void> generateResultPromise = new DeferredObject<>();
 	private final DeferredObject<List<EvaNode>, Void, Void>      lgcPromise            = new DeferredObject<>();

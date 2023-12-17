@@ -13,7 +13,7 @@ import tripleo.elijah.stages.gen_fn.GenerateFunctions;
 import tripleo.elijah.stages.gen_generic.ICodeRegistrar;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.util.NotImplementedException;
-import tripleo.elijah.util.Stupidity;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 import tripleo.elijah.work.WorkManager;
 
 import java.util.ArrayList;
@@ -49,7 +49,7 @@ public class EIT_ModuleList {
 
 		if (size != 0) {
 			NotImplementedException.raise();
-			Stupidity.println_err(String.format("lgc.size() != 0: %d", size));
+			SimplePrintLoggerToRemoveSoon.println_err(String.format("lgc.size() != 0: %d", size));
 		}
 
 		plp.generate();

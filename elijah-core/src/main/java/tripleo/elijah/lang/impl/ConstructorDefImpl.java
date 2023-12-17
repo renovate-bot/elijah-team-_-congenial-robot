@@ -11,10 +11,10 @@ package tripleo.elijah.lang.impl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.contexts.FunctionContext;
+import tripleo.elijah.lang.LangGlobals;
 import tripleo.elijah.lang.i.*;
 import tripleo.elijah.lang.nextgen.names.i.EN_Name;
 import tripleo.elijah.lang2.ElElementVisitor;
-import tripleo.elijah.world.WorldGlobals;
 
 /**
  * @author Tripleo
@@ -43,7 +43,7 @@ public class ConstructorDefImpl extends BaseFunctionDef implements tripleo.elija
 		if (aConstructorName != null)
 			setName(aConstructorName);
 		else
-			setName(WorldGlobals.emptyConstructorName); // hack for Context#lookup
+			setName(LangGlobals.emptyConstructorName); // hack for Context#lookup
 		setSpecies(Species.CTOR);
 
 		__n = EN_Name_.create(funName.getText()); // !!

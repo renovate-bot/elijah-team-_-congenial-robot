@@ -5,6 +5,8 @@ import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.lang.i.*;
+import tripleo.elijah.lang.nextgen.names.i.EN_Understanding;
+import tripleo.elijah.lang.nextgen.names.impl.ENU_LookupResult;
 import tripleo.elijah.stages.deduce.post_bytecode.DG_ClassStatement;
 import tripleo.elijah.stages.gen_fn.*;
 import tripleo.elijah.stages.instructions.IdentIA;
@@ -154,7 +156,7 @@ public class DR_Ident implements DR_Item {
 
 		assert _identTableEntry != null;
 		_identTableEntry.elementPromise(this::addElementUnderstanding, null);
-		_identTableEntry.backlinkSet().done(ia -> {
+		_identTableEntry.onBacklinkSet(ia -> {
 			if (ia instanceof ProcIA procIA) {
 				var mainLogic = procIA.getEntry();
 
@@ -220,6 +222,11 @@ public class DR_Ident implements DR_Item {
 
 	public @Nullable IdentTableEntry identTableEntry() {
 		return _identTableEntry;
+	}
+
+	public void addUnderstanding(final EN_Understanding u) {
+		assert ident != null;
+		ident.getName().addUnderstanding(u);
 	}
 
 	class BacklinkUnderstanding implements Understanding {

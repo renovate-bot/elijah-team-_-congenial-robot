@@ -14,7 +14,7 @@ import org.jdeferred2.FailCallback;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.comp.Finally;
 import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.lang.i.Context;

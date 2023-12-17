@@ -19,7 +19,7 @@ public class EG_SingleStatement implements EG_Statement {
 		explanation = null;
 	}
 
-	public EG_SingleStatement(final String aText, final EX_Explanation aExplanation) {
+	public EG_SingleStatement(final String aText, final @Nullable EX_Explanation aExplanation) {
 		text        = aText;
 		explanation = aExplanation;
 	}

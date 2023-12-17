@@ -13,6 +13,7 @@ import tripleo.elijah.contexts.NamespaceContext;
 import tripleo.elijah.lang.i.*;
 import tripleo.elijah.lang2.ElElementVisitor;
 import tripleo.elijah.util.NotImplementedException;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 /**
  * @author Tripleo(sb)
@@ -43,11 +44,12 @@ public class NamespaceStatementImpl extends _CommonNC
 
 	@Override // OS_Container
 	public void addToContainer(final OS_Element anElement) {
-		if (anElement instanceof ClassItem)
+		if (anElement instanceof ClassItem) {
 			items.add((ClassItem) anElement);
-		else
-			tripleo.elijah.util.Stupidity
+		} else {
+			SimplePrintLoggerToRemoveSoon
 					.println_err_2(String.format("[NamespaceStatement#add] not a ClassItem: %s", anElement));
+		}
 	}
 
 	@Override

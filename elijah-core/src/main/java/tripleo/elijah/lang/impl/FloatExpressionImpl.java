@@ -18,6 +18,7 @@ import antlr.Token;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.lang.i.*;
 import tripleo.elijah.util.NotImplementedException;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 import java.util.List;
 
@@ -66,7 +67,7 @@ public class FloatExpressionImpl implements tripleo.elijah.lang.i.FloatExpressio
 	@Override
 	public void setKind(final @NotNull ExpressionKind aType) {
 		// log and ignore
-		tripleo.elijah.util.Stupidity
+		SimplePrintLoggerToRemoveSoon
 				.println_err_2("Trying to set ExpressionType of FloatExpression to " + aType.toString());
 	}
 

@@ -35,7 +35,7 @@ public class CR_ProcessInitialAction implements CR_Action {
 
 		try {
 			compilationRunner._accessCompilation().use(ci, do_out);
-			return Operation.success(new Ok());
+			return Operation.success(Ok.instance());
 		} catch (final Exception aE) {
 			return Operation.failure(aE);
 		}

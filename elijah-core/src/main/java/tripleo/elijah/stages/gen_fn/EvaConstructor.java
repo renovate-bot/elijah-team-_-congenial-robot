@@ -62,8 +62,25 @@ public class EvaConstructor extends BaseEvaFunction {
 
 	public void setFunctionInvocation(@NotNull FunctionInvocation fi) {
 		GenType genType = new GenTypeImpl();
-		genType.setCi(fi.getClassInvocation()); // TODO will fail on namespace constructors; next line too
-		genType.setResolved((((ClassInvocation) genType.getCi()).getKlass()).getOS_Type());
+
+		final ClassInvocation classInvocation1 = fi.getClassInvocation();
+		genType.setCi(classInvocation1); // TODO will fail on namespace constructors; next line too
+
+		final ClassInvocation classInvocation2 = (ClassInvocation) genType.getCi();
+		genType.setResolved((classInvocation2.getKlass()).getOS_Type());
+
+
+
+
+
+
+		assert classInvocation1 == classInvocation2;
+
+
+
+
+
+
 		genType.setNode(this);
 		typeDeferred().resolve(genType);
 	}

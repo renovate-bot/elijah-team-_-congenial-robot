@@ -24,6 +24,7 @@ import tripleo.elijah.stages.deduce.nextgen.DR_Ident;
 import tripleo.elijah.stages.gen_fn.*;
 import tripleo.elijah.stages.instructions.*;
 import tripleo.elijah.util.NotImplementedException;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 import java.util.List;
 import java.util.Objects;
@@ -86,7 +87,7 @@ import static tripleo.elijah.stages.deduce.DeduceTypes2.to_int;
 			case MODULO:
 			case SUBTRACTION:
 				int y = 2;
-				tripleo.elijah.util.Stupidity.println_err_2("2363");
+				SimplePrintLoggerToRemoveSoon.println_err_2("2363");
 				break;
 			case GET_ITEM:
 				final @NotNull GetItemExpression gie = (GetItemExpression) e;

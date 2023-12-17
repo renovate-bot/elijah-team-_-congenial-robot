@@ -2,11 +2,11 @@ package tripleo.elijah.stages.gen_c;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tripleo.elijah.lang.i.FunctionDef;
 import tripleo.elijah.lang.i.OS_Type;
 import tripleo.elijah.lang.i.RegularTypeName;
 import tripleo.elijah.lang.i.TypeName;
 import tripleo.elijah.lang.types.OS_GenericTypeNameType;
-import tripleo.elijah.stages.deduce.ClassInvocation;
 import tripleo.elijah.stages.gen_fn.*;
 import tripleo.elijah.stages.instructions.InstructionArgument;
 import tripleo.elijah.stages.instructions.IntegerIA;
@@ -26,7 +26,7 @@ class GCM_GF implements GCM_D {
 
 	@Override
 	public String find_return_type(final Generate_Method_Header aGenerate_method_header__) {
-		var fd = gf.getFD();
+		var fd = getAssociatedFunctionDef();
 
 		if (fd.returnType() instanceof RegularTypeName rtn) {
 			var n = rtn.getName();
@@ -46,6 +46,7 @@ class GCM_GF implements GCM_D {
 			// if there is no Result, there should be Value
 			result_index = gf.vte_lookup("Value");
 			// but Value might be passed in. If it is, discard value
+			assert result_index != null;
 			@NotNull final VariableTableEntry vte = ((IntegerIA) result_index).getEntry();
 			if (vte.getVtt() != VariableTableType.RESULT)
 				result_index = null;
@@ -54,7 +55,7 @@ class GCM_GF implements GCM_D {
 		}
 
 		// Get it from resolved
-		tte = gf.getTypeTableEntry(((IntegerIA) result_index).getIndex());
+		tte = getAssociatedTypeTableEntryOfIndex((IntegerIA) result_index);
 		final EvaNode res = tte.resolved();
 		if (res instanceof final @NotNull EvaContainerNC nc) {
 			final int code = nc.getCode();
@@ -75,14 +76,13 @@ class GCM_GF implements GCM_D {
 			returnType = "void";
 		} else if (type != null) {
 			if (type instanceof final @NotNull OS_GenericTypeNameType genericTypeNameType) {
-				final TypeName tn = genericTypeNameType.getRealTypeName();
+				final TypeName           tn          = genericTypeNameType.getRealTypeName();
+				final GCM_CI_GenericPart genericPart = getAssociatedClassInvocation().genericPart();
+				final GCM_OS_Type        realType    = genericPart.valueForKey(tn);
 
-				final ClassInvocation.CI_GenericPart genericPart = gf.fi.getClassInvocation().genericPart();
+				assert !realType.isNull();
 
-				final OS_Type realType = genericPart.valueForKey(tn);
-
-				assert realType != null;
-				returnType = String.format("/*267*/%s*", gc.getTypeName(realType));
+				returnType = String.format("/*267*/%s*", realType.getTypeName());
 			} else
 				returnType = String.format("/*267-1*/%s*", gc.getTypeName(type));
 		} else {
@@ -92,5 +92,19 @@ class GCM_GF implements GCM_D {
 		}
 
 		return returnType;
+	}
+
+	private GCM_ClassInvocation getAssociatedClassInvocation() {
+		return new GCM_ClassInvocation(gf.fi.getClassInvocation());
+	}
+
+	@NotNull
+	private TypeTableEntry getAssociatedTypeTableEntryOfIndex(final IntegerIA result_index) {
+		return gf.getTypeTableEntry(result_index.getIndex());
+	}
+
+	@NotNull
+	private FunctionDef getAssociatedFunctionDef() {
+		return gf.getFD();
 	}
 }

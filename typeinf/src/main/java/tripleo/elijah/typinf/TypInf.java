@@ -457,14 +457,15 @@ public class TypInf {
 			name = aTypename;
 		}
 
+		public String getName() {
+			//	throw new NotImplementedException("should be lombok");
+			return this.name;
+		}
+
 		@Override
 		public String toString() {
 			return name;
 		}
-
-		//public String getName() {
-		//	throw new NotImplementedException("should be lombok");
-		//}
 	}
 
 	public static class TypingError extends RuntimeException {

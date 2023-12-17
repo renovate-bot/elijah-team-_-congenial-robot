@@ -3,7 +3,7 @@ package tripleo.elijah.comp.functionality.f203;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.comp.nextgen.CP_OutputPath;
 import tripleo.elijah.comp.nextgen.CP_Path;
 import tripleo.elijah.comp.nextgen.CP_SubFile;

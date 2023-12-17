@@ -4,43 +4,108 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>tripleo.elijah</groupId>
-		<artifactId>elijah-v2</artifactId>
-		<version>0.91.1-SNAPSHOT</version>
+		<artifactId>congenial-robot</artifactId>
+		<version>2023.congenial.11.something-after-rosetta</version>
 	</parent>
 
 	<artifactId>tripleo.elijah.core</artifactId>
-	<name>elijah-core</name>
+<!--	<name>elijah-core</name> -->
+	<name>tripleo.elijah.core</name>
 	<description>elijah-core</description>
 	<packaging>jar</packaging>
-	<version>0.9.1-SNAPSHOT</version>
+	<version>2023.congenial.11.something-after-rosetta</version>
 
 	<dependencies>
+
+
+
+
+
+		<dependency>
+			<groupId>tripleo.elijah</groupId>
+			<artifactId>tripleo.elijah.good-api</artifactId>
+			<version>2023.congenial.11.something-after-rosetta</version>
+			<scope>compile</scope>
+		</dependency>
+
+
+		<dependency>
+			<groupId>tripleo.elijah</groupId>
+			<artifactId>tripleo.elijah.sourcemodel-impl</artifactId>
+			<version>2023.congenial.11.something-after-rosetta</version>
+		</dependency>
+
 		<dependency>
 			<groupId>tripleo.elijah</groupId>
 			<artifactId>tripleo.elijah.elijah-nextgen-outputstatement</artifactId>
-			<version>0.9.1-SNAPSHOT </version>
+			<version>2023.congenial.11.something-after-rosetta</version>
+			<!--
+						<scope>compile</scope>
+			-->
 		</dependency>
 
-<!--
-		<dependency>
-			<groupId>tripleo.elijah</groupId>
-			<artifactId>tripleo.small</artifactId>
-			<version>0.9.1-SNAPSHOT</version>
-		</dependency>
--->
+		<!--
+				<dependency>
+					<groupId>tripleo.elijah</groupId>
+					<artifactId>tripleo.small</artifactId>
+					<version>2023.congenial.11.something-after-rosetta</version>
+				</dependency>
+		-->
 
 		<dependency>
 			<groupId>tripleo.elijah</groupId>
 			<artifactId>tripleo.elijah.reactive</artifactId>
-			<version>0.9.1-SNAPSHOT</version>
+			<version>2023.congenial.11.something-after-rosetta</version>
 		</dependency>
 
 		<dependency>
 			<groupId>tripleo.elijah</groupId>
 			<artifactId>tripleo.elijah.stateful</artifactId>
-			<version>0.9.1-SNAPSHOT</version>
+			<version>2023.congenial.11.something-after-rosetta</version>
 			<scope>compile</scope>
 		</dependency>
+
+
+
+
+
+
+
+
+
+
+<!--
+		<dependency>
+			<groupId>com.github.TNG</groupId>
+			<artifactId>ArchUnit</artifactId>
+why not??
+these two same - nov 06 release
+			<version>v1.20.0</version>
+			<version>12e8fb1</version>
+
+master as of 11.12.23
+			<version>789706f</version>
+			<version>789706f07b605fb2404d877052ac583b2b77a501</version>
+		</dependency>
+-->
+
+
+		<!-- https://mvnrepository.com/artifact/com.tngtech.archunit/archunit-junit4 -->
+		<dependency>
+			<groupId>com.tngtech.archunit</groupId>
+			<artifactId>archunit-junit4</artifactId>
+			<version>1.2.0</version>
+			<scope>test</scope>
+		</dependency>
+
+	<!--
+		<dependency>
+			<groupId>com.tngtech.archunit</groupId>
+			<artifactId>archunit</artifactId>
+			<version>1.10</version>
+			<scope>test</scope>
+		</dependency>
+-->
 
 		<!-- https://search.maven.org/artifact/io.reactivex.rxjava3/rxjava/3.1.0/jar -->
 		<dependency>
@@ -77,16 +142,16 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.jetbrains</groupId>
-			<artifactId>annotations</artifactId>
-			<version>24.0.1</version>
-		</dependency>
-		<dependency>
 			<groupId>org.jdeferred.v2</groupId>
 			<artifactId>jdeferred-core</artifactId>
 			<version>2.0.0</version>
 		</dependency>
-
+		<dependency>
+			<groupId>org.jetbrains</groupId>
+			<artifactId>annotations</artifactId>
+			<version>24.0.1</version>
+			<scope>compile</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -94,25 +159,38 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+<!--
 				<version>3.8.1</version>
+-->
+				<version>3.11.0</version>
 				<configuration>
 					<source>17</source>
 					<target>17</target>
+<!--
 					<fork>true</fork>
 					<compilerArgs>
-						<arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED</arg>
-						<arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED</arg>
-						<arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED</arg>
-						<arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED</arg>
-						<arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED</arg>
-						<arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</arg>
-						<arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED</arg>
-						<arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</arg>
-						<arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED</arg>
-						<arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.jvm=ALL-UNNAMED</arg>
+						<arg>-J&#45;&#45;add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED</arg>
+						<arg>-J&#45;&#45;add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED</arg>
+						<arg>-J&#45;&#45;add-opens=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED</arg>
+						<arg>-J&#45;&#45;add-opens=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED</arg>
+						<arg>-J&#45;&#45;add-opens=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED</arg>
+						<arg>-J&#45;&#45;add-opens=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</arg>
+						<arg>-J&#45;&#45;add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED</arg>
+						<arg>-J&#45;&#45;add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</arg>
+						<arg>-J&#45;&#45;add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED</arg>
+						<arg>-J&#45;&#45;add-opens=jdk.compiler/com.sun.tools.javac.jvm=ALL-UNNAMED</arg>
 					</compilerArgs>
+-->
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
+
+<!--
+	<repositories>
+		<repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
+		</repository>
+	</repositories>-->
 </project>

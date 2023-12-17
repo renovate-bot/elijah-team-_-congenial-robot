@@ -23,7 +23,7 @@ public interface ER_Node {
 
 			@Override
 			public Path getPath() {
-				Path pp = p.getPath();
+				final Path pp = p.getPath();
 				return pp;
 			}
 

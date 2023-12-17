@@ -9,8 +9,16 @@
     <file url="file://$PROJECT_DIR$/annotations/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/elijah-core/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/elijah-core/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/elijah-good-api/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/elijah-good-api/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/elijah-nextgen-outputstatement/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/elijah-nextgen-outputstatement/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/elijah-rosetta/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/elijah-rosetta/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/elijah-sourcemodel-api/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/elijah-sourcemodel-api/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/elijah-sourcemodel-impl/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/elijah-sourcemodel-impl/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/elijah-stateful/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/elijah-stateful/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />

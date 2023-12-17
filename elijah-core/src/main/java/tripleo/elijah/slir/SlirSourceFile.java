@@ -11,7 +11,7 @@ package tripleo.elijah.slir;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tripleo.elijah.ci.CompilerInstructions;
+import tripleo.elijah.ci.i.CompilerInstructions;
 import tripleo.elijah.lang.i.OS_Module;
 
 /**

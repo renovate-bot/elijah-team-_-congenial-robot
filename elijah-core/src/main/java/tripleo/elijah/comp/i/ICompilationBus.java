@@ -1,6 +1,5 @@
 package tripleo.elijah.comp.i;
 
-import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.comp.internal.CompilerDriver;
 
 import java.util.List;
@@ -11,12 +10,6 @@ public interface ICompilationBus {
 	IProgressSink defaultProgressSink();
 
 	CompilerDriver getCompilationDriver();
-
-	interface CB_Process {
-//		void execute();
-
-		List<CB_Action> steps();
-	}
 
 	class COutputString implements CB_OutputString {
 
@@ -40,12 +33,4 @@ public interface ICompilationBus {
 
 	List<CB_Process> processes();
 
-	interface CB_Action {
-		void execute();
-
-		String name();
-
-		@Nullable List<CB_OutputString> outputStrings();
-
-	}
 }

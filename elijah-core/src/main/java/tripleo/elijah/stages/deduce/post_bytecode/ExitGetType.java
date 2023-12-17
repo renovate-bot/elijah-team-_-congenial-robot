@@ -11,6 +11,7 @@ import tripleo.elijah.stages.instructions.IdentIA;
 import tripleo.elijah.stateful.DefaultStateful;
 import tripleo.elijah.stateful.State;
 import tripleo.elijah.stateful.StateRegistrationToken;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 //@StatefulProperty
 class ExitGetType implements State {
@@ -126,7 +127,7 @@ class ExitGetType implements State {
 								cpte.typePromise().then(new DoneCallback<GenType>() {
 									@Override
 									public void onDone(@NotNull final GenType result) {
-										tripleo.elijah.util.Stupidity.println2("1483 " + result.getResolved() + " " + result.getNode());
+										SimplePrintLoggerToRemoveSoon.println2("1483 " + result.getResolved() + " " + result.getNode());
 									}
 								});
 							}
@@ -146,7 +147,7 @@ class ExitGetType implements State {
 					final ClassStatement cs = aType.getClassOf();
 					if (aEntry.constructable_pte != null) {
 						final int yyy = 3;
-						tripleo.elijah.util.Stupidity.println2("use_user_class: " + cs);
+						SimplePrintLoggerToRemoveSoon.println2("use_user_class: " + cs);
 					}
 				}
 			});

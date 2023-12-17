@@ -4,10 +4,11 @@ import org.jdeferred2.DoneCallback;
 import org.jdeferred2.Promise;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.comp.Finally;
 import tripleo.elijah.lang.i.*;
 import tripleo.elijah.lang.impl.AliasStatementImpl;
+import tripleo.elijah.lang.nextgen.names.i.EN_Name;
 import tripleo.elijah.lang.nextgen.names.i.EN_Understanding;
 import tripleo.elijah.lang.nextgen.names.impl.ENU_ResolveToFunction;
 import tripleo.elijah.stages.deduce.*;
@@ -161,7 +162,7 @@ public class DT_External_2 implements DT_External {
 					;
 
 			if (e instanceof OS_NamedElement el2) {
-				var name = el2.getEnName();
+				final EN_Name name = el2.getEnName();
 				if (set_alias)
 					name.addUnderstanding(_inj().new_ENU_AliasedFrom((AliasStatement) orig_e));
 			}

@@ -4,17 +4,14 @@ import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.comp.Finally;
 import tripleo.elijah.contexts.ModuleContext;
 import tripleo.elijah.lang.i.*;
 import tripleo.elijah.lang.impl.BaseFunctionDef;
 import tripleo.elijah.lang.imports.NormalImportStatement;
-import tripleo.elijah.nextgen.query.Mode;
-import tripleo.elijah.stages.deduce.DeduceTypeResolve;
-import tripleo.elijah.stages.deduce.DeduceTypes2;
-import tripleo.elijah.stages.deduce.FoundElement;
-import tripleo.elijah.stages.deduce.ResolveError;
+import tripleo.elijah.util.Mode;
+import tripleo.elijah.stages.deduce.*;
 import tripleo.elijah.stages.deduce.nextgen.DR_Ident;
 import tripleo.elijah.stages.deduce.post_bytecode.DED.DED_ITE;
 import tripleo.elijah.stages.gen_fn.*;
@@ -209,11 +206,11 @@ public class DeduceElement3_IdentTableEntry extends DefaultStateful implements I
 			//throw new IllegalStateException("Error");
 		}
 
-		if (principal.getResolvedElement() instanceof ClassStatement) {
+		if (principal.getResolvedElement() instanceof final ClassStatement classStatement) {
 			// README but skip this and get the evaClass saved from earlier to
 			// Grande [T168-089] when all these objects are being created and
 			// manipulated (dern video yttv)
-			final DG_ClassStatement dcs = principal._deduceTypes2().DG_ClassStatement((ClassStatement) principal.getResolvedElement());
+			final DG_ClassStatement dcs = principal._deduceTypes2().DG_ClassStatement(classStatement);
 
 			// README fixup GenType
 			//   Still ignoring TypeName and nonGenericTypeName
@@ -351,7 +348,10 @@ public class DeduceElement3_IdentTableEntry extends DefaultStateful implements I
 				de3_ite_holder.commitGenTypeActions();
 			}
 		} else {
-			System.err.printf("DeduceElement3_IdentTableEntry >> cant sneakResolve %s based on %s%n", ident.getText(), "" + el/*((IdentExpression)el).getText()*/);
+			var c = dt2._phase().pa.getCompilation();
+			if (c.reports().outputOn(Finally.Outs.Out_353)) {
+				System.err.printf("DeduceElement3_IdentTableEntry >> cant sneakResolve %s based on %s%n", ident.getText(), "" + el/*((IdentExpression)el).getText()*/);
+			}
 		}
 	}
 
@@ -570,6 +570,40 @@ public class DeduceElement3_IdentTableEntry extends DefaultStateful implements I
 		}
 	}
 
+	public DeduceElement3_IdentTableEntry getZero() {
+		return deduceTypes2._zero_getIdent(principal, generatedFunction, deduceTypes2);
+	}
+
+	public DR_Ident getDR() {
+		return principal.get_ident();
+	}
+
+	public void stipulate_ResolvedVariable(final @NotNull DeducePhase aDeducePhase,
+										   final @NotNull IdentTableEntry identTableEntry,
+										   final @NotNull VariableStatement vs,
+										   final @NotNull IEvaFunctionBase evaFunction) {
+		assert identTableEntry == principal;
+
+		final OS_Element parent = vs.getParent();
+		final OS_Element el;
+		if (parent == null) {
+			assert false;
+		} else {
+			el = parent.getParent();
+
+			final OS_Element el2 = evaFunction.getFD().getParent();
+
+			if (el != el2) {
+				if (!(el instanceof ClassStatement) && !(el instanceof NamespaceStatement)) {
+					return;
+				}
+
+				// NOTE there is no concept of gf here
+				aDeducePhase.registerResolvedVariable(identTableEntry, el, vs.getName());
+			}
+		}
+	}
+
 	public enum ST {
 		;
 
@@ -610,7 +644,7 @@ public class DeduceElement3_IdentTableEntry extends DefaultStateful implements I
 
 				public void setBacklinkCallback(BaseTableEntry backlink) {
 					if (backlink instanceof final ProcTableEntry procTableEntry) {
-						procTableEntry.typeResolvePromise().done((final @NotNull GenType result) -> {
+						procTableEntry.typeResolvePromise().then((final @NotNull GenType result) -> {
 							final DeduceElement3_IdentTableEntry de3_ite = identTableEntry.getDeduceElement3();
 
 							if (result.getCi() == null && result.getNode() == null)

@@ -9,10 +9,10 @@
 package tripleo.elijah;
 
 import org.junit.Test;
-import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.comp.IO;
 import tripleo.elijah.comp.StdErrSink;
-import tripleo.elijah.comp.internal.CompilationImpl;
+import tripleo.elijah.factory.comp.CompilationFactory;
 
 import static tripleo.elijah.util.Helpers.List_of;
 
@@ -24,7 +24,7 @@ public class ClassInstantiationTest {
 	@Test
 	public void classInstantiation() throws Exception {
 		String      f = "test/basic1/class_instantiation/";
-		Compilation c = new CompilationImpl(new StdErrSink(), new IO());
+		final Compilation  c    = CompilationFactory.mkCompilationSilent(new StdErrSink(), new IO());
 
 		c.feedCmdLine(List_of(f));
 
@@ -34,7 +34,7 @@ public class ClassInstantiationTest {
 	@Test
 	public void classInstantiation2() throws Exception {
 		String      f = "test/basic1/class_instantiation2/";
-		Compilation c = new CompilationImpl(new StdErrSink(), new IO());
+		final Compilation  c    = CompilationFactory.mkCompilationSilent(new StdErrSink(), new IO());
 
 		c.feedCmdLine(List_of(f));
 
@@ -44,7 +44,7 @@ public class ClassInstantiationTest {
 	@Test
 	public void classInstantiation3() throws Exception {
 		String      f = "test/basic1/class_instantiation3/";
-		Compilation c = new CompilationImpl(new StdErrSink(), new IO());
+		final Compilation  c    = CompilationFactory.mkCompilationSilent(new StdErrSink(), new IO());
 
 		c.feedCmdLine(List_of(f));
 
@@ -54,7 +54,7 @@ public class ClassInstantiationTest {
 	@Test
 	public void classInstantiation4() throws Exception {
 		String      f = "test/basic1/class_instantiation4/";
-		Compilation c = new CompilationImpl(new StdErrSink(), new IO());
+		final Compilation  c    = CompilationFactory.mkCompilationSilent(new StdErrSink(), new IO());
 
 		c.feedCmdLine(List_of(f));
 

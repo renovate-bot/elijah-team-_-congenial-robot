@@ -28,13 +28,9 @@ public class FunctionDefImpl extends BaseFunctionDef
 		implements Documentable, ClassItem, tripleo.elijah.lang.i.FunctionDef {
 
 	private final OS_Element        parent;
-	// region constructor
 	private       FunctionModifiers _mod;
 	private       boolean           _isAbstract;
-	// region modifiers
 	private       OS_FuncType       osType;
-
-	// endregion
 	private @Nullable TypeName _returnType = null;
 
 	@Override
@@ -64,10 +60,6 @@ public class FunctionDefImpl extends BaseFunctionDef
 		}
 		_a.setContext(new FunctionContext(context, this));
 	}
-
-	// endregion
-
-	// region abstract
 
 	@Override
 	public void add(FunctionItem seq) {

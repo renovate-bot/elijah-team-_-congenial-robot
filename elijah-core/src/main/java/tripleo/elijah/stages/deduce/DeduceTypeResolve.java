@@ -10,10 +10,11 @@
 package tripleo.elijah.stages.deduce;
 
 import org.jdeferred2.DoneCallback;
-import org.jdeferred2.Promise;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tripleo.elijah.Eventual;
 import tripleo.elijah.PromiseReadySupplier;
+import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.lang.i.*;
 import tripleo.elijah.lang.impl.AbstractCodeGen;
 import tripleo.elijah.lang.impl.AliasStatementImpl;
@@ -26,6 +27,7 @@ import tripleo.elijah.stages.instructions.InstructionArgument;
 import tripleo.elijah.stages.instructions.IntegerIA;
 import tripleo.elijah.stages.instructions.ProcIA;
 import tripleo.elijah.util.NotImplementedException;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 import java.util.function.Supplier;
 
@@ -35,7 +37,7 @@ import java.util.function.Supplier;
 public class DeduceTypeResolve {
 	private final BaseTableEntry                               bte;
 	@Nullable     BaseTableEntry                               backlink;
-	private final DeferredObject2<GenType, ResolveError, Void> typeResolution = new DeferredObject2<>();
+	private final Eventual<GenType> typeResolution = new Eventual<>();
 	//private final DeduceTypes2                                 _dt2;
 	private final Supplier<DeduceTypes2>                       _dt2s;
 
@@ -83,14 +85,16 @@ public class DeduceTypeResolve {
 			typeResolution().then(x -> {
 				if (!typeResolution().isResolved()) bte_pte.typeDeferred().resolve(x);
 			});
-			typeResolution().fail(x -> bte_pte.typeDeferred().reject(x));
+			typeResolution().onFail((Diagnostic x) -> bte_pte.typeDeferred().reject(x));
 		}
 	}
 
 	private void _inj_then(final DoneCallback<DeduceTypes2.DeduceTypes2Injector> i) {
 		if (_dt2s instanceof PromiseReadySupplier<DeduceTypes2> prs) {
 			prs.then(q -> i.onDone(q._inj()));
-		}
+		} else if (_dt2s instanceof NULL_DeduceTypes2 ndt) {
+			// do nothing case
+		} else assert false;
 	}
 
 	private DeduceTypes2.DeduceTypes2Injector _inj() {
@@ -104,11 +108,7 @@ public class DeduceTypeResolve {
 		});
 	}
 
-	public Promise<GenType, ResolveError, Void> typeResolution() {
-		return typeResolution.promise();
-	}
-
-	public @NotNull DeferredObject2<GenType, ResolveError, Void> getDeferred() {
+	public Eventual<GenType> typeResolution() {
 		return typeResolution;
 	}
 
@@ -219,7 +219,7 @@ public class DeduceTypeResolve {
 		}
 
 		public void logProgress(int ignoredCode, String message) {
-			tripleo.elijah.util.Stupidity.println_err_2(message);
+			SimplePrintLoggerToRemoveSoon.println_err_2(message);
 		}
 	}
 
@@ -229,11 +229,11 @@ public class DeduceTypeResolve {
 			if (newStatus != BaseTableEntry.Status.KNOWN) return;
 
 			if (backlink instanceof final @NotNull IdentTableEntry identTableEntry) {
-				identTableEntry.typeResolvePromise().done(result -> _203_backlink_isIDTE(result, identTableEntry));
+				identTableEntry.typeResolvePromise().then(result -> _203_backlink_isIDTE(result, identTableEntry));
 			} else if (backlink instanceof final @NotNull VariableTableEntry variableTableEntry) {
-				variableTableEntry.typeResolvePromise().done(result -> _203_backlink_is_VTE(result, eh, variableTableEntry));
+				variableTableEntry.typeResolvePromise().then(result -> _203_backlink_is_VTE(result, eh, variableTableEntry));
 			} else if (backlink instanceof final ProcTableEntry procTableEntry) {
-				procTableEntry.typeResolvePromise().done(result -> _203_backlink_is_PTE(result, procTableEntry, eh));
+				procTableEntry.typeResolvePromise().then(result -> _203_backlink_is_PTE(result, procTableEntry, eh));
 			}
 		}
 

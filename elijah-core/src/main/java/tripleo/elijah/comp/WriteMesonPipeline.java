@@ -11,7 +11,8 @@ package tripleo.elijah.comp;
 import com.google.common.collect.Multimap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tripleo.elijah.ci.CompilerInstructions;
+import tripleo.elijah.ci.i.CompilerInstructions;
+import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.comp.i.IPipelineAccess;
 import tripleo.elijah.comp.internal.CB_Output;
 import tripleo.elijah.comp.internal.CR_State;
@@ -23,6 +24,7 @@ import tripleo.elijah.nextgen.outputtree.EOT_OutputType;
 import tripleo.elijah.stages.gen_generic.DoubleLatch;
 import tripleo.elijah.stages.gen_generic.GenerateResult;
 import tripleo.elijah.stages.gen_generic.Old_GenerateResult;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 import tripleo.util.io.CharSink;
 import tripleo.util.io.FileCharSink;
 
@@ -42,9 +44,9 @@ import static tripleo.elijah.util.Helpers.String_join;
  * Created 9/13/21 11:58 PM
  */
 public class WriteMesonPipeline implements PipelineMember, @NotNull Consumer<Supplier<Old_GenerateResult>> {
-	final                  Pattern                                             pullPat               = Pattern.compile("/[^/]+/(.+)");
-	private final @NotNull Compilation                                         c;
-	private final @NotNull IPipelineAccess                                     pa;
+	final                  Pattern         pullPat               = Pattern.compile("/[^/]+/(.+)");
+	private final @NotNull Compilation     c;
+	private final @NotNull IPipelineAccess pa;
 	private final          WritePipeline                                       writePipeline;
 	@NotNull               DoubleLatch<Multimap<CompilerInstructions, String>> write_makefiles_latch = new DoubleLatch<>(this::write_makefiles_action);
 	private                Consumer<Multimap<CompilerInstructions, String>>    _wmc;
@@ -73,7 +75,7 @@ public class WriteMesonPipeline implements PipelineMember, @NotNull Consumer<Sup
 			@Override
 			public void accept(final Supplier<Old_GenerateResult> aGenerateResultSupplier) {
 				if (grs != null) {
-					tripleo.elijah.util.Stupidity.println_err_2("234 grs not null " + grs.getClass().getName());
+					SimplePrintLoggerToRemoveSoon.println_err_2("234 grs not null " + grs.getClass().getName());
 					return;
 				}
 

@@ -15,6 +15,7 @@ import tripleo.elijah.lang.types.OS_UnitType;
 import tripleo.elijah.lang.types.OS_UserType;
 import tripleo.elijah.stages.deduce.ClassInvocation;
 import tripleo.elijah.stages.deduce.DeduceTypes2;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 /**
  * Created 9/12/20 10:26 PM
@@ -120,7 +121,7 @@ public class TypeTableEntry {
 			break;
 		default:
 //			throw new NotImplementedException();
-			tripleo.elijah.util.Stupidity.println_err_2("73 " + aAttached);
+			SimplePrintLoggerToRemoveSoon.println_err_2("73 " + aAttached);
 			break;
 		}
 	}

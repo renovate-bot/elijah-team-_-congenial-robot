@@ -8,6 +8,7 @@ import tripleo.elijah.stages.gen_fn.*;
 import tripleo.elijah.stages.instructions.InstructionArgument;
 import tripleo.elijah.stages.instructions.ProcIA;
 import tripleo.elijah.util.NotImplementedException;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 import java.util.Map;
 
@@ -84,7 +85,7 @@ public class DTR_VariableStatement {
 					}
 				}
 			} else {
-				tripleo.elijah.util.Stupidity.println_err("Unexpected value: " + state + "for " + variableStatement.getName());
+				SimplePrintLoggerToRemoveSoon.println_err("Unexpected value: " + state + "for " + variableStatement.getName());
 			}
 		}
 		}

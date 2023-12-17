@@ -17,7 +17,7 @@ import tripleo.elijah.ReadySupplier_1;
 import tripleo.elijah.comp.i.ErrSink;
 import tripleo.elijah.lang.i.*;
 import tripleo.elijah.lang.impl.VariableStatementImpl;
-import tripleo.elijah.nextgen.query.Mode;
+import tripleo.elijah.util.Mode;
 import tripleo.elijah.stages.deduce.nextgen.DR_Variable;
 import tripleo.elijah.stages.deduce.tastic.FCA_Stop;
 import tripleo.elijah.stages.gen_fn.BaseEvaFunction;

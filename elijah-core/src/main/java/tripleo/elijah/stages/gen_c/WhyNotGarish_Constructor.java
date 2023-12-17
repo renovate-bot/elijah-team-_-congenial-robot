@@ -1,24 +1,26 @@
 package tripleo.elijah.stages.gen_c;
 
-import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
+
+import tripleo.elijah.DebugFlags;
+import tripleo.elijah.lang.LangGlobals;
 import tripleo.elijah.lang.i.IdentExpression;
 import tripleo.elijah.stages.deduce.FunctionInvocation;
 import tripleo.elijah.stages.gen_fn.*;
+import tripleo.elijah.stages.gen_generic.GenerateFiles;
 import tripleo.elijah.stages.gen_generic.GenerateResult;
 import tripleo.elijah.stages.gen_generic.GenerateResultEnv;
 import tripleo.elijah.stages.gen_generic.Old_GenerateResult;
 import tripleo.elijah.stages.gen_generic.pipeline_impl.GenerateResultSink;
 import tripleo.elijah.util.NotImplementedException;
 import tripleo.elijah.work.WorkList;
-import tripleo.elijah.world.WorldGlobals;
 
 import java.util.List;
+import java.util.Optional;
 
 public class WhyNotGarish_Constructor extends WhyNotGarish_BaseFunction implements WhyNotGarish_Item {
 	private final EvaConstructor                                gf;
 	private final GenerateC                                     generateC;
-	private final DeferredObject<GenerateResultEnv, Void, Void> fileGenPromise = new DeferredObject<>();
 
 	public WhyNotGarish_Constructor(final EvaConstructor aGf, final GenerateC aGenerateC) {
 		gf        = aGf;
@@ -44,7 +46,7 @@ public class WhyNotGarish_Constructor extends WhyNotGarish_BaseFunction implemen
 
 		gf.reactive().add(gcfc);
 
-		if (!GenerateC.MANUAL_DISABLED) {
+		if (!DebugFlags.GenerateC_MANUAL_DISABLED) {
 			gcfc.respondTo(generateC);
 		}
 
@@ -58,20 +60,6 @@ public class WhyNotGarish_Constructor extends WhyNotGarish_BaseFunction implemen
 		}
 	}
 
-	public void resolveFileGenPromise(final GenerateResultEnv aFileGen) {
-		fileGenPromise.resolve(aFileGen);
-	}
-
-	@Override
-	public boolean hasFileGen() {
-		return fileGenPromise.isResolved();
-	}
-
-	@Override
-	public void provideFileGen(final GenerateResultEnv fg) {
-		fileGenPromise.resolve(fg);
-	}
-
 	@Override
 	public BaseEvaFunction getGf() {
 		return gf;
@@ -82,11 +70,22 @@ public class WhyNotGarish_Constructor extends WhyNotGarish_BaseFunction implemen
 		return gf;
 	}
 
+	@Override
+	public Optional<GenerateC> getGenerateC() {
+		if (!hasFileGen())
+			return null;
+		final @NotNull GenerateFiles[] xx = new GenerateFiles[1];
+		fileGenPromise.then(fg -> {
+			xx[0] = fg.generateModule().gmr().getGenerateFiles(null);
+		});
+		return Optional.of((GenerateC) xx[0]);
+	}
+
 	@NotNull String getConstructorNameText() {
 		final IdentExpression constructorName = gf.getFD().getNameNode();
 
 		final String constructorNameText;
-		if (constructorName == WorldGlobals.emptyConstructorName) {
+		if (constructorName == LangGlobals.emptyConstructorName) {
 			constructorNameText = "";
 		} else {
 			constructorNameText = constructorName.getText();
@@ -133,7 +132,7 @@ public class WhyNotGarish_Constructor extends WhyNotGarish_BaseFunction implemen
 		} else if (x instanceof final EvaFunction evaFunction) {
 			wl.addJob(new GenerateC.WlGenerateFunctionC(aFileGen, evaFunction, generateC));
 		} else {
-			generateC.LOG.err(x.toString());
+			generateC.elLog().err(x.toString());
 			throw new NotImplementedException();
 		}
 	}

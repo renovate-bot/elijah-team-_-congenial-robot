@@ -1,0 +1,17 @@
+package tripleo.elijah.stages.deduce_r;
+
+import org.jdeferred2.DoneCallback;
+import tripleo.elijah.Eventual;
+import tripleo.elijah.stages.deduce.ClassInvocation;
+
+public class RegisterClassInvocation_resp {
+   private Eventual ciPromise = new Eventual();
+
+   public void onSuccess(DoneCallback cb) {
+      this.ciPromise.then(cb);
+   }
+
+   public void succeed(ClassInvocation aCi2) {
+      this.ciPromise.resolve(aCi2);
+   }
+}

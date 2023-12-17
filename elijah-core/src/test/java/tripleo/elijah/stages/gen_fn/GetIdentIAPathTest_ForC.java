@@ -18,11 +18,11 @@ import tripleo.elijah.comp.StdErrSink;
 import tripleo.elijah.comp.i.CompilationEnclosure;
 import tripleo.elijah.comp.internal.CompilationImpl;
 import tripleo.elijah.comp.internal.DefaultCompilationAccess;
+import tripleo.elijah.factory.comp.CompilationFactory;
 import tripleo.elijah.lang.i.*;
 import tripleo.elijah.lang.impl.*;
 import tripleo.elijah.stages.gen_c.CReference;
 import tripleo.elijah.stages.gen_c.Emit;
-
 import tripleo.elijah.stages.gen_c.GenerateC;
 import tripleo.elijah.stages.gen_c.Generate_Code_For_Method;
 import tripleo.elijah.stages.gen_generic.GenerateResultEnv;
@@ -55,7 +55,7 @@ public class GetIdentIAPathTest_ForC {
 		Emit.emitting = false;
 
 		errSink     = new StdErrSink();
-		compilation = new CompilationImpl(errSink, new IO());
+		compilation = (CompilationImpl) CompilationFactory.mkCompilationSilent(errSink, new IO());
 
 		final CompilationEnclosure ce = compilation.getCompilationEnclosure();
 		ce.setCompilationAccess(new DefaultCompilationAccess(compilation));

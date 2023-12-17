@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.comp.i.ErrSink;
 import tripleo.elijah.contexts.ClassContext;
 import tripleo.elijah.lang.i.*;
-import tripleo.elijah.nextgen.query.Mode;
+import tripleo.elijah.util.Mode;
 import tripleo.elijah.stages.deduce.*;
 import tripleo.elijah.stages.deduce.nextgen.DR_Type;
 import tripleo.elijah.stages.logging.ElLog;

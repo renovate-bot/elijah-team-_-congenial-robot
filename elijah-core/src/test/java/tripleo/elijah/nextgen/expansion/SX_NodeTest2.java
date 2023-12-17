@@ -4,11 +4,12 @@ import junit.framework.TestCase;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Ignore;
 import org.junit.Test;
+import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.comp.CompilerInput;
 import tripleo.elijah.comp.IO;
 import tripleo.elijah.comp.StdErrSink;
-import tripleo.elijah.comp.internal.CompilationImpl;
 import tripleo.elijah.comp.internal.DefaultCompilerController;
+import tripleo.elijah.factory.comp.CompilationFactory;
 import tripleo.elijah.nextgen.outputstatement.*;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputFile;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputTree;
@@ -26,9 +27,7 @@ public class SX_NodeTest2 extends TestCase {
 	@Ignore
 	@Test
 	public void testFullText() throws Exception {
-		final StdErrSink      errSink = new StdErrSink();
-		final IO              io      = new IO();
-		final CompilationImpl comp    = new CompilationImpl(errSink, io);
+		final Compilation comp = CompilationFactory.mkCompilationSilent(new StdErrSink(), new IO());
 
 		final String f = "test/basic2/while100/";
 

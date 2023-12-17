@@ -6,6 +6,7 @@ import tripleo.elijah.ReadySupplier_1;
 import tripleo.elijah.lang.i.*;
 import tripleo.elijah.lang.impl.VariableStatementImpl;
 import tripleo.elijah.stages.deduce.post_bytecode.DED;
+import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_IdentTableEntry;
 import tripleo.elijah.stages.deduce.post_bytecode.IDeduceElement3;
 import tripleo.elijah.stages.gen_fn.*;
 import tripleo.elijah.stages.instructions.IdentIA;
@@ -65,17 +66,8 @@ public class DeduceElement3_Constructor implements IDeduceElement3 {
 	public void __post_deduce_generated_function_base(final @NotNull DeducePhase aDeducePhase) {
 		for (@NotNull IdentTableEntry identTableEntry : evaConstructor.idte_list) {
 			if (identTableEntry.getResolvedElement() instanceof final @NotNull VariableStatementImpl vs) {
-				final OS_Element el  = vs.getParent().getParent();
-				final OS_Element el2 = evaConstructor.getFD().getParent();
-
-				if (el != el2) {
-					if (!(el instanceof ClassStatement) && !(el instanceof NamespaceStatement)) {
-						continue;
-					}
-
-					// NOTE there is no concept of gf here
-					aDeducePhase.registerResolvedVariable(identTableEntry, el, vs.getName());
-				}
+				final @NotNull DeduceElement3_IdentTableEntry de3_ite = identTableEntry.getDeduceElement3(deduceTypes2(), evaConstructor);
+				de3_ite.stipulate_ResolvedVariable(aDeducePhase, identTableEntry, vs, evaConstructor);
 			}
 		}
 		{

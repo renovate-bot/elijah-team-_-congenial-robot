@@ -17,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.ReadySupplier_1;
 import tripleo.elijah.comp.i.ErrSink;
+import tripleo.elijah.lang.LangGlobals;
 import tripleo.elijah.lang.i.*;
 import tripleo.elijah.lang.impl.BaseFunctionDef;
 import tripleo.elijah.lang.impl.MatchConditionalImpl;
@@ -31,8 +32,8 @@ import tripleo.elijah.stages.instructions.ProcIA;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.util.Holder;
 import tripleo.elijah.util.NotImplementedException;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 import tripleo.elijah.work.WorkList;
-import tripleo.elijah.world.WorldGlobals;
 
 import java.text.MessageFormat;
 import java.util.Collection;
@@ -97,7 +98,7 @@ public class Resolve_Ident_IA {
 				final @NotNull WorkList          wl                = dt2._inj().new_WorkList();
 				final @NotNull OS_Module         module            = ci.getKlass().getContext().module();
 				final @NotNull GenerateFunctions generateFunctions = dc.getGenerateFunctions(module);
-				if (pte.getFunctionInvocation().getFunction() == WorldGlobals.defaultVirtualCtor)
+				if (pte.getFunctionInvocation().getFunction() == LangGlobals.defaultVirtualCtor)
 					wl.addJob(dt2._inj().new_WlGenerateDefaultCtor(generateFunctions, fi, dc.deduceTypes2.creationContext(), phase.codeRegistrar));
 				else
 					wl.addJob(dt2._inj().new_WlGenerateCtor(generateFunctions, fi, null, dc.deduceTypes2.phase.codeRegistrar));
@@ -120,7 +121,7 @@ public class Resolve_Ident_IA {
 		if (pte.getArgs().size() == 0 && cs.size() == 0) {
 			// TODO use a virtual default ctor
 			LOG.info("2262 use a virtual default ctor for " + pte.__debug_expression);
-			selected_constructor = WorldGlobals.defaultVirtualCtor;
+			selected_constructor = LangGlobals.defaultVirtualCtor;
 		} else {
 			// TODO find a ctor that matches prte.getArgs()
 			final List<TypeTableEntry> x  = pte.getArgs();
@@ -239,7 +240,7 @@ public class Resolve_Ident_IA {
 
 			//final OS_Element                         el2 = dei.getResolvedElement();
 
-			tripleo.elijah.util.Stupidity.println_out_2("  70 " + el2);
+			SimplePrintLoggerToRemoveSoon.println_out_2("  70 " + el2);
 
 			final @NotNull List<InstructionArgument> s = BaseEvaFunction._getIdentIAPathList(identIA);
 
@@ -439,7 +440,7 @@ public class Resolve_Ident_IA {
 //				assert idte.getStatus() != BaseTableEntry.Status.UNCHECKED;
 			final String normal_path = generatedFunction.getIdentIAPathNormal(identIA);
 			if (idte.resolveExpectation == null) {
-				tripleo.elijah.util.Stupidity.println_err_2("385 idte.resolveExpectation is null for " + idte);
+				SimplePrintLoggerToRemoveSoon.println_err_2("385 idte.resolveExpectation is null for " + idte);
 			} else
 				idte.resolveExpectation.satisfy(normal_path);
 		} else if (idte.getStatus() == BaseTableEntry.Status.KNOWN) {
@@ -557,7 +558,7 @@ public class Resolve_Ident_IA {
 				if (ci != null) {
 					pte.setClassInvocation(ci);
 				} else
-					tripleo.elijah.util.Stupidity.println_err_2("542 Null ClassInvocation");
+					SimplePrintLoggerToRemoveSoon.println_err_2("542 Null ClassInvocation");
 			}
 
 			pte.setFunctionInvocation(fi);
@@ -675,12 +676,9 @@ public class Resolve_Ident_IA {
 				}
 			}
 
-			identTableEntry.addStatusListener(new BaseTableEntry.StatusListener() {
-				@Override
-				public void onChange(final @NotNull IElementHolder eh, final BaseTableEntry.Status newStatus) {
-					if (newStatus == BaseTableEntry.Status.KNOWN) {
-						resolveElement(eh.getElement());
-					}
+			identTableEntry.addStatusListener((eh, newStatus) -> {
+				if (newStatus == BaseTableEntry.Status.KNOWN) {
+					resolveElement(eh.getElement());
 				}
 			});
 		}
@@ -691,7 +689,7 @@ public class Resolve_Ident_IA {
 
 		public OS_Element getResolvedElement() {
 			if (deduceTypes2 == null) { // TODO remove this ASAP. Should never happen
-				tripleo.elijah.util.Stupidity.println_err_2("5454 Should never happen. gf is not deduced.");
+				SimplePrintLoggerToRemoveSoon.println_err_2("5454 Should never happen. gf is not deduced.");
 				return null;
 				//throw new IllegalStateException("5454 Should never happen. gf is not deduced.");
 

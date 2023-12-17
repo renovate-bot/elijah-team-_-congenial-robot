@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.ReadySupplier_1;
 import tripleo.elijah.comp.i.ErrSink;
+import tripleo.elijah.lang.LangGlobals;
 import tripleo.elijah.lang.i.*;
 import tripleo.elijah.lang.impl.BaseFunctionDef;
 import tripleo.elijah.lang.types.OS_FuncType;
@@ -15,9 +16,9 @@ import tripleo.elijah.stages.instructions.Instruction;
 import tripleo.elijah.stages.instructions.InstructionArgument;
 import tripleo.elijah.stages.instructions.IntegerIA;
 import tripleo.elijah.util.NotImplementedException;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 import tripleo.elijah.work.WorkList;
 import tripleo.elijah.work.WorkManager;
-import tripleo.elijah.world.WorldGlobals;
 
 import java.util.Collection;
 import java.util.Map;
@@ -101,7 +102,7 @@ public class DeduceElement3_ProcTableEntry implements IDeduceElement3 {
 				if (ci != null) {
 					pte.setClassInvocation(ci);
 				} else
-					tripleo.elijah.util.Stupidity.println_err2("542 Null ClassInvocation");
+					SimplePrintLoggerToRemoveSoon.println_err2("542 Null ClassInvocation");
 			}
 
 			pte.setFunctionInvocation(fi);
@@ -202,15 +203,13 @@ public class DeduceElement3_ProcTableEntry implements IDeduceElement3 {
 	public void lfoe_action(final @NotNull DeduceTypes2 aDeduceTypes2,
 							final @NotNull WorkList wl,
 							final @NotNull Consumer<WorkList> addJobs) {
-		var pte = principal;
-
-		assert aDeduceTypes2 == deduceTypes2;
+		//assert aDeduceTypes2 == deduceTypes2; interesting
 
 		final __LFOE_Q q = new __LFOE_Q(aDeduceTypes2.wm, wl, aDeduceTypes2);
 
-		FunctionInvocation fi = pte.getFunctionInvocation();
+		FunctionInvocation fi = principal.getFunctionInvocation();
 		if (fi == null) {
-			fi = __lfoe_action__getFunctionInvocation(pte, aDeduceTypes2);
+			fi = __lfoe_action__getFunctionInvocation(principal, aDeduceTypes2);
 			if (fi == null) return;
 		}
 
@@ -231,11 +230,11 @@ public class DeduceElement3_ProcTableEntry implements IDeduceElement3 {
 			ci = fi.pte.getClassInvocation();
 		}
 		FunctionDef fd3 = fi.getFunction();
-		if (fd3 == WorldGlobals.defaultVirtualCtor) {
+		if (fd3 == LangGlobals.defaultVirtualCtor) {
 			if (ci == null) {
 				if (/*fi.getClassInvocation() == null &&*/ fi.getNamespaceInvocation() == null) {
 					// Assume default constructor
-					ci = aDeduceTypes2.phase.registerClassInvocation((ClassStatement) pte.getResolvedElement());
+					ci = aDeduceTypes2.phase.registerClassInvocation((ClassStatement) principal.getResolvedElement());
 					fi.setClassInvocation(ci);
 				} else
 					throw new NotImplementedException();
@@ -266,10 +265,10 @@ public class DeduceElement3_ProcTableEntry implements IDeduceElement3 {
 		if (fd3 != null) {
 			parent = fd3.getParent();
 			if (parent instanceof ClassStatement) {
-				if (ci != pte.getClassInvocation()) {
+				if (ci != principal.getClassInvocation()) {
 					ci = _inj().new_ClassInvocation((ClassStatement) parent, null, new ReadySupplier_1<>(deduceTypes2()));
 					{
-						final ClassInvocation classInvocation = pte.getClassInvocation();
+						final ClassInvocation classInvocation = principal.getClassInvocation();
 						if (classInvocation != null) {
 							Map<TypeName, OS_Type> gp = classInvocation.genericPart().getMap();
 							if (gp != null) {
@@ -289,7 +288,7 @@ public class DeduceElement3_ProcTableEntry implements IDeduceElement3 {
 		} else {
 			parent = ci.getKlass();
 			{
-				final ClassInvocation classInvocation = pte.getClassInvocation();
+				final ClassInvocation classInvocation = principal.getClassInvocation();
 				if (classInvocation != null && classInvocation.genericPart().hasGenericPart()) {
 					Map<TypeName, OS_Type> gp = classInvocation.genericPart().getMap();
 					int                    i  = 0;
@@ -373,7 +372,7 @@ public class DeduceElement3_ProcTableEntry implements IDeduceElement3 {
 		//de3.set
 
 
-		@NotNull FunctionInvocation fi2 = aDeduceTypes2._phase().newFunctionInvocation(WorldGlobals.defaultVirtualCtor, pte, invocation);
+		@NotNull FunctionInvocation fi2 = aDeduceTypes2._phase().newFunctionInvocation(LangGlobals.defaultVirtualCtor, pte, invocation);
 
 		// FIXME use `q'
 		final WlGenerateDefaultCtor wldc = aDeduceTypes2._inj().new_WlGenerateDefaultCtor(aDeduceTypes2.getGenerateFunctions(invocation.getKlass().getContext().module()), fi2, aDeduceTypes2.creationContext(), aDeduceTypes2._phase().codeRegistrar);
@@ -403,7 +402,7 @@ public class DeduceElement3_ProcTableEntry implements IDeduceElement3 {
 		final FunctionDef fd2   = fi.getFunction();
 		int               state = 0;
 
-		if (fd2 == WorldGlobals.defaultVirtualCtor) {
+		if (fd2 == LangGlobals.defaultVirtualCtor) {
 			if (fi.pte.getArgs().size() == 0)
 				state = 1;
 			else

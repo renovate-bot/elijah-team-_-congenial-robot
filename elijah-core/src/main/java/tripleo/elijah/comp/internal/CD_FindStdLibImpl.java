@@ -1,11 +1,13 @@
 package tripleo.elijah.comp.internal;
 
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.ci.CompilerInstructions;
+import tripleo.elijah.ci.i.CompilerInstructions;
+import tripleo.elijah.comp.Finally;
 import tripleo.elijah.comp.i.CD_FindStdLib;
 import tripleo.elijah.comp.i.CompilationClosure;
 import tripleo.elijah.comp.queries.QuerySourceFileParser;
-import tripleo.elijah.nextgen.query.Mode;
+import tripleo.elijah.util.Mode;
+import tripleo.elijah.util.Ok;
 import tripleo.elijah.util.Operation;
 
 import java.io.File;
@@ -14,16 +16,17 @@ import java.util.function.Consumer;
 
 public class CD_FindStdLibImpl implements CD_FindStdLib {
 	@Override
-	public void findStdLib(final @NotNull CR_State crState,
-						   final @NotNull String aPreludeName,
-						   final @NotNull Consumer<Operation<CompilerInstructions>> coci) {
+	public @NotNull Operation<Ok> findStdLib(final @NotNull CR_State crState,
+											 final @NotNull String aPreludeName,
+											 final @NotNull Consumer<Operation<CompilerInstructions>> coci) {
 		try {
 			final CompilationRunner compilationRunner = crState.runner();
 
 			@NotNull final Operation<CompilerInstructions> oci = _____findStdLib(aPreludeName, compilationRunner._accessCompilation().getCompilationClosure(), compilationRunner);
 			coci.accept(oci);
+			return Operation.success(Ok.instance());
 		} catch (Exception aE) {
-			throw new RuntimeException(aE);
+			return Operation.failure(aE);
 		}
 	}
 
@@ -36,7 +39,9 @@ public class CD_FindStdLibImpl implements CD_FindStdLib {
 		var sle = pl.child("stdlib.ez");
 
 		var local_stdlib_1 = sle.toFile();
-		System.err.println("3939 "+local_stdlib_1);
+		if (cc.getCompilation().reports().outputOn(Finally.Outs.Out_40)) {
+			System.err.println("3939 " + local_stdlib_1);
+		}
 
 		// TODO stdlib path here
 		final File local_stdlib = new File("lib_elijjah/lib-" + prelude_name + "/stdlib.ez");

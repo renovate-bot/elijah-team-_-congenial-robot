@@ -3,7 +3,7 @@ package tripleo.elijah.comp.functionality.f203;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.comp.i.Compilation;
 
 import java.io.File;
 import java.time.LocalDateTime;

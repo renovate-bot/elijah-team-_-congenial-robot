@@ -9,10 +9,7 @@ import org.jdeferred2.Promise;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.comp.AccessBus;
-import tripleo.elijah.comp.Compilation;
-import tripleo.elijah.comp.CompilerInput;
-import tripleo.elijah.comp.PipelineLogic;
+import tripleo.elijah.comp.*;
 import tripleo.elijah.comp.internal.CB_Output;
 import tripleo.elijah.comp.internal.CR_State;
 import tripleo.elijah.comp.internal.CompilationRunner;
@@ -24,6 +21,7 @@ import tripleo.elijah.nextgen.reactive.ReactiveDimension;
 import tripleo.elijah.pre_world.Mirror_EntryPoint;
 import tripleo.elijah.stages.gen_fn.IClassGenerator;
 import tripleo.elijah.stages.inter.ModuleThing;
+import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.world.i.WorldModule;
 
 import java.util.ArrayList;
@@ -364,6 +362,18 @@ public class CompilationEnclosure {
 
 	public void addEntryPoint(final @NotNull Mirror_EntryPoint aMirrorEntryPoint, final IClassGenerator dcg) {
 		aMirrorEntryPoint.generate(dcg);
+	}
+
+	public void addLog(final ElLog aLOG) {
+		var ce = this;
+		ce.getAccessBusPromise()
+				.then(ab -> {
+					ab.subscribePipelineLogic(pl -> pl.addLog(aLOG));
+				});
+	}
+
+	public ICompilationAccess2 ca2() {
+		return compilation.getCompilationAccess2();
 	}
 
 	public interface ModuleListener {

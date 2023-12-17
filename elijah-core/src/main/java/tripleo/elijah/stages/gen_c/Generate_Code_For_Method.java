@@ -11,6 +11,7 @@ package tripleo.elijah.stages.gen_c;
 import com.google.common.base.Supplier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tripleo.elijah.DebugFlags;
 import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.lang.i.NormalTypeName;
 import tripleo.elijah.lang.i.OS_Type;
@@ -19,7 +20,7 @@ import tripleo.elijah.lang.types.OS_UnitType;
 import tripleo.elijah.nextgen.outputstatement.EG_SingleStatement;
 import tripleo.elijah.nextgen.outputstatement.EG_Statement;
 import tripleo.elijah.nextgen.outputstatement.EX_Explanation;
-import tripleo.elijah.nextgen.query.Mode;
+import tripleo.elijah.util.Mode;
 import tripleo.elijah.stages.deduce.nextgen.DR_Ident;
 import tripleo.elijah.stages.deduce.nextgen.DR_Item;
 import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_VariableTableEntry;
@@ -45,12 +46,11 @@ import static tripleo.elijah.stages.deduce.DeduceTypes2.to_int;
  * Created 6/21/21 5:53 AM
  */
 public class Generate_Code_For_Method {
-	final BufferTabbedOutputStream tos    = new BufferTabbedOutputStream();
-	final BufferTabbedOutputStream tosHdr = new BufferTabbedOutputStream();
-	final ElLog                    LOG;
-	GenerateC gc;
-	boolean   is_constructor = false, is_unit_type = false;
-	private final boolean MANUAL_DISABLED = false;
+	final         BufferTabbedOutputStream tos    = new BufferTabbedOutputStream();
+	final         BufferTabbedOutputStream tosHdr = new BufferTabbedOutputStream();
+	final         ElLog                    LOG;
+	private final GenerateC                gc;
+	boolean is_constructor = false, is_unit_type = false;
 
 	public Generate_Code_For_Method(@NotNull final GenerateC aGenerateC, final ElLog aLog) {
 		gc  = aGenerateC;
@@ -61,9 +61,9 @@ public class Generate_Code_For_Method {
 		tos.incr_tabs();
 		//
 		@NotNull final List<Instruction> instructions = yf.instructions();
-		for (int instruction_index = 0; instruction_index < instructions.size(); instruction_index++) {
-			final Instruction instruction = instructions.get(instruction_index);
-//			LOG.err("8999 "+instruction);
+		for (int i = 0, instructionsSize = instructions.size(); i < instructionsSize; i++) {
+			final Instruction instruction = instructions.get(i);
+			//			LOG.err("8999 "+instruction);
 			final Label label = yf.findLabel(instruction.getIndex());
 			if (label != null) {
 				tos.put_string_ln_no_tabs(label.getName() + ":");
@@ -168,15 +168,20 @@ public class Generate_Code_For_Method {
 			// TODO don't know what this is for now
 			// Assuming ctor
 			is_constructor = gf.pointsToConstructor2();
+
 			final EvaNode genClass = gf.getGenClass();
 			final String ty2 = gc.getTypeNameForGenClass(genClass);
 
-			final String return_type1 = aGmh.__find_return_type(gf, gc.LOG);
+			final String return_type1 = aGmh.__find_return_type(gf, gc.elLog());
+
+			String s;
 			if (return_type1 != null) {
-				tos.put_string_ln(String.format("%s vsr;", return_type1));
+				s = String.format("%s vsr;", return_type1);
 			} else {
-				tos.put_string_ln(String.format("// *171* %s vsr;", ty2));
+				s = String.format("// *171* %s vsr;", ty2);
 			}
+
+			tos.put_string_ln(s);
 			break;
 		case 4:
 			// don't print anything
@@ -328,7 +333,7 @@ public class Generate_Code_For_Method {
 		final InstructionArgument _arg0 = aInstruction.getArg(0);
 		assert _arg0 instanceof ProcIA;
 
-		final GI_ProcIA gi_proc = gc._repo.itemFor((ProcIA) _arg0);
+		final GI_ProcIA gi_proc = gc.get_repo().itemFor((ProcIA) _arg0);
 
 		final GCX_Construct gcx_construct = new GCX_Construct(gi_proc, aInstruction, gc);
 
@@ -488,7 +493,7 @@ public class Generate_Code_For_Method {
 					if (((NormalTypeName) typeName).getName().equals("Any"))
 						z2 = "void *";  // TODO Technically this is wrong
 					else
-						z2 = GenerateC.GetTypeName.forTypeName(typeName, gc.errSink);
+						z2 = GenerateC.GetTypeName.forTypeName(typeName, gc._errSink());
 					final String s1 = String.format("%s %s;", z2, target_name);
 					return Operation2.success(new EG_SingleStatement(s1, EX_Explanation.withMessage("actionDECL with USER")));
 				}
@@ -575,7 +580,7 @@ public class Generate_Code_For_Method {
 
 		gf.reactive().add(gcfc);
 
-		if (!MANUAL_DISABLED) {
+		if (!DebugFlags.GCFM_MANUAL_DISABLED) {
 			gcfc.respondTo(this.gc);
 		}
 	}
@@ -593,7 +598,7 @@ public class Generate_Code_For_Method {
 
 		gf.reactive().add(gcfm);
 
-		if (!MANUAL_DISABLED) {
+		if (!DebugFlags.GCFM_MANUAL_DISABLED) {
 			gcfm.respondTo(this.gc);
 		}
 
@@ -604,6 +609,10 @@ public class Generate_Code_For_Method {
 			sink.addFunction(gf, rs, gc);
 		else
 			System.err.println("sink failed");
+	}
+
+	public GenerateC _gc() {
+		return gc;
 	}
 
 	public class GCR_VTE_Target implements EG_Statement {

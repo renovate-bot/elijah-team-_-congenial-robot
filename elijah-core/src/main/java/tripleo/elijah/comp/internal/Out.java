@@ -10,10 +10,11 @@ package tripleo.elijah.comp.internal;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.lang.i.OS_Module;
 import tripleo.elijah.lang.i.ParserClosure;
 import tripleo.elijah.lang.impl.ParserClosureImpl;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 import tripleo.elijah.util.TabbedOutputStream;
 
 import java.io.FileNotFoundException;
@@ -31,7 +32,7 @@ public class Out {
 
 	@Contract(pure = true)
 	public static void println(final String s) {
-		tripleo.elijah.util.Stupidity.println_out_2(s);
+		SimplePrintLoggerToRemoveSoon.println_out_2(s);
 	}
 
 	private final boolean do_out;

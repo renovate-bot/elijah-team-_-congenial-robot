@@ -1,22 +1,36 @@
 package tripleo.elijah.stages.deduce;
 
-import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.comp.i.Compilation;
+import tripleo.elijah.comp.i.CompilationEnclosure;
 import tripleo.elijah.comp.notation.GM_GenerateModule;
 import tripleo.elijah.comp.notation.GM_GenerateModuleRequest;
 import tripleo.elijah.comp.notation.GN_GenerateNodesIntoSink;
 import tripleo.elijah.comp.notation.GN_GenerateNodesIntoSinkEnv;
+
 import tripleo.elijah.nextgen.inputtree.EIT_ModuleList;
+
 import tripleo.elijah.nextgen.reactive.Reactivable;
 import tripleo.elijah.nextgen.reactive.ReactiveDimension;
-import tripleo.elijah.stages.gen_c.GenerateC;
+
 import tripleo.elijah.stages.gen_fn.EvaClass;
 import tripleo.elijah.stages.gen_fn.ProcTableEntry;
-import tripleo.elijah.stages.gen_generic.*;
+
+import tripleo.elijah.stages.gen_c.GenerateC;
+
+import tripleo.elijah.stages.gen_generic.GenerateFiles;
+import tripleo.elijah.stages.gen_generic.GenerateResult;
+import tripleo.elijah.stages.gen_generic.GenerateResultEnv;
+import tripleo.elijah.stages.gen_generic.Old_GenerateResult;
+import tripleo.elijah.stages.gen_generic.Old_GenerateResultItem;
+
 import tripleo.elijah.stages.gen_generic.pipeline_impl.DefaultGenerateResultSink;
 import tripleo.elijah.stages.gen_generic.pipeline_impl.GenerateResultSink;
+
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.work.WorkList;
 import tripleo.elijah.work.WorkManager;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -29,6 +43,7 @@ class DE3_ActivePTE implements DE3_Active {
 	private final          ClassInvocation                   ci;
 	private final @NotNull List<Reactivable>                 ables;
 	private final          DeduceTypes2.DeduceTypes2Injector __inj;
+	private                boolean                           __do_001_called;
 
 	public DE3_ActivePTE(final @NotNull DeduceTypes2 aDeduceTypes2,
 						 final @NotNull ProcTableEntry pte,
@@ -73,12 +88,19 @@ class DE3_ActivePTE implements DE3_Active {
 			if (pte.getClassInvocation() != null)
 				(pte.getClassInvocation()).resolvePromise()
 						.then(node -> {
-							if (generateC.resultSink == null) {
-								//assert false;
-								generateC.resultSink = _inj().new_DefaultGenerateResultSink(deduceTypes2.phase.pa);
+							if (generateC.getResultSink() == null) {
+								final Compilation          c  = deduceTypes2.module.getCompilation();
+								final CompilationEnclosure ce = c.getCompilationEnclosure();
+
+								ce.getPipelineAccessPromise().then(pa -> {
+									pa.getEvaPipelinePromise().then(ep -> {
+										final DefaultGenerateResultSink grs = ep.grs();
+										generateC.setResultSink(grs);
+									});
+								});
 							}
 
-							var resultSink = generateC.resultSink;
+							var resultSink = generateC.getResultSink();
 
 							var fg         = getResultEnv(generateC, resultSink);
 
@@ -115,24 +137,38 @@ class DE3_ActivePTE implements DE3_Active {
 		return fg;
 	}
 
+	@SuppressWarnings("unused")
 	private void __do_001(final @NotNull GenerateFiles generateC,
 						  final EvaClass node,
 						  final DeducePhase deducePhase,
 						  final GenerateResultSink resultSink,
 						  final GenerateResultEnv fg) {
-		final DeducePhase.GeneratedClasses classes = deducePhase.generatedClasses;
-		final int                          size1   = classes.size();
-		final GenerateResult               x       = generateC.resultsFromNodes(List_of(node), _inj().new_WorkManager(), resultSink, fg);
-		final int                          size2   = classes.size();
 
-		if (size2 > size1) {
-			logProgress(3047, "" + (size2 - size1) + " results generated for " + node.identityString());
-		} else {
-			logProgress(3046, "no results generated for " + node.identityString());
-		}
+		assert resultSink == fg.resultSink();
 
-		for (Old_GenerateResultItem result : x.results()) {
-			logProgress(3045, "" + result);
+		if (!__do_001_called) {
+			__do_001_called = true;
+
+			final DeducePhase.GeneratedClasses classes = deducePhase.generatedClasses;
+
+			final var classes0 = deducePhase.generatedClasses.copy();
+
+			final int size1 = classes.size();
+			final GenerateResult x = generateC.resultsFromNodes(List_of(node), _inj().new_WorkManager(), resultSink,
+					fg);
+			final int size2 = classes.size();
+
+			final var classes1 = deducePhase.generatedClasses.copy();
+
+			if (size2 > size1) {
+				logProgress(3047, "" + (size2 - size1) + " results generated for " + node.identityString());
+			} else {
+				logProgress(3046, "no results generated for " + node.identityString());
+			}
+
+			for (Old_GenerateResultItem result : x.results()) {
+				logProgress(3045, "" + result);
+			}
 		}
 	}
 

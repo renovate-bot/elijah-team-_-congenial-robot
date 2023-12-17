@@ -73,7 +73,7 @@ public enum _GF {
 			public @NotNull StringBuilder itsAGirl(final InstructionArgument expression_num) {
 				final IdentIA identIA = (IdentIA) expression_num;
 
-				final CReference reference = new CReference(gc.repo(), gc.ce);
+				final CReference reference = new CReference(gc.repo(), gc._ce());
 				reference.getIdentIAPath(identIA, GET, null);
 				final List<String> sl3 = gc.getArgumentStrings(() -> new InstructionFixedList(instruction));
 				reference.args(sl3);

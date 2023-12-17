@@ -11,7 +11,7 @@ package tripleo.elijah.lang;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
-import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.comp.StdErrSink;
 import tripleo.elijah.comp.i.ErrSink;
@@ -78,7 +78,7 @@ public class TypeOfTypeNameTest {
 		boilerplate.get();
 		boilerplate.getGenerateFiles(boilerplate.defaultMod());
 
-		final PipelineLogic pl           = boilerplate.pipelineLogic;
+		final PipelineLogic pl           = boilerplate.pipelineLogic();
 		final DeduceTypes2  deduceTypes2 = new DeduceTypes2(new DeduceTypes2Request(mod, pl.dp, ElLog.Verbosity.VERBOSE));
 		final TypeName      tn           = t.resolve(ctx, deduceTypes2);
 //		tripleo.elijah.util.Stupidity.println_out_2(tn);
@@ -132,7 +132,7 @@ public class TypeOfTypeNameTest {
 		boilerplate.get();
 		boilerplate.getGenerateFiles(boilerplate.defaultMod());
 
-		final PipelineLogic pl           = boilerplate.pipelineLogic;
+		final PipelineLogic pl           = boilerplate.pipelineLogic();
 		final DeduceTypes2  deduceTypes2 = new DeduceTypes2(new DeduceTypes2Request(mod, pl.dp, ElLog.Verbosity.VERBOSE));
 		TypeName            tn           = t.resolve(ctx, deduceTypes2);
 //		tripleo.elijah.util.Stupidity.println_out_2(tn);
@@ -200,7 +200,7 @@ public class TypeOfTypeNameTest {
 		boilerplate.get();
 		boilerplate.getGenerateFiles(boilerplate.defaultMod());
 
-		final PipelineLogic pl           = boilerplate.pipelineLogic;
+		final PipelineLogic pl           = boilerplate.pipelineLogic();
 		final DeduceTypes2  deduceTypes2 = new DeduceTypes2(new DeduceTypes2Request(mod, pl.dp, ElLog.Verbosity.VERBOSE));
 
 		TypeName tn = t.resolve(ctx, deduceTypes2);
@@ -273,7 +273,7 @@ public class TypeOfTypeNameTest {
 		boilerplate.get();
 		boilerplate.getGenerateFiles(boilerplate.defaultMod());
 
-		final PipelineLogic pl           = boilerplate.pipelineLogic;
+		final PipelineLogic pl           = boilerplate.pipelineLogic();
 		final DeduceTypes2  deduceTypes2 = new DeduceTypes2(new DeduceTypes2Request(mod, pl.dp, ElLog.Verbosity.VERBOSE));
 
 //		when(mod.getFileName()).thenReturn("foo.elijah");

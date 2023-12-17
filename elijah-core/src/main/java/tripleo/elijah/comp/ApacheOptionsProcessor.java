@@ -2,6 +2,7 @@ package tripleo.elijah.comp;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.comp.i.OptionsProcessor;
 import tripleo.elijah.comp.impl.CC_SetDoOut;
 import tripleo.elijah.comp.impl.CC_SetShowTree;

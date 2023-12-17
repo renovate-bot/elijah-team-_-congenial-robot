@@ -46,7 +46,7 @@ public class CR_RunBetterAction implements CR_Action {
 			st.rt = StageToRuntime.get(ca.getCompilation().pa());
 			st.rt.run_better(st, aO);
 
-			return Operation.success(new Ok());
+			return Operation.success(Ok.instance());
 		} catch (final Exception aE) {
 			aE.printStackTrace(); // TODO debug 07/26
 			return Operation.failure(aE);

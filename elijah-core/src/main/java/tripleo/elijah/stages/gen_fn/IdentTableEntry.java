@@ -19,14 +19,18 @@ import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.Eventual;
 import tripleo.elijah.lang.i.*;
 import tripleo.elijah.nextgen.reactive.DefaultReactive;
+import tripleo.elijah.nextgen.reactive.Reactivable;
+import tripleo.elijah.nextgen.reactive.ReactiveDimension;
 import tripleo.elijah.stages.deduce.*;
 import tripleo.elijah.stages.deduce.Resolve_Ident_IA.DeduceElementIdent;
 import tripleo.elijah.stages.deduce.nextgen.DR_Ident;
 import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_IdentTableEntry;
+import tripleo.elijah.stages.gdm.GDM_IdentExpression;
 import tripleo.elijah.stages.instructions.IdentIA;
 import tripleo.elijah.stages.instructions.InstructionArgument;
 import tripleo.elijah.stages.instructions.IntegerIA;
 import tripleo.elijah.util.NotImplementedException;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -34,6 +38,7 @@ import java.util.function.Consumer;
 /**
  * Created 9/12/20 10:27 PM
  */
+@SuppressWarnings("TypeMayBeWeakened")
 public class IdentTableEntry extends BaseTableEntry1 implements Constructable, TableEntryIV, DeduceTypes2.ExpectationBase, IDeduceResolvable {
 	public final           DeferredObject<OS_Element, ResolveError, Void>  _p_resolvedElementPromise  = new DeferredObject<>();
 	protected final        DeferredObject<InstructionArgument, Void, Void> _p_backlinkSet             = new DeferredObject<InstructionArgument, Void, Void>();
@@ -77,10 +82,9 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 
 		this._definedFunction = aBaseEvaFunction;
 
-		addStatusListener(new StatusListener() {
-			@Override
-			public void onChange(@NotNull IElementHolder eh, Status newStatus) {
-				if (newStatus == Status.KNOWN) {
+		addStatusListener((eh, newStatus) -> {
+			if (newStatus == Status.KNOWN) {
+				if (eh != null) {
 					setResolvedElement(eh.getElement());
 				}
 			}
@@ -91,6 +95,29 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 		typeResolve.typeResolution().then(gt -> {
 			if (type != null && type.genType != null) // !! 07/30
 				type.genType.copy(gt);
+		});
+
+		aBaseEvaFunction.onInformGF(gf -> {
+			_reactiveEventual.then((_Reactive_IDTE rct) -> {
+				rct.join(gf);
+			});
+			reactive().addResolveListener((IdentTableEntry x) -> {
+				int y=2;
+										  });
+			var im = gf.monitor(ident);
+			im.resolveIdentTableEntry(this);
+
+			//__gf = gf; //!!
+		});
+
+		reactive().add(new Reactivable() {
+			@Override
+			public void respondTo(final ReactiveDimension aDimension) {
+				if (aDimension instanceof GenerateFunctions gf) {
+					final GDM_IdentExpression mie = gf.monitor(ident);
+					mie.resolveIdentTableEntry(IdentTableEntry.this);
+				}
+			}
 		});
 	}
 
@@ -267,7 +294,7 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 		else {
 			//final Holder<ProcTableEntry> holder = new Holder<ProcTableEntry>();
 			_p_constructableDeferred.then(el -> {
-				tripleo.elijah.util.Stupidity.println_err_2(String.format("Setting constructable_pte twice 1) %s and 2) %s", el, aPte));
+				SimplePrintLoggerToRemoveSoon.println_err_2(String.format("Setting constructable_pte twice 1) %s and 2) %s", el, aPte));
 				//holder.set(el);
 			});
 		}
@@ -325,6 +352,10 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 		return __gf;
 	}
 
+	public void onBacklinkSet(final DoneCallback<? super InstructionArgument> cb) {
+		backlinkSet().then(cb);
+	}
+
 	public class _Reactive_IDTE extends DefaultReactive {
 		@Override
 		public <IdentTableEntry> void addListener(final Consumer<IdentTableEntry> t) {
@@ -360,16 +391,17 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 	}
 
 	private void resolveLanguageLevelConstruct(OS_Element element) {
-		assert __gf != null;
-		assert this._deduceTypes2() != null;
-
-		if (element instanceof FunctionDef fd) {
-			NotImplementedException.raise();
-		}
-
-		_p_elementPromise.then(x -> {
-			NotImplementedException.raise();
-		});
+		//assert __gf != null;
+		//assert this._deduceTypes2() != null;
+		//
+		//if (element instanceof FunctionDef fd) {
+		//	NotImplementedException.raise_stop();
+		//}
+		//
+		//_p_elementPromise.then(x -> {
+		//	NotImplementedException.raise_stop();
+		//	assert x == element;
+		//});
 	}
 
 	public EvaExpression<IdentExpression> evaExpression() {

@@ -1,25 +1,18 @@
 package tripleo.elijah.comp.internal;
 
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.comp.i.*;
-import tripleo.elijah.util.Stupidity;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static tripleo.elijah.util.Helpers.List_of;
 
 public class CompilationBus implements ICompilationBus {
 	public final @NotNull  CompilerDriver   cd;
 	private final @NotNull Compilation      c;
 	private final @NotNull List<CB_Process> _processes           = new ArrayList<>();
-	private final @NotNull IProgressSink    _defaultProgressSink = new IProgressSink() {
-		@Override
-		public void note(final Codes aCode, final @NotNull ProgressSinkComponent aProgressSinkComponent, final int aType, final Object[] aParams) {
-			Stupidity.println_err_2(aProgressSinkComponent.printErr(aCode, aType, aParams));
-		}
-	};
+	private final @NotNull IProgressSink    _defaultProgressSink = new DefaultProgressSink();
 	public                 CB_FindCIs              cb_findCIs;
 
 	public CompilationBus(final @NotNull CompilationEnclosure ace) {
@@ -65,12 +58,12 @@ public class CompilationBus implements ICompilationBus {
 	}
 
 	public void runProcesses() {
-		List<ICompilationBus.CB_Process> processes = _processes;
-		int                              size      = 0;
+		List<CB_Process> processes = _processes;
+		int              size      = 0;
 
 		while (size < processes.size()) {
 			for (int i = size; i < processes.size(); i++) {
-				final ICompilationBus.CB_Process process = processes.get(i);
+				final CB_Process process = processes.get(i);
 
 				process.steps().stream().forEach(aCBAction -> aCBAction.execute());
 			}
@@ -80,16 +73,10 @@ public class CompilationBus implements ICompilationBus {
 		assert processes.size() == size;
 	}
 
-	static class SingleActionProcess implements CB_Process {
-		private final CB_Action a;
-
-		public SingleActionProcess(final CB_Action aAction) {
-			a = aAction;
-		}
-
-		@Override
-		public @NotNull List<CB_Action> steps() {
-			return List_of(a);
-		}
-	}
+	//private static class DefaultProgressSink implements IProgressSink {
+	//	@Override
+	//	public void note(final Codes aCode, final @NotNull ProgressSinkComponent aProgressSinkComponent, final int aType, final Object[] aParams) {
+	//		SimplePrintLoggerToRemoveSoon.println_err_2(aProgressSinkComponent.printErr(aCode, aType, aParams));
+	//	}
+	//}
 }

@@ -3,7 +3,7 @@ package tripleo.elijah.comp.internal;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.comp.AccessBus;
-import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.comp.Pipeline;
 import tripleo.elijah.comp.i.ICompilationAccess;
 import tripleo.elijah.comp.i.ProcessRecord;

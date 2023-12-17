@@ -7,15 +7,15 @@
 
 	<parent>
 		<groupId>tripleo.elijah</groupId>
-		<artifactId>elijah-v2</artifactId>
-		<version>0.91.1-SNAPSHOT</version>
+		<artifactId>congenial-robot</artifactId>
+		<version>2023.congenial.11.something-after-rosetta</version>
 	</parent>
 
 	<artifactId>annotations</artifactId>
 	<name>annotations</name>
 	<description>annotations</description>
 	<packaging>jar</packaging>
-	<version>0.9.1-SNAPSHOT</version>
+	<version>2023.congenial.11.something-after-rosetta</version>
 
 	<dependencies>
 

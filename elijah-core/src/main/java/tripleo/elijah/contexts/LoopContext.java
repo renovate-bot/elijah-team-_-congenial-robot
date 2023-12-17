@@ -16,6 +16,7 @@ import tripleo.elijah.lang.i.*;
 import tripleo.elijah.lang.impl.AliasStatementImpl;
 import tripleo.elijah.lang.impl.ContextImpl;
 import tripleo.elijah.lang.impl.VariableSequenceImpl;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 /**
  * @author Tripleo
@@ -63,7 +64,7 @@ public class LoopContext extends ContextImpl implements Context {
 				}
 			}
 			if (item instanceof VariableSequenceImpl) {
-				tripleo.elijah.util.Stupidity.println_out_2("1102 " + item);
+				SimplePrintLoggerToRemoveSoon.println_out_2("1102 " + item);
 				for (final VariableStatement vs : ((VariableSequenceImpl) item).items()) {
 					if (vs.getName().equals(name))
 						Result.add(name, level, vs, this);

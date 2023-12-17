@@ -11,6 +11,7 @@ import tripleo.elijah.stages.gen_fn.*;
 import tripleo.elijah.stages.instructions.IdentIA;
 import tripleo.elijah.stages.instructions.InstructionArgument;
 import tripleo.elijah.util.NotImplementedException;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 import java.util.List;
 
@@ -47,7 +48,7 @@ class CReference_getIdentIAPath_IdentIAHelper {
 			_act_FormalArgListItem(aCReference, (FormalArgListItem) resolvedElement);
 		} else {
 			// text = idte.getIdent().getText();
-			tripleo.elijah.util.Stupidity.println_out("1008 " + resolvedElement.getClass().getName());
+			SimplePrintLoggerToRemoveSoon.println_out("1008 " + resolvedElement.getClass().getName());
 			throw new NotImplementedException();
 		}
 		return b;
@@ -77,7 +78,7 @@ class CReference_getIdentIAPath_IdentIAHelper {
 			code = ((EvaContainerNC) getResolved()).getCode();
 		} else {
 			code = -1;
-			tripleo.elijah.util.Stupidity.println_err("** 31116 not resolved " + getResolved_element());
+			SimplePrintLoggerToRemoveSoon.println_err("** 31116 not resolved " + getResolved_element());
 		}
 		// README might be calling reflect or Type or Name
 		// TODO what about named constructors -- should be called with construct keyword
@@ -117,7 +118,7 @@ class CReference_getIdentIAPath_IdentIAHelper {
 			code = ((BaseEvaFunction) getResolved()).getCode();
 		} else {
 			code = -1;
-			tripleo.elijah.util.Stupidity.println_err("** 31161 not resolved " + getResolved_element());
+			SimplePrintLoggerToRemoveSoon.println_err("** 31161 not resolved " + getResolved_element());
 		}
 		// README Assuming this is for named constructors
 		final String text  = ((ConstructorDef) getResolved_element()).name().asString();

@@ -15,6 +15,7 @@ import tripleo.elijah.comp.i.CompilationEnclosure;
 import tripleo.elijah.comp.i.IPipelineAccess;
 import tripleo.elijah.lang.i.OS_Module;
 import tripleo.elijah.nextgen.reactive.ReactiveDimension;
+import tripleo.elijah.stages.gen_fn_c.GenFnC;
 import tripleo.elijah.stages.gen_generic.ICodeRegistrar;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.work.WorkManager;
@@ -55,7 +56,10 @@ public class GeneratePhase implements ReactiveDimension, CompilationEnclosure.Mo
 		if (generateFunctions.containsKey(mod)) {
 			Result = generateFunctions.get(mod);
 		} else {
-			Result = new GenerateFunctions(mod, pipelineLogic, pa);
+			final GenFnC bc = new GenFnC();
+			bc.set(pa);
+			bc.set(pipelineLogic);
+			Result = new GenerateFunctions(mod, bc);
 			generateFunctions.put(mod, Result);
 		}
 		return Result;

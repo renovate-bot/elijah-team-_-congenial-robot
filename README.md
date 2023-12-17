@@ -6,11 +6,13 @@ The elijah-lang compiler.
 [https://github.com/elijah-team/congenial-robot](https://github.com/elijah-team/congenial-robot)
 
 ```shell
-git clone https://github.com/elijah-team/congenial-robot
-cd congenial-robot
-mkdir COMP
-# nix-shell -p maven jdk17 --pure --command "mvn test"
-mvn test
+E=`mktemp -d`
+git clone https://github.com/elijah-team/congenial-robot -b 2023-11-rosetta-w $E
+mkdir $E/COMP
+#cd congenial-robot
+#mkdir COMP
+(cd $E && nix-shell -p maven jdk17 --pure --command "mvn test")
+#mvn test
 ```
 
 This project is licensed under LGPL.
@@ -25,10 +27,6 @@ GOALS
 - More verification
   - on the road to correctness
 
-PLACEHOLDER 1
---------------
-
-> What seems to work best is leaning into annoyance or anger, and ❤-fixing it.
 
 LINEAGE
 --------

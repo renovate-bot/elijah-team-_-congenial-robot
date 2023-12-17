@@ -1,8 +1,8 @@
 package tripleo.elijah.comp.internal;
 
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.ci.CompilerInstructions;
-import tripleo.elijah.comp.Compilation;
+import tripleo.elijah.ci.i.CompilerInstructions;
+import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.comp.CompilerInput;
 import tripleo.elijah.comp.i.*;
 import tripleo.elijah.stateful.DefaultStateful;
@@ -46,7 +46,7 @@ public class CR_FindCIs extends DefaultStateful implements CR_Action {
 			cci.accept(compilerInput.acceptance_ci(), _ps);
 		}
 
-		return Operation.success(new Ok());
+		return Operation.success(Ok.instance());
 	}
 
 	@Override

@@ -10,6 +10,7 @@ package tripleo.elijah.comp;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.DebugFlags;
 import tripleo.elijah.comp.i.CompilationEnclosure;
 import tripleo.elijah.comp.i.IPipelineAccess;
 import tripleo.elijah.comp.internal.CB_Output;
@@ -23,6 +24,8 @@ import tripleo.elijah.lang.i.OS_NamedElement;
 import tripleo.elijah.nextgen.outputstatement.EG_Statement;
 import tripleo.elijah.nextgen.outputstatement.EX_Explanation;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputFile;
+import tripleo.elijah.nextgen.outputtree.EOT_OutputTree;
+import tripleo.elijah.nextgen.outputtree.EOT_OutputType;
 import tripleo.elijah.stages.gen_fn.*;
 import tripleo.elijah.stages.gen_generic.DoubleLatch;
 import tripleo.elijah.stages.gen_generic.pipeline_impl.DefaultGenerateResultSink;
@@ -33,6 +36,8 @@ import tripleo.elijah.stages.instructions.Instruction;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static tripleo.elijah.util.Helpers.List_of;
 
 /**
  * Created 8/21/21 10:16 PM
@@ -98,6 +103,9 @@ public class EvaPipeline implements PipelineMember, AccessBus.AB_LgcListener {
 		}
 
 		EOT_OutputFile.FileNameProvider filename1;
+
+		// README 11/04 Really want a "Flow" i/o cot.add...
+		final @NotNull EOT_OutputTree cot = this.ce.getCompilation().getOutputTree();
 
 		for (EvaNode evaNode : aLgc) {
 			String             filename = null;
@@ -181,17 +189,21 @@ public class EvaPipeline implements PipelineMember, AccessBus.AB_LgcListener {
 				throw new IllegalStateException("Can't determine node");
 			}
 
-			//final EG_Statement   seq = EG_Statement.of(sb.toString(), EX_Explanation.withMessage("dump"));
-			//final EOT_OutputFile off = new EOT_OutputFile(List_of(), filename1, EOT_OutputType.DUMP, seq);
-			//cot.add(off);
+			if (!DebugFlags.skip_DUMPS) {
+				final EG_Statement   seq = EG_Statement.of(sb.toString(), EX_Explanation.withMessage("dump"));
+				final EOT_OutputFile off = new EOT_OutputFile(List_of(), filename1, EOT_OutputType.DUMP, seq);
+				cot.add(off);
+			}
 		}
 
-		//for (FunctionStatement functionStatement : functionStatements) {
-			//final String         filename = functionStatement.getFilename(pa);
-			//final EG_Statement   seq      = EG_Statement.of(functionStatement.getText(), EX_Explanation.withMessage("dump2"));
-			//final EOT_OutputFile off      = new EOT_OutputFile(List_of(), filename, EOT_OutputType.DUMP, seq);
-			//cot.add(off);
-		//}
+		if (!DebugFlags.skip_DUMPS) {
+			for (FunctionStatement functionStatement : functionStatements) {
+				final String         filename = functionStatement.getFilename(pa);
+				final EG_Statement   seq      = EG_Statement.of(functionStatement.getText(), EX_Explanation.withMessage("dump2"));
+				final EOT_OutputFile off      = new EOT_OutputFile(List_of(), filename, EOT_OutputType.DUMP, seq);
+				cot.add(off);
+			}
+		}
 
 		final CompilationEnclosure compilationEnclosure = pa.getCompilationEnclosure();
 

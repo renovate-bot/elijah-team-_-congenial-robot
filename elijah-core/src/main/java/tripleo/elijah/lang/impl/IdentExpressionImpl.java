@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.lang.i.*;
 import tripleo.elijah.lang.nextgen.names.i.EN_Name;
 import tripleo.elijah.util.NotImplementedException;
+import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 import java.io.File;
 import java.util.List;
@@ -172,7 +173,7 @@ public class IdentExpressionImpl implements tripleo.elijah.lang.i.IdentExpressio
 	@Override
 	public void setKind(final @NotNull ExpressionKind aIncrement) {
 		// log and ignore
-		tripleo.elijah.util.Stupidity
+		SimplePrintLoggerToRemoveSoon
 				.println_err_2("Trying to set ExpressionType of IdentExpression to " + aIncrement.toString());
 	}
 
