@@ -43,19 +43,23 @@ public class ChooseHashDirectoryNameBehaviorPaths implements ChooseDirectoryName
 		if (pp.op == null) {
 			CP_SubFile.CP_Path1 pp2 = (CP_Path1) pp.parent;
 
-			if (pp2.op == null) {
-				assert false;
+			if (pp2 == null) {
+				throw new AssertionError();
 			} else {
-				root = ((CP_OutputPath) pp2.op).getRootFile();
+				if (pp2.op == null) {
+					assert false;
+				} else {
+					root = ((CP_OutputPath) pp2.op).getRootFile();
+				}
+
+				var y = new File(root, pp2.childName);
+				var x = new File(y, pp.childName);
+
+				return x;
 			}
-
-			var y = new File(root, pp2.childName);
-			var x = new File(y, pp.childName);
-
-			return x;
+		} else {
+			return px[0].toFile();
 		}
-
-		return px[0].toFile();
 	}
 
 	@NotNull

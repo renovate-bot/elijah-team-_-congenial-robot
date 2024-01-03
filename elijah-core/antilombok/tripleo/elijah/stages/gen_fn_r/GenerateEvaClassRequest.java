@@ -1,11 +1,11 @@
 package tripleo.elijah.stages.gen_fn_r;
 
-import kotlin.jvm.internal.Intrinsics;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.lang.i.ClassStatement;
 import tripleo.elijah.stages.deduce.ClassInvocation;
 import tripleo.elijah.stages.gen_fn.GenerateFunctions;
+import tripleo.elijah.u.ElIntrinsics;
 
 public final class GenerateEvaClassRequest {
    private final @NotNull GenerateFunctions generateFunctions;
@@ -14,10 +14,10 @@ public final class GenerateEvaClassRequest {
    private final @NotNull RegisterClassInvocation_env passthruEnv;
 
    public GenerateEvaClassRequest(@NotNull GenerateFunctions generateFunctions, @NotNull ClassStatement classStatement, @NotNull ClassInvocation classInvocation, @NotNull RegisterClassInvocation_env passthruEnv) {
-      Intrinsics.checkNotNullParameter(generateFunctions, "generateFunctions");
-      Intrinsics.checkNotNullParameter(classStatement, "classStatement");
-      Intrinsics.checkNotNullParameter(classInvocation, "classInvocation");
-      Intrinsics.checkNotNullParameter(passthruEnv, "passthruEnv");
+      ElIntrinsics.checkNotNullParameter(generateFunctions, "generateFunctions");
+      ElIntrinsics.checkNotNullParameter(classStatement, "classStatement");
+      ElIntrinsics.checkNotNullParameter(classInvocation, "classInvocation");
+      ElIntrinsics.checkNotNullParameter(passthruEnv, "passthruEnv");
       this.generateFunctions = generateFunctions;
       this.classStatement = classStatement;
       this.classInvocation = classInvocation;
@@ -57,10 +57,10 @@ public final class GenerateEvaClassRequest {
    }
 
    public final @NotNull GenerateEvaClassRequest copy(@NotNull GenerateFunctions generateFunctions, @NotNull ClassStatement classStatement, @NotNull ClassInvocation classInvocation, @NotNull RegisterClassInvocation_env passthruEnv) {
-      Intrinsics.checkNotNullParameter(generateFunctions, "generateFunctions");
-      Intrinsics.checkNotNullParameter(classStatement, "classStatement");
-      Intrinsics.checkNotNullParameter(classInvocation, "classInvocation");
-      Intrinsics.checkNotNullParameter(passthruEnv, "passthruEnv");
+      ElIntrinsics.checkNotNullParameter(generateFunctions, "generateFunctions");
+      ElIntrinsics.checkNotNullParameter(classStatement, "classStatement");
+      ElIntrinsics.checkNotNullParameter(classInvocation, "classInvocation");
+      ElIntrinsics.checkNotNullParameter(passthruEnv, "passthruEnv");
       return new GenerateEvaClassRequest(generateFunctions, classStatement, classInvocation, passthruEnv);
    }
 
@@ -104,12 +104,12 @@ public final class GenerateEvaClassRequest {
          return false;
       } else {
          GenerateEvaClassRequest var2 = (GenerateEvaClassRequest)other;
-         if (!Intrinsics.areEqual(this.generateFunctions, var2.generateFunctions)) {
+         if (!ElIntrinsics.areEqual(this.generateFunctions, var2.generateFunctions)) {
             return false;
-         } else if (!Intrinsics.areEqual(this.classStatement, var2.classStatement)) {
+         } else if (!ElIntrinsics.areEqual(this.classStatement, var2.classStatement)) {
             return false;
          } else {
-            return !Intrinsics.areEqual(this.classInvocation, var2.classInvocation) ? false : Intrinsics.areEqual(this.passthruEnv, var2.passthruEnv);
+            return !ElIntrinsics.areEqual(this.classInvocation, var2.classInvocation) ? false : ElIntrinsics.areEqual(this.passthruEnv, var2.passthruEnv);
          }
       }
    }

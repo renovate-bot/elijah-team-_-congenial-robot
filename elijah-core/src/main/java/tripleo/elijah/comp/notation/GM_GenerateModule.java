@@ -39,7 +39,7 @@ public class GM_GenerateModule {
 		final @NotNull GenerateFiles            ggc                   = gmr.getGenerateFiles(fgs);
 		final List<ProcessedNode>               lgc                   = generateNodesIntoSink._env().lgc();
 
-		var fileGen = ((GenerateC)ggc).getFileGen();
+		final GenerateResultEnv fileGen = ((GenerateC)ggc).getFileGen();
 
 		for (ProcessedNode processedNode : lgc) {
 			final EvaNode evaNode = ((ProcessedNode1) processedNode).getEvaNode();

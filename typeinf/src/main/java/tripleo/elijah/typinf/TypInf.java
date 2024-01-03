@@ -457,10 +457,9 @@ public class TypInf {
 			name = aTypename;
 		}
 
-		public String getName() {
-			//	throw new NotImplementedException("should be lombok");
-			return this.name;
-		}
+		//public String getName() {
+		//	throw new NotImplementedException("should be lombok");
+		//}
 
 		@Override
 		public String toString() {

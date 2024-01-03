@@ -1,5 +1,6 @@
 package tripleo.elijah.stages.deduce.tastic;
 
+import com.google.common.base.Preconditions;
 import org.jdeferred2.DoneCallback;
 import org.jdeferred2.Promise;
 import org.jdeferred2.impl.DeferredObject;
@@ -125,7 +126,10 @@ public class DT_External_2 implements DT_External {
 
 	@Override
 	public void actualise(final @NotNull DeduceTypes2 aDt2) {
-		//if (mod1 != module) { // README this is kinda by construction
+		// README this is kinda by construction
+		//  12/24 so let's make it official
+		Preconditions.checkState(mod1 != module);
+
 		assert aDt2.module != module;
 
 		final IdentTableEntry ite1 = identIA.getEntry();
@@ -135,8 +139,14 @@ public class DT_External_2 implements DT_External {
 		ite1._p_resolvedElementPromise.then((final @NotNull OS_Element orig_e) -> {
 			OS_Element e = orig_e;
 
-//			LOG.info(String.format("600 %s %s", xx ,e));
-//			LOG.info("601 "+identIA.getEntry().getStatus());
+			final Compilation compilation = aDt2.module.getCompilation();
+			final Finally     REPORTS     = compilation.reports();
+
+			if (REPORTS.outputOn(Finally.Outs.Out_600142)) {
+				Object xx = null;
+				LOG.info(String.format("600 %s %s", xx, e));
+				LOG.info("601 "+identIA.getEntry().getStatus());
+			}
 
 			final OS_Element pre_resolved_element = ite1.getResolvedElement();
 
@@ -156,8 +166,12 @@ public class DT_External_2 implements DT_External {
 				}
 			}
 
+			if (REPORTS.outputOn(Finally.Outs.Out_600142)) {
+				LOG.info(String.format("602 %s %s", e, resolved_element1));
+			}
+
 			assert e == resolved_element1
-					|| /*HACK*/ resolved_element1 instanceof AliasStatementImpl
+					|| /*HACK*/ resolved_element1 instanceof AliasStatement
 					|| resolved_element1 == null
 					;
 
@@ -184,7 +198,7 @@ public class DT_External_2 implements DT_External {
 			});
 		});
 
-		ite1._p_resolvedElementPromise.fail(aResolveError -> {
+		ite1._p_resolvedElementPromise.onFail(aResolveError -> {
 			// TODO create Diagnostic and quit
 			LOG.info("1005 Can't find element for " + aResolveError);
 		});

@@ -11,6 +11,7 @@ package tripleo.elijah.stages.deduce;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tripleo.elijah.Eventual;
 import tripleo.elijah.contexts.FunctionContext;
 import tripleo.elijah.lang.i.*;
 import tripleo.elijah.lang.impl.AliasStatementImpl;
@@ -21,7 +22,6 @@ import tripleo.elijah.lang2.BuiltInTypes;
 import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_IdentTableEntry;
 import tripleo.elijah.stages.deduce.post_bytecode.IDeduceElement3;
 import tripleo.elijah.stages.gen_fn.GenType;
-import tripleo.elijah.stages.gen_fn.IdentTableEntry;
 import tripleo.elijah.util.Helpers;
 import tripleo.elijah.util.NotImplementedException;
 import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
@@ -96,17 +96,58 @@ public enum DeduceLookupUtils {
 	}
 
 	@Contract("_, _ -> param1")
-	public static @NotNull DeduceElement3_IdentTableEntry deduceExpression2(final @NotNull DeduceElement3_IdentTableEntry de3_ite, final FunctionContext aFc) {
-		final IdentExpression identExpression = de3_ite.principal.getIdent();
-		final IdentTableEntry ite             = de3_ite.principal._deduceTypes2()._inj().new_IdentTableEntry(0, identExpression, identExpression.getContext(), de3_ite.generatedFunction);
+	public static @NotNull Eventual<DeduceElement3_IdentTableEntry> deduceExpression2(final @NotNull DeduceElement3_IdentTableEntry de3_ite, final FunctionContext aFc) {
+		final Eventual<DeduceElement3_IdentTableEntry> e = new Eventual<>();
+
+		//final IdentExpression identExpression = de3_ite.principal.getIdent();
+		//final IdentTableEntry ite             = de3_ite.principal._deduceTypes2()._inj().new_IdentTableEntry(0, identExpression, identExpression.getContext(), de3_ite.generatedFunction);
 
 		try {
-			deduceIdentExpression2(de3_ite);
+			@Nullable GenType result = null;
+			@Nullable GenType R      = ((IDeduceElement3) de3_ite).genType();
+
+			final @NotNull DeduceTypes2 dt2 = ((IDeduceElement3) de3_ite).deduceTypes2();
+			//assert dt2 == deduceTypes2;
+
+			final @NotNull IdentExpression ident = ((DeduceElement3_IdentTableEntry) de3_ite).principal.getIdent();
+			final Context                  ctx   = ident.getContext();
+
+			// is this right?
+			LookupResultList     lrl  = ctx.lookup(ident.getText());
+			@Nullable OS_Element best = lrl.chooseBest(null);
+			while (best instanceof AliasStatementImpl) {
+				best = _resolveAlias2((AliasStatementImpl) best, dt2);
+			}
+			if (best instanceof ClassStatement) {
+				R.setResolved(((ClassStatement) best).getOS_Type());
+				result = R;
+			} else {
+				result = switch (DecideElObjectType.getElObjectType(best)) {
+					case VAR -> {
+						final @Nullable VariableStatementImpl vs = (VariableStatementImpl) best;
+						yield __deduceIdentExpression2__VAR(vs, dt2, ctx, result, R);
+					}
+					case FUNCTION -> {
+						final @NotNull FunctionDef functionDef = (FunctionDef) best;
+						yield __deduceIdentExpression2__FUNCTION(R, functionDef);
+					}
+					case FORMAL_ARG_LIST_ITEM -> {
+						final @NotNull FormalArgListItem fali = (FormalArgListItem) best;
+						yield __deduceIdentExpression2__FALI(fali, dt2, ctx, result, R);
+					}
+					default ->
+							throw new IllegalStateException("Unexpected value: " + DecideElObjectType.getElObjectType(best));
+				};
+				if (result == null) {
+					throw new ResolveError(ident, lrl);
+				}
+			}
+			e.resolve(de3_ite);
 		} catch (ResolveError aE) {
-			throw new RuntimeException(aE);
+			e.reject(aE);
 		}
 
-		return de3_ite;
+		return e;
 	}
 
 	private static @Nullable GenType deduceIdentExpression(@NotNull DeduceTypes2 aDeduceTypes2, final @NotNull IdentExpression ident, final @NotNull Context ctx) throws ResolveError {
@@ -119,135 +160,16 @@ public enum DeduceLookupUtils {
 		while (best instanceof AliasStatementImpl) {
 			best = _resolveAlias2((AliasStatementImpl) best, aDeduceTypes2);
 		}
-		if (best instanceof ClassStatement) {
-			R.setResolved(((ClassStatement) best).getOS_Type());
-			result = R;
-		} else {
-			if (best != null)
-				switch (DecideElObjectType.getElObjectType(best)) {
-				case VAR:
-					final @Nullable VariableStatementImpl vs = (VariableStatementImpl) best;
-					if (!vs.typeName().isNull()) {
-						try {
-							@Nullable OS_Module lets_hope_we_dont_need_this = null;
-							@NotNull GenType    ty                          = aDeduceTypes2.resolve_type(lets_hope_we_dont_need_this, aDeduceTypes2._inj().new_OS_UserType(vs.typeName()), ctx);
-							result = ty;
-						} catch (ResolveError aResolveError) {
-							// TODO This is the cheap way to do it
-							//  Ideally, we would propagate this up the call chain all the way to lookupExpression
-							aResolveError.printStackTrace();
-						}
-						if (result == null) {
-							R.setTypeName(aDeduceTypes2._inj().new_OS_UserType(vs.typeName()));
-							result = R;
-						}
-					} else if (vs.initialValue() == IExpression.UNASSIGNED) {
-						R.setTypeName(aDeduceTypes2._inj().new_OS_UnknownType(vs));
-//				return deduceExpression(vs.initialValue(), ctx); // infinite recursion
-					} else {
-						final IExpression initialValue = vs.initialValue();
-						if (Objects.requireNonNull(initialValue.getKind()) == ExpressionKind.PROCEDURE_CALL) {
-							final Context                 vsContext = vs.getContext();
-							final ProcedureCallExpression pce       = (ProcedureCallExpression) initialValue;
-							R = deduceExpression(aDeduceTypes2, pce, vsContext);
-						} else {
-							R = deduceExpression(aDeduceTypes2, initialValue, vs.getContext());
-						}
-					}
-					if (result == null) {
-						result = R;
-					}
-					break;
-				case FUNCTION:
-					final @NotNull FunctionDef functionDef = (FunctionDef) best;
-					R.setResolved(functionDef.getOS_Type());
-					result = R;
-					break;
-				case FORMAL_ARG_LIST_ITEM:
-					final @NotNull FormalArgListItem fali = (FormalArgListItem) best;
-					if (!fali.typeName().isNull()) {
-						try {
-							@Nullable OS_Module lets_hope_we_dont_need_this = null;
-							@NotNull GenType    ty                          = aDeduceTypes2.resolve_type(lets_hope_we_dont_need_this, aDeduceTypes2._inj().new_OS_UserType(fali.typeName()), ctx);
-							result = ty;
-						} catch (ResolveError aResolveError) {
-							// TODO This is the cheap way to do it
-							//  Ideally, we would propagate this up the call chain all the way to lookupExpression
-							aResolveError.printStackTrace();
-						}
-						if (result == null) {
-							R.setTypeName(aDeduceTypes2._inj().new_OS_UserType(fali.typeName()));
-						}
-					} else {
-						R.setTypeName(aDeduceTypes2._inj().new_OS_UnknownType(fali));
-					}
-					if (result == null) {
-						result = R;
-					}
-					break;
-				default:
-					throw new IllegalStateException("Error");
-				}
-			if (result == null) {
-				throw new ResolveError(ident, lrl);
-			}
-		}
-		return result;
-	}
 
-	private static void deduceIdentExpression2(final @NotNull IDeduceElement3 aDeduceElement3) throws ResolveError {
-		@Nullable GenType result = null;
-		@Nullable GenType R      = aDeduceElement3.genType();
-
-		final @NotNull DeduceTypes2 dt2 = aDeduceElement3.deduceTypes2();
-		//assert dt2 == aDeduceTypes2;
-
-		final @NotNull IdentExpression ident = ((DeduceElement3_IdentTableEntry) aDeduceElement3).principal.getIdent();
-		final Context                  ctx   = ident.getContext();
-
-		// is this right?
-		LookupResultList     lrl  = ctx.lookup(ident.getText());
-		@Nullable OS_Element best = lrl.chooseBest(null);
-		while (best instanceof AliasStatementImpl) {
-			best = _resolveAlias2((AliasStatementImpl) best, dt2);
-		}
-		if (best instanceof ClassStatement) {
-			R.setResolved(((ClassStatement) best).getOS_Type());
-			result = R;
-		} else {
+		if (best != null) {
 			switch (DecideElObjectType.getElObjectType(best)) {
+			case CLASS: // hello, Scala ;)
+				final ClassStatement classStatement = (ClassStatement) best;
+				R.setResolved(classStatement.getOS_Type());
+				result = R;
 			case VAR:
 				final @Nullable VariableStatementImpl vs = (VariableStatementImpl) best;
-				if (!vs.typeName().isNull()) {
-					try {
-						@Nullable OS_Module lets_hope_we_dont_need_this = null;
-						@NotNull GenType    ty                          = dt2.resolve_type(lets_hope_we_dont_need_this, dt2._inj().new_OS_UserType(vs.typeName()), ctx);
-						result = ty;
-					} catch (ResolveError aResolveError) {
-						// TODO This is the cheap way to do it
-						//  Ideally, we would propagate this up the call chain all the way to lookupExpression
-						aResolveError.printStackTrace();
-					}
-					if (result == null) {
-						R.setTypeName(dt2._inj().new_OS_UserType(vs.typeName()));
-						result = R;
-					}
-				} else if (vs.initialValue() == IExpression.UNASSIGNED) {
-					R.setTypeName(dt2._inj().new_OS_UnknownType(vs));
-//				return deduceExpression(vs.initialValue(), ctx); // infinite recursion
-				} else {
-					final IExpression initialValue = vs.initialValue();
-					if (Objects.requireNonNull(initialValue.getKind()) == ExpressionKind.PROCEDURE_CALL) {
-						final Context                 vsContext = vs.getContext();
-						final ProcedureCallExpression pce       = (ProcedureCallExpression) initialValue;
-						R = deduceExpression(dt2, pce, vsContext);
-					} else {
-						R = deduceExpression(dt2, initialValue, vs.getContext());
-					}
-				}
-				if (result == null) {
-					result = R;
-				}
+				result = __deduceIdentExpression2__VAR(vs, aDeduceTypes2, ctx, result, R);
 				break;
 			case FUNCTION:
 				final @NotNull FunctionDef functionDef = (FunctionDef) best;
@@ -256,33 +178,83 @@ public enum DeduceLookupUtils {
 				break;
 			case FORMAL_ARG_LIST_ITEM:
 				final @NotNull FormalArgListItem fali = (FormalArgListItem) best;
-				if (!fali.typeName().isNull()) {
-					try {
-						@Nullable OS_Module lets_hope_we_dont_need_this = null;
-						@NotNull GenType    ty                          = dt2.resolve_type(lets_hope_we_dont_need_this, dt2._inj().new_OS_UserType(fali.typeName()), ctx);
-						result = ty;
-					} catch (ResolveError aResolveError) {
-						// TODO This is the cheap way to do it
-						//  Ideally, we would propagate this up the call chain all the way to lookupExpression
-						aResolveError.printStackTrace();
-					}
-					if (result == null) {
-						R.setTypeName(dt2._inj().new_OS_UserType(fali.typeName()));
-					}
-				} else {
-					R.setTypeName(dt2._inj().new_OS_UnknownType(fali));
-				}
-				if (result == null) {
-					result = R;
-				}
+				result = __deduceIdentExpression2__FALI(fali, aDeduceTypes2, ctx, result, R);
 				break;
 			default:
 				throw new IllegalStateException("Error");
 			}
+		}
+		if (result == null) {
+			throw new ResolveError(ident, lrl);
+		}
+		return result;
+	}
+
+	@NotNull
+	private static GenType __deduceIdentExpression2__FALI(final @NotNull FormalArgListItem fali, final DeduceTypes2 dt2, final Context ctx, @Nullable GenType result, final @Nullable GenType R) {
+		if (!fali.typeName().isNull()) {
+			try {
+				@Nullable OS_Module lets_hope_we_dont_need_this = null;
+				@NotNull GenType    ty                          = dt2.resolve_type(lets_hope_we_dont_need_this, dt2._inj().new_OS_UserType(fali.typeName()), ctx);
+				result = ty;
+			} catch (ResolveError aResolveError) {
+				// TODO This is the cheap way to do it
+				//  Ideally, we would propagate this up the call chain all the way to lookupExpression
+				aResolveError.printStackTrace();
+			}
 			if (result == null) {
-				throw new ResolveError(ident, lrl);
+				R.setTypeName(dt2._inj().new_OS_UserType(fali.typeName()));
+			}
+		} else {
+			R.setTypeName(dt2._inj().new_OS_UnknownType(fali));
+		}
+		if (result == null) {
+			result = R;
+		}
+		return result;
+	}
+
+	@NotNull
+	private static GenType __deduceIdentExpression2__FUNCTION(final @Nullable GenType R, final @NotNull FunctionDef functionDef) {
+
+		R.setResolved(functionDef.getOS_Type());
+		@Nullable GenType result = R;
+		return result;
+	}
+
+	@Nullable
+	private static GenType __deduceIdentExpression2__VAR(final @NotNull VariableStatementImpl vs, final DeduceTypes2 dt2, final Context ctx, @Nullable GenType result, @Nullable GenType R) throws ResolveError {
+		if (!vs.typeName().isNull()) {
+			try {
+				@Nullable OS_Module lets_hope_we_dont_need_this = null;
+				@NotNull GenType    ty                          = dt2.resolve_type(lets_hope_we_dont_need_this, dt2._inj().new_OS_UserType(vs.typeName()), ctx);
+				result = ty;
+			} catch (ResolveError aResolveError) {
+				// TODO This is the cheap way to do it
+				//  Ideally, we would propagate this up the call chain all the way to lookupExpression
+				aResolveError.printStackTrace();
+			}
+			if (result == null) {
+				R.setTypeName(dt2._inj().new_OS_UserType(vs.typeName()));
+				result = R;
+			}
+		} else if (vs.initialValue() == IExpression.UNASSIGNED) {
+			R.setTypeName(dt2._inj().new_OS_UnknownType(vs));
+//				return deduceExpression(vs.initialValue(), ctx); // infinite recursion
+		} else {
+			final IExpression initialValue = vs.initialValue();
+			if (Objects.requireNonNull(initialValue.getKind()) == ExpressionKind.PROCEDURE_CALL) {
+				final Context                 vsContext = vs.getContext();
+				final ProcedureCallExpression pce       = (ProcedureCallExpression) initialValue;
+				R = deduceExpression(dt2, pce, vsContext);
+			} else {
+				R = deduceExpression(dt2, initialValue, vs.getContext());
 			}
 		}
+		if (result == null) {
+			result = R;
+		}
+		return result;
 	}
 
 	/**

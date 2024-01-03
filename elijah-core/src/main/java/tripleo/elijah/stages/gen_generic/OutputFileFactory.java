@@ -25,7 +25,11 @@ public enum OutputFileFactory {
 				return mgfMap.get(mod);
 			}
 
+			final var ce = params.getCompilationEnclosure();
 			final GenerateFiles generateC = new GenerateC(params, aFileGen);
+
+			ce.spi(generateC);
+
 			mgfMap.put(mod, generateC);
 
 			return generateC;

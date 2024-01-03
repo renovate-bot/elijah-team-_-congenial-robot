@@ -10,7 +10,7 @@ package tripleo.elijah.comp;
 
 import com.google.common.base.Preconditions;
 import io.reactivex.rxjava3.annotations.NonNull;
-import lombok.Getter;
+//import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.Eventual;
 import tripleo.elijah.EventualRegister;
@@ -47,7 +47,7 @@ public class PipelineLogic implements EventualRegister {
 	public final          ModuleCompletableProcess                               mcp                     = new ModuleCompletableProcess();
 	private final         Map<OS_Module, Eventual<DeducePhase.GeneratedClasses>> modMap                  = new HashMap<>();
 	private final         IPipelineAccess                                        pa;
-	@Getter
+	//@Getter
 	private final         ElLog.Verbosity                                        verbosity;
 	private final         DefaultEventualRegister                                defaultEventualRegister = new DefaultEventualRegister();
 

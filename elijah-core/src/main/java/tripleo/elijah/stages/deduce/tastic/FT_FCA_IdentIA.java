@@ -463,7 +463,10 @@ import static tripleo.elijah.stages.deduce.DeduceTypes2.to_int;
 
 				final @Nullable OS_Element best = lrl.chooseBest(null);
 				if (best != null)
-					pte.setResolvedElement(best); // TODO do we need to add a dependency for class?
+					// TODO do we need to add a dependency for class?
+					pte.setResolvedElement(best, new GG_ResolveEvent() {
+						String id = "FT_FCA_IdentIA::loop2";
+					});
 				else {
 					dac.errSink.reportError("Cant resolve " + text);
 				}
@@ -480,7 +483,9 @@ import static tripleo.elijah.stages.deduce.DeduceTypes2.to_int;
 				@Override
 				public void foundElement(OS_Element el) {
 					if (pte.getResolvedElement() == null)
-						pte.setResolvedElement(el);
+						pte.setResolvedElement(el, new GG_ResolveEvent() {
+							String id = "FT_FCA_IdentIA::loop2/resolveIdentIA_";
+						});
 					final DeduceTypes2 deduceTypes2 = dac.dc.get();
 					if (el instanceof FunctionDef) {
 						final FT_FCA_FunctionDef fcafd = deduceTypes2._inj().new_FT_FCA_FunctionDef((FunctionDef) el, deduceTypes2);
@@ -594,6 +599,22 @@ import static tripleo.elijah.stages.deduce.DeduceTypes2.to_int;
 		}
 	}
 
+	public record Resolve_VTE(
+			VariableTableEntry vte,
+			Context ctx,
+			ProcTableEntry pte,
+			Instruction instruction,
+			FnCallArgs fca
+	) { }
+
+	public record FT_FCA_Ctx(
+			BaseEvaFunction generatedFunction,
+			TypeTableEntry tte,
+			Context ctx,
+			ErrSink errSink,
+			DeduceTypes2.DeduceClient4 dc
+	) { }
+
 	public class FakeDC4 {
 		private final DeduceTypes2.DeduceClient4 dc4;
 
@@ -640,19 +661,6 @@ import static tripleo.elijah.stages.deduce.DeduceTypes2.to_int;
 		public DeduceTypes2.DeduceTypes2Injector _inj() {
 			return dc4.get()._inj();
 		}
-	}
-
-	public record Resolve_VTE(VariableTableEntry vte, Context ctx, ProcTableEntry pte, Instruction instruction,
-							  FnCallArgs fca) {
-	}
-
-	public record FT_FCA_Ctx(
-			BaseEvaFunction generatedFunction,
-			TypeTableEntry tte,
-			Context ctx,
-			ErrSink errSink,
-			DeduceTypes2.DeduceClient4 dc
-	) {
 	}
 
 	public class FT_FCA_ProcedureCall {

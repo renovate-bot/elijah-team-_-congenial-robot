@@ -33,11 +33,11 @@ public class WhyNotGarish_Function extends WhyNotGarish_BaseFunction implements 
 	}
 
 	private void onFileGen(final @NotNull GenerateResultEnv aFileGen) {
-		if (gf.getFD() == null) assert false; //return; // FIXME why? when?
+//		if (gf.getFD() == null) assert false; //return; // FIXME why? when?
 		Generate_Code_For_Method gcfm = new Generate_Code_For_Method(generateC, generateC.elLog());
 
 		deduced(gf, (DeducedBaseEvaFunction dgf) -> {
-			gcfm.generateCodeForMethod((BaseEvaFunction) dgf.getCarrier(), aFileGen);
+			dgf.generateCodeForMethod(gcfm, aFileGen);
 		});
 	}
 
@@ -95,6 +95,5 @@ public class WhyNotGarish_Function extends WhyNotGarish_BaseFunction implements 
 		fileGenPromise.then(fg -> xx[0] = fg.getGenerateFiles());
 
 		return Optional.of((GenerateC) xx[0]);
-		//return fileGenPromise.getOptional();//() -> fg.generateModule().gmr().getGenerateFiles(null));
 	}
 }

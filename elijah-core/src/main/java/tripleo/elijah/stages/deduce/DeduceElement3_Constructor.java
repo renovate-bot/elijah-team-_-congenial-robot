@@ -5,6 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.ReadySupplier_1;
 import tripleo.elijah.lang.i.*;
 import tripleo.elijah.lang.impl.VariableStatementImpl;
+import tripleo.elijah.nextgen.rosetta.FakeRosetta;
 import tripleo.elijah.stages.deduce.post_bytecode.DED;
 import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_IdentTableEntry;
 import tripleo.elijah.stages.deduce.post_bytecode.IDeduceElement3;
@@ -101,9 +102,11 @@ public class DeduceElement3_Constructor implements IDeduceElement3 {
 							try {
 								@NotNull GenType rt = deduceTypes2.resolve_type(a, a.getTypeName().getContext());
 								if (rt.getResolved() != null && rt.getResolved().getType() == OS_Type.Type.USER_CLASS) {
-									if (rt.getResolved().getClassOf().getGenericPart().size() > 0)
+									if (!rt.getResolved().getClassOf().getGenericPart().isEmpty()) {
 										b.setNonGenericTypeName(a.getTypeName()); // TODO might be wrong
-									dof_uc(vte, rt.getResolved());
+									}
+									final OS_Type c = rt.getResolved();
+									dof_uc(vte, c);
 								}
 							} catch (ResolveError aResolveError) {
 								deduceTypes2._errSink().reportDiagnostic(aResolveError);
@@ -124,14 +127,19 @@ public class DeduceElement3_Constructor implements IDeduceElement3 {
 
 	private void dof_uc(@NotNull VariableTableEntry aVte, @NotNull OS_Type aOSType) {
 		// we really want a ci from somewhere
-		assert aOSType.getClassOf().getGenericPart().size() == 0;
+		final ClassStatement classStatement = aOSType.getClassOf();
+		assert classStatement.getGenericPart().isEmpty();
 
-		@Nullable ClassInvocation ci = new ClassInvocation(aOSType.getClassOf(), null, new ReadySupplier_1<>(deduceTypes2));
-		ci = deduceTypes2.phase.registerClassInvocation(ci);
+		FakeRosetta
+				.registerClassInvocation(classStatement, deduceTypes2)
+				.on(ci2 -> {
+					//TODO 24j2(!) what is getGenType?
 
-		aVte.getGenType().setResolved(aOSType); // README assuming OS_Type cannot represent namespaces
-		aVte.getGenType().setCi(ci);
+					aVte.getGenType().setResolved(aOSType); // README assuming OS_Type cannot represent namespaces
+					aVte.getGenType().setCi(ci2);
 
-		ci.resolvePromise().done(aVte::resolveTypeToClass);
+					ci2.resolvePromise().done(aVte::resolveTypeToClass);
+				})
+				.triggerOn(null);
 	}
 }

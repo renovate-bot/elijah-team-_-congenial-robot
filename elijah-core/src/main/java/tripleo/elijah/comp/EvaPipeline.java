@@ -26,6 +26,7 @@ import tripleo.elijah.nextgen.outputstatement.EX_Explanation;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputFile;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputTree;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputType;
+import tripleo.elijah.nextgen.outputtree.EOT_FileNameProvider;
 import tripleo.elijah.stages.gen_fn.*;
 import tripleo.elijah.stages.gen_generic.DoubleLatch;
 import tripleo.elijah.stages.gen_generic.pipeline_impl.DefaultGenerateResultSink;
@@ -102,7 +103,7 @@ public class EvaPipeline implements PipelineMember, AccessBus.AB_LgcListener {
 			_processOutput.logProgress(160, "EvaPipeline.recieve >> " + evaNode);
 		}
 
-		EOT_OutputFile.FileNameProvider filename1;
+		EOT_FileNameProvider filename1;
 
 		// README 11/04 Really want a "Flow" i/o cot.add...
 		final @NotNull EOT_OutputTree cot = this.ce.getCompilation().getOutputTree();
@@ -126,7 +127,7 @@ public class EvaPipeline implements PipelineMember, AccessBus.AB_LgcListener {
 					pa.activeFunction(v);
 				}
 
-				filename1 = new EOT_OutputFile.FileNameProvider() {
+				filename1 = new EOT_FileNameProvider() {
 					@Override
 					public String getFilename() {
 						var filename2 = "C_" + aEvaClass.getCode() + aEvaClass.getName();
@@ -147,7 +148,7 @@ public class EvaPipeline implements PipelineMember, AccessBus.AB_LgcListener {
 					sb.append("FUNCTION %d %s\n".formatted(v.getCode(), v.getFD().getNameNode().getText()));
 				}
 
-				filename1 = new EOT_OutputFile.FileNameProvider() {
+				filename1 = new EOT_FileNameProvider() {
 					@Override
 					public String getFilename() {
 						var filename2 = "N_" + aEvaNamespace.getCode() + aEvaNamespace.getName();
@@ -171,7 +172,7 @@ public class EvaPipeline implements PipelineMember, AccessBus.AB_LgcListener {
 				filename = "F_" + code + functionName;
 
 				final int finalCode = code;
-				filename1 = new EOT_OutputFile.FileNameProvider() {
+				filename1 = new EOT_FileNameProvider() {
 					@Override
 					public String getFilename() {
 						final String functionName = evaFunction.getFunctionName();

@@ -15,7 +15,7 @@ import tripleo.elijah.ci.i.CompilerInstructions;
 import tripleo.elijah.ci.LibraryStatementPart;
 import tripleo.elijah.lang.i.*;
 import tripleo.elijah.nextgen.outputstatement.ReasonedStringListStatement;
-import tripleo.elijah.nextgen.outputtree.EOT_OutputFile;
+import tripleo.elijah.nextgen.outputtree.EOT_FileNameProvider;
 import tripleo.elijah.stages.garish.GarishClass;
 import tripleo.elijah.stages.gen_fn.*;
 import tripleo.elijah.stages.gen_generic.GenerateResult;
@@ -49,7 +49,7 @@ public class OutputStrategyC {
 		}
 	}
 
-	public @NotNull EOT_OutputFile.FileNameProvider nameForFunction1(final @NotNull EvaFunction aGf, final GenerateResult.@NotNull TY aTy) {
+	public @NotNull EOT_FileNameProvider nameForFunction1(final @NotNull EvaFunction aGf, final GenerateResult.@NotNull TY aTy) {
 		return new OSC_NFF(nameForFunction(aGf, aTy));
 	}
 
@@ -107,7 +107,7 @@ public class OutputStrategyC {
 		return new OFC_NFN(lsp0, name0, filename, extension0).getFilename();
 	}
 
-	public @NotNull EOT_OutputFile.FileNameProvider nameForClass1(@NotNull EvaClass aEvaClass, GenerateResult.@NotNull TY aTy) {
+	public @NotNull EOT_FileNameProvider nameForClass1(@NotNull EvaClass aEvaClass, GenerateResult.@NotNull TY aTy) {
 		if (aEvaClass.module().isPrelude()) {
 			// We are dealing with the Prelude
 /*
@@ -138,7 +138,7 @@ public class OutputStrategyC {
 		return aFilename;
 	}
 
-	public EOT_OutputFile.FileNameProvider nameForClass1(final GarishClass aGarishClass, final GenerateResult.TY aTy) {
+	public EOT_FileNameProvider nameForClass1(final GarishClass aGarishClass, final GenerateResult.TY aTy) {
 		var aEvaClass = aGarishClass.getLiving().evaNode();
 
 		if (aEvaClass.module().isPrelude()) {
@@ -162,7 +162,7 @@ public class OutputStrategyC {
 							()-> Extension0(aTy));
 	}
 
-	public class OSC_NFCo implements EOT_OutputFile.FileNameProvider {
+	public class OSC_NFCo implements EOT_FileNameProvider {
 		private final String s;
 
 		public OSC_NFCo(final String aS) {
@@ -175,7 +175,7 @@ public class OutputStrategyC {
 		}
 	}
 
-	public class OSC_NFF implements EOT_OutputFile.FileNameProvider {
+	public class OSC_NFF implements EOT_FileNameProvider {
 		private final String s;
 
 		public OSC_NFF(final String aS) {
@@ -312,7 +312,7 @@ public class OutputStrategyC {
 		return null;
 	}
 
-	public EOT_OutputFile.FileNameProvider nameForNamespace1(final @NotNull EvaNamespace aX, final GenerateResult.@NotNull TY aTy) {
+	public EOT_FileNameProvider nameForNamespace1(final @NotNull EvaNamespace aX, final GenerateResult.@NotNull TY aTy) {
 		return new OFC_NFN_(aX, aTy);
 	}
 
@@ -331,7 +331,7 @@ public class OutputStrategyC {
 		return null;
 	}
 
-	public class OFC_NFN implements EOT_OutputFile.FileNameProvider {
+	public class OFC_NFN implements EOT_FileNameProvider {
 		private final @Nullable String s;
 		private final @Nullable String lsp0;
 		private final @Nullable String name0;
@@ -369,7 +369,7 @@ public class OutputStrategyC {
 		}
 	}
 
-	public class OFC_NFN_ implements EOT_OutputFile.FileNameProvider {
+	public class OFC_NFN_ implements EOT_FileNameProvider {
 		private final @Nullable String s;
 
 		public OFC_NFN_(final EvaNamespace aX, final GenerateResult.TY aTy) {
@@ -382,7 +382,7 @@ public class OutputStrategyC {
 		}
 	}
 
-	public class OSC_NFC implements EOT_OutputFile.FileNameProvider {
+	public class OSC_NFC implements EOT_FileNameProvider {
 		String lsp;
 		String dir;
 		String extension;
@@ -426,7 +426,7 @@ public class OutputStrategyC {
 		}
 	}
 
-	public class OSC_NFC2 implements EOT_OutputFile.FileNameProvider {
+	public class OSC_NFC2 implements EOT_FileNameProvider {
 		private final Supplier<String> lsp;
 		private final Supplier<String> dir;
 		private final Supplier<String> extension;

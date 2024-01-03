@@ -5,90 +5,64 @@
 	<parent>
 		<groupId>tripleo.elijah</groupId>
 		<artifactId>congenial-robot</artifactId>
-		<version>2023.congenial.11.something-after-rosetta</version>
+		<version>congenial.2023-12</version>
 	</parent>
 
 	<artifactId>tripleo.elijah.core</artifactId>
-<!--	<name>elijah-core</name> -->
 	<name>tripleo.elijah.core</name>
 	<description>elijah-core</description>
+	<properties>
+		<org.eclipse.xtend.lib.version>2.31.0.M3</org.eclipse.xtend.lib.version>
+		<xtend-maven-plugin.version>2.31.0.M3</xtend-maven-plugin.version>
+		<kotlin.version>1.9.22</kotlin.version>
+	</properties>
 	<packaging>jar</packaging>
-	<version>2023.congenial.11.something-after-rosetta</version>
 
 	<dependencies>
-
-
-
-
-
 		<dependency>
-			<groupId>tripleo.elijah</groupId>
-			<artifactId>tripleo.elijah.good-api</artifactId>
-			<version>2023.congenial.11.something-after-rosetta</version>
-			<scope>compile</scope>
+			<groupId>org.eclipse.xtend</groupId>
+			<artifactId>org.eclipse.xtend.lib</artifactId>
+			<version>${org.eclipse.xtend.lib.version}</version>
 		</dependency>
-
-
 		<dependency>
-			<groupId>tripleo.elijah</groupId>
-			<artifactId>tripleo.elijah.sourcemodel-impl</artifactId>
-			<version>2023.congenial.11.something-after-rosetta</version>
-		</dependency>
-
-		<dependency>
-			<groupId>tripleo.elijah</groupId>
-			<artifactId>tripleo.elijah.elijah-nextgen-outputstatement</artifactId>
-			<version>2023.congenial.11.something-after-rosetta</version>
-			<!--
-						<scope>compile</scope>
-			-->
+			<groupId>org.eclipse.xtend</groupId>
+			<artifactId>org.eclipse.xtend.core</artifactId>
+			<version>${org.eclipse.xtend.lib.version}</version>
 		</dependency>
 
 		<!--
 				<dependency>
 					<groupId>tripleo.elijah</groupId>
-					<artifactId>tripleo.small</artifactId>
-					<version>2023.congenial.11.something-after-rosetta</version>
+					<artifactId>tripleo.elijah.good-api</artifactId>
+					<version>congenial.2023-12</version>
+					<scope>compile</scope>
+				</dependency>
+
+				<dependency>
+					<groupId>tripleo.elijah</groupId>
+					<artifactId>tripleo.elijah.sourcemodel-impl</artifactId>
+					<version>congenial.2023-12</version>
+				</dependency>
+
+				<dependency>
+					<groupId>tripleo.elijah</groupId>
+					<artifactId>tripleo.elijah.elijah-nextgen-outputstatement</artifactId>
+					<version>congenial.2023-12</version>
+				</dependency>
+
+				<dependency>
+					<groupId>tripleo.elijah</groupId>
+					<artifactId>tripleo.elijah.reactive</artifactId>
+					<version>congenial.2023-12</version>
+				</dependency>
+
+				<dependency>
+					<groupId>tripleo.elijah</groupId>
+					<artifactId>tripleo.elijah.stateful</artifactId>
+					<version>congenial.2023-12</version>
+					<scope>compile</scope>
 				</dependency>
 		-->
-
-		<dependency>
-			<groupId>tripleo.elijah</groupId>
-			<artifactId>tripleo.elijah.reactive</artifactId>
-			<version>2023.congenial.11.something-after-rosetta</version>
-		</dependency>
-
-		<dependency>
-			<groupId>tripleo.elijah</groupId>
-			<artifactId>tripleo.elijah.stateful</artifactId>
-			<version>2023.congenial.11.something-after-rosetta</version>
-			<scope>compile</scope>
-		</dependency>
-
-
-
-
-
-
-
-
-
-
-<!--
-		<dependency>
-			<groupId>com.github.TNG</groupId>
-			<artifactId>ArchUnit</artifactId>
-why not??
-these two same - nov 06 release
-			<version>v1.20.0</version>
-			<version>12e8fb1</version>
-
-master as of 11.12.23
-			<version>789706f</version>
-			<version>789706f07b605fb2404d877052ac583b2b77a501</version>
-		</dependency>
--->
-
 
 		<!-- https://mvnrepository.com/artifact/com.tngtech.archunit/archunit-junit4 -->
 		<dependency>
@@ -97,15 +71,6 @@ master as of 11.12.23
 			<version>1.2.0</version>
 			<scope>test</scope>
 		</dependency>
-
-	<!--
-		<dependency>
-			<groupId>com.tngtech.archunit</groupId>
-			<artifactId>archunit</artifactId>
-			<version>1.10</version>
-			<scope>test</scope>
-		</dependency>
--->
 
 		<!-- https://search.maven.org/artifact/io.reactivex.rxjava3/rxjava/3.1.0/jar -->
 		<dependency>
@@ -138,7 +103,7 @@ master as of 11.12.23
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.18.28</version>
+			<version>1.18.30</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
@@ -152,45 +117,251 @@ master as of 11.12.23
 			<version>24.0.1</version>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.jetbrains.kotlin</groupId>
+			<artifactId>kotlin-stdlib-jdk8</artifactId>
+			<version>${kotlin.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jetbrains.kotlin</groupId>
+			<artifactId>kotlin-test-junit</artifactId>
+			<version>${kotlin.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<!--
+				<dependency>
+					<groupId>com.gitlab.tripleo1</groupId>
+					<artifactId>buffers</artifactId>
+					<version>3038ff102c</version>
+				</dependency>
+		-->
+<!--
+		<dependency>
+			<groupId>tripleo.buffers</groupId>
+			<artifactId>buffers-v1</artifactId>
+			<version>0.0.3</version>
+		</dependency>
+-->
+
+<!--
+		<dependency>
+			<groupId>tripleo.elijah</groupId>
+			<artifactId>tripleo.elijah.reactive</artifactId>
+			<version>2023.elevated-potential.2</version>
+		</dependency>
+-->
 	</dependencies>
 
 	<build>
 		<plugins>
+<!--
+				<plugin>
+					<groupId>org.jetbrains.kotlin</groupId>
+					<artifactId>kotlin-maven-plugin</artifactId>
+					<version>${kotlin.version}</version>
+					<extensions>true</extensions> &lt;!&ndash; You can set this option
+            to automatically take information about lifecycles &ndash;&gt;
+					<executions>
+						<execution>
+							<id>compile</id>
+							<goals>
+								<goal>compile</goal> &lt;!&ndash; You can skip the <goals> element
+                        if you enable extensions for the plugin &ndash;&gt;
+							</goals>
+							<configuration>
+								<sourceDirs>
+									<sourceDir>${project.basedir}/src/main/kotlin</sourceDir>
+									<sourceDir>${project.basedir}/src/main/java</sourceDir>
+
+									<sourceDir>./src-damar/elijah-sourcemodel-api/src/main/java</sourceDir>
+									<sourceDir>./src-damar/elijah-sourcemodel-impl/src/main/java</sourceDir>
+									<sourceDir>./src-damar/elijah-good-api/src/main/java</sourceDir>
+									<sourceDir>./src-bnxn/elijah-nextgen-outputstatement/src/main/java</sourceDir>
+									<sourceDir>./src-bnxn/elijah-stateful/src/main/java</sourceDir>
+									<sourceDir>./src-bnxn/tripleo-small/src/main/java</sourceDir>
+								</sourceDirs>
+							</configuration>
+						</execution>
+						<execution>
+							<id>test-compile</id>
+							<goals>
+								<goal>test-compile</goal> &lt;!&ndash; You can skip the <goals> element
+                    if you enable extensions for the plugin &ndash;&gt;
+							</goals>
+							<configuration>
+								<sourceDirs>
+									<sourceDir>${project.basedir}/src/test/kotlin</sourceDir>
+									<sourceDir>${project.basedir}/src/test/java</sourceDir>
+									<sourceDir>./src-damar/elijah-sourcemodel-api/src/main/java</sourceDir>
+									<sourceDir>./src-damar/elijah-sourcemodel-impl/src/main/java</sourceDir>
+									<sourceDir>./src-damar/elijah-good-api/src/main/java</sourceDir>
+									<sourceDir>./src-bnxn/elijah-nextgen-outputstatement/src/main/java</sourceDir>
+									<sourceDir>./src-bnxn/elijah-stateful/src/main/java</sourceDir>
+									<sourceDir>./src-bnxn/tripleo-small/src/main/java</sourceDir>
+								</sourceDirs>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+-->
+<!--
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.5.1</version>
+					<executions>
+						&lt;!&ndash; Replacing default-compile as it is treated specially by Maven &ndash;&gt;
+						<execution>
+							<id>default-compile</id>
+							<phase>none</phase>
+						</execution>
+						&lt;!&ndash; Replacing default-testCompile as it is treated specially by Maven &ndash;&gt;
+						<execution>
+							<id>default-testCompile</id>
+							<phase>none</phase>
+						</execution>
+						<execution>
+							<id>java-compile</id>
+							<phase>compile</phase>
+							<goals>
+								<goal>compile</goal>
+							</goals>
+						</execution>
+						<execution>
+							<id>java-test-compile</id>
+							<phase>test-compile</phase>
+							<goals>
+								<goal>testCompile</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+-->
+
+			<plugin>
+				<groupId>org.eclipse.xtend</groupId>
+				<artifactId>xtend-maven-plugin</artifactId>
+				<version>${xtend-maven-plugin.version}</version>
+
+				<executions>
+					<execution>
+						<goals>
+							<goal>compile</goal>
+							<goal>testCompile</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/xtend-gen/main</outputDirectory>
+							<testOutputDirectory>${project.build.directory}/xtend-gen/test</testOutputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>3.0.0</version>
+				<executions>
+					<execution>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>./src-damar/elijah-sourcemodel-api/src/main/java</source>
+								<source>./src-damar/elijah-sourcemodel-impl/src/main/java</source>
+								<source>./src-damar/elijah-good-api/src/main/java</source>
+								<source>./src-bnxn/elijah-nextgen-outputstatement/src/main/java</source>
+								<source>./src-bnxn/elijah-stateful/src/main/java</source>
+								<source>./src-bnxn/tripleo-small/src/main/java</source>
+								<source>./src-bnxn/tripleo-reactive/src/main/java</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.jetbrains.kotlin</groupId>
+				<artifactId>kotlin-maven-plugin</artifactId>
+				<version>${kotlin.version}</version>
+				<executions>
+					<execution>
+						<id>compile</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+						<configuration>
+							<sourceDirs>
+								<source>src-bnxn/tripleo-reactive/src/main/java</source>
+								<source>src/main/java</source>
+								<source>xtend-gen/src/main/java</source>
+								<source>src-bnxn/elijah-nextgen-outputstatement/src/main/java</source>
+								<source>src-bnxn/elijah-stateful/src/main/java</source>
+								<source>src-bnxn/tripleo-reactive/src/main/java</source>
+								<source>src-bnxn/tripleo-small/src/main/java</source>
+								<source>src-damar/elijah-good-api/src/main/java</source>
+								<source>src-damar/elijah-sourcemodel-api/src/main/java</source>
+								<source>src-damar/elijah-sourcemodel-impl/src/main/java</source>
+								<source>target/generated-sources/annotations</source>
+								<source>target/generated-sources/kapt</source>
+								<source>target/generated-sources/kaptKotlin</source>
+							</sourceDirs>
+						</configuration>
+					</execution>
+					<execution>
+						<id>test-compile</id>
+						<phase>test-compile</phase>
+						<goals>
+							<goal>test-compile</goal>
+						</goals>
+						<configuration>
+							<sourceDirs>
+								<source>src/test/java</source>
+								<source>target/generated-test-sources/test-annotations</source>
+							</sourceDirs>
+						</configuration>
+					</execution>
+				</executions>
+				<configuration>
+					<jvmTarget>1.8</jvmTarget>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-<!--
-				<version>3.8.1</version>
--->
 				<version>3.11.0</version>
+				<executions>
+					<execution>
+						<id>default-compile</id>
+						<phase>none</phase>
+					</execution>
+					<execution>
+						<id>default-testCompile</id>
+						<phase>none</phase>
+					</execution>
+					<execution>
+						<id>compile</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>testCompile</id>
+						<phase>test-compile</phase>
+						<goals>
+							<goal>testCompile</goal>
+						</goals>
+					</execution>
+				</executions>
 				<configuration>
 					<source>17</source>
 					<target>17</target>
-<!--
-					<fork>true</fork>
-					<compilerArgs>
-						<arg>-J&#45;&#45;add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED</arg>
-						<arg>-J&#45;&#45;add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED</arg>
-						<arg>-J&#45;&#45;add-opens=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED</arg>
-						<arg>-J&#45;&#45;add-opens=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED</arg>
-						<arg>-J&#45;&#45;add-opens=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED</arg>
-						<arg>-J&#45;&#45;add-opens=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</arg>
-						<arg>-J&#45;&#45;add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED</arg>
-						<arg>-J&#45;&#45;add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</arg>
-						<arg>-J&#45;&#45;add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED</arg>
-						<arg>-J&#45;&#45;add-opens=jdk.compiler/com.sun.tools.javac.jvm=ALL-UNNAMED</arg>
-					</compilerArgs>
--->
 				</configuration>
 			</plugin>
+
 		</plugins>
 	</build>
-
-<!--
-	<repositories>
-		<repository>
-			<id>jitpack.io</id>
-			<url>https://jitpack.io</url>
-		</repository>
-	</repositories>-->
 </project>

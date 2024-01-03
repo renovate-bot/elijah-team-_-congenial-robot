@@ -137,7 +137,7 @@ class DE3_ActivePTE implements DE3_Active {
 		return fg;
 	}
 
-	@SuppressWarnings("unused")
+	//@SuppressWarnings("unused")
 	private void __do_001(final @NotNull GenerateFiles generateC,
 						  final EvaClass node,
 						  final DeducePhase deducePhase,
@@ -154,8 +154,7 @@ class DE3_ActivePTE implements DE3_Active {
 			final var classes0 = deducePhase.generatedClasses.copy();
 
 			final int size1 = classes.size();
-			final GenerateResult x = generateC.resultsFromNodes(List_of(node), _inj().new_WorkManager(), resultSink,
-					fg);
+			final GenerateResult x = generateC.resultsFromNodes(List_of(node), _inj().new_WorkManager(), resultSink, fg);
 			final int size2 = classes.size();
 
 			final var classes1 = deducePhase.generatedClasses.copy();

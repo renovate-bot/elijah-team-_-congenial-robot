@@ -11,13 +11,19 @@ package tripleo.elijah.stages.deduce;
 import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tripleo.elijah.Eventual;
+import tripleo.elijah.EventualRegister;
 import tripleo.elijah.ReadySupplier_1;
+import tripleo.elijah.UnintendedUseException;
+import tripleo.elijah.comp.DefaultEventualRegister;
 import tripleo.elijah.comp.i.ErrSink;
 import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.lang.i.*;
 import tripleo.elijah.lang.impl.VariableStatementImpl;
 import tripleo.elijah.lang.nextgen.names.impl.ENU_LookupResult;
 import tripleo.elijah.lang.types.OS_UnknownType;
+import tripleo.elijah.stages.deduce.umbrella.DS_FunctionDef;
+import tripleo.elijah.stages.deduce.umbrella.DS_Rider;
 import tripleo.elijah.util.Mode;
 import tripleo.elijah.stages.deduce.nextgen.DR_Ident;
 import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_IdentTableEntry;
@@ -34,7 +40,7 @@ import java.util.List;
 /**
  * Created 7/21/21 7:33 PM
  */
-public class Resolve_Ident_IA2 {
+public class Resolve_Ident_IA2 extends DefaultEventualRegister {
 	private final          DeduceTypes2 deduceTypes2;
 	private final          ErrSink      errSink;
 	private final @NotNull FoundElement foundElement;
@@ -324,9 +330,14 @@ public class Resolve_Ident_IA2 {
 		}
 	}
 
-	public void resolveIdentIA2_(final @NotNull Context ctx,
-								 final @Nullable IdentIA identIA,
-								 @Nullable List<InstructionArgument> s) {
+	public void resolveIdentIA2_(final @NotNull Context ctx, final @Nullable IdentIA identIA, final @Nullable List<InstructionArgument> s) {
+		__inner(ctx, identIA, s);
+		checkFinishEventuals();
+	}
+
+	private void __inner(final @NotNull Context ctx,
+						 final @Nullable IdentIA identIA,
+						 @Nullable List<InstructionArgument> s) {
 		boolean found = false;
 		try {
 			el   = null;
@@ -354,23 +365,18 @@ public class Resolve_Ident_IA2 {
 						if (backlink instanceof final @NotNull IntegerIA integerIA) {
 							@NotNull VariableTableEntry                    vte = integerIA.getEntry();
 							final DeduceTypes2.PromiseExpectation<GenType> pe  = deduceTypes2.promiseExpectation(vte, "TypePromise for vte " + vte);
-							vte.typePromise().then(new DoneCallback<GenType>() {
-								@Override
-								public void onDone(@NotNull GenType result) {
-									pe.satisfy(result);
-									switch (result.getResolved().getType()) {
-									case FUNCTION:
-										ectx = result.getResolved().getElement().getContext();
-										break;
-									case USER_CLASS:
-										ectx = result.getResolved().getClassOf().getContext();
-										break;
-									default:
+							final Eventual<DeduceTypes2.PromiseExpectation<GenType>> pev = deduceTypes2._phase().new_Eventual();
+							vte.typePromise().then(result -> {
+								pe.satisfy(result);
+								pev.resolve(pe);
+								switch (result.getResolved().getType()) {
+								case FUNCTION -> ectx = result.getResolved().getElement().getContext();
+								case USER_CLASS -> ectx = result.getResolved().getClassOf().getContext();
+								default ->
 										throw new IllegalStateException("Unexpected value: " + result.getResolved().getType());
-									}
-									ia2_IdentIA((IdentIA) ia2, ectx);
-									foundElement.doFoundElement(el);
 								}
+								ia2_IdentIA((IdentIA) ia2, ectx);
+								foundElement.doFoundElement(el);
 							});
 						} else if (backlink instanceof IdentIA) {
 							dp.getElementPromise(index, result -> {
@@ -484,36 +490,35 @@ public class Resolve_Ident_IA2 {
 	/* @requires pot.get(0).getAttached() == null; */
 	private void ia2_IntegerIA_null_attached(@NotNull Context ctx, @NotNull List<TypeTableEntry> pot) {
 		try {
-			@Nullable FunctionDef    fd  = null;
-			@Nullable ProcTableEntry pte = null;
-			TableEntryIV             xx  = pot.get(0).tableEntry;
+			final Eventual<FunctionDef> fd = new_Eventual();
+
+			@Nullable ProcTableEntry pte;
+			TableEntryIV             xx = pot.get(0).tableEntry;
 			if (xx != null) {
 				if (xx instanceof final @NotNull ProcTableEntry procTableEntry) {
+					final __RIA2_DS_FunctionDef dsFunctionDef = new __RIA2_DS_FunctionDef(fd);
+					procTableEntry.resolveWith(dsFunctionDef, dsFunctionDef);
 					pte = procTableEntry;
-					InstructionArgument xxx = procTableEntry.expression_num;
-					if (xxx instanceof final @NotNull IdentIA identIA2) {
-						@NotNull IdentTableEntry ite        = identIA2.getEntry();
-						DeducePath               deducePath = ite.buildDeducePath(generatedFunction);
-						@Nullable OS_Element     el5        = deducePath.getElement(deducePath.size() - 1);
-						int                      y          = 2;
-						fd = (FunctionDef) el5;
-					}
+				} else {
+					pte = null;
 				}
 			} else {
-				LookupResultList lrl = DeduceLookupUtils.lookupExpression(pot.get(0).__debug_expression.getLeft(), ctx, deduceTypes2);
+				pte = null;
+				final IExpression      debugExpression = pot.get(0).__debug_expression;
+				final LookupResultList lrl             = DeduceLookupUtils.lookupExpression(debugExpression.getLeft(), ctx, deduceTypes2);
 				@Nullable OS_Element best = lrl.chooseBest(Helpers.List_of(
 						new DeduceUtils.MatchFunctionArgs(
-								(ProcedureCallExpression) pot.get(0).__debug_expression)));
+								(ProcedureCallExpression) debugExpression)));
 				if (best instanceof FunctionDef) {
-					fd = (FunctionDef) best;
+					fd.resolve((FunctionDef) best);
 				} else {
-					fd = null;
+					fd.reject(null); // TODO 12/25 null here
 					LOG.err("1195 Can't find match");
 				}
 			}
-			if (fd != null) {
-				final IInvocation           invocation = deduceTypes2.getInvocation((EvaFunction) generatedFunction);
-				final @Nullable FunctionDef fd2        = fd;
+
+			fd.then(fd2 -> {
+				final IInvocation invocation = deduceTypes2.getInvocation((EvaFunction) generatedFunction);
 				deduceTypes2.forFunction(deduceTypes2.newFunctionInvocation(fd2, pte, invocation, phase), new ForFunction() {
 					@Override
 					public void typeDecided(@NotNull GenType aType) {
@@ -522,13 +527,14 @@ public class Resolve_Ident_IA2 {
 						pot.get(0).setAttached(deduceTypes2.gt(aType));
 					}
 				});
-			} else {
-				errSink.reportError("1196 Can't find function");
-			}
+			});
+
+			fd.onFail((err) -> errSink.reportError("1196 Can't find function"));
 		} catch (ResolveError aResolveError) {
 			aResolveError.printStackTrace();
 			int y = 2;
 			throw new NotImplementedException();
+			//fd.reject(aResolveError);
 		}
 	}
 
@@ -590,6 +596,54 @@ public class Resolve_Ident_IA2 {
 
 	enum RIA_STATE {
 		CONTINUE, NEXT, RETURN
+	}
+
+	private class __RIA2_DS_FunctionDef implements DS_FunctionDef, DS_Rider {
+		private final Eventual<FunctionDef> fd;
+
+		public __RIA2_DS_FunctionDef(final Eventual<FunctionDef> aFd) {
+			fd = aFd;
+		}
+
+		@Override
+		public void accept(final FunctionDef afd) {
+			fd.resolve(afd);
+		}
+
+		@Override
+		public void accept(final BaseEvaFunction gf) {
+			// README 12/24 this will trigger when new functionality is implemented
+			//  Either you are going the right way
+			//  you changed the design
+			//  or you will have uncovered a flaw in the design as is
+			throw new UnintendedUseException();
+		}
+
+		@Override
+		public void accept(final FunctionInvocation aFunctionInvocation) {
+			// README 12/24 this will trigger when new functionality is implemented
+			//  Either you are going the right way
+			//  you changed the design
+			//  or you will have uncovered a flaw in the design as is
+			throw new UnintendedUseException();
+		}
+
+		@Override
+		public BaseEvaFunction generatedFunction() {
+			return generatedFunction;
+		}
+	}
+
+	/**
+	 * Don't forget to resolve and reject, and maybe andThen<br/>
+	 * Don't forget to like, share and subscribe<br/>
+	 */
+	private <T> Eventual<T> new_Eventual() {
+		final Eventual<T> R = new Eventual<>();
+
+		R.register(this);
+
+		return R;
 	}
 }
 

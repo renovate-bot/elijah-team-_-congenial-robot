@@ -40,7 +40,7 @@ import java.util.function.Consumer;
  */
 @SuppressWarnings("TypeMayBeWeakened")
 public class IdentTableEntry extends BaseTableEntry1 implements Constructable, TableEntryIV, DeduceTypes2.ExpectationBase, IDeduceResolvable {
-	public final           DeferredObject<OS_Element, ResolveError, Void>  _p_resolvedElementPromise  = new DeferredObject<>();
+	public final           Eventual<OS_Element>  _p_resolvedElementPromise  = new Eventual<>();
 	protected final        DeferredObject<InstructionArgument, Void, Void> _p_backlinkSet             = new DeferredObject<InstructionArgument, Void, Void>();
 	protected final        DeferredObject<ProcTableEntry, Void, Void>      _p_constructableDeferred   = new DeferredObject<>();
 	private final          DeferredObject<GenType, Void, Void>             _p_fefiDone                = new DeferredObject<GenType, Void, Void>();
@@ -85,7 +85,7 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 		addStatusListener((eh, newStatus) -> {
 			if (newStatus == Status.KNOWN) {
 				if (eh != null) {
-					setResolvedElement(eh.getElement());
+					setResolvedElement(eh.getElement(), new GG_ResolveEvent() {String id="IdentTableEntry::ctor";});
 				}
 			}
 		});
@@ -394,20 +394,28 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 		//assert __gf != null;
 		//assert this._deduceTypes2() != null;
 		//
-		//if (element instanceof FunctionDef fd) {
-		//	NotImplementedException.raise_stop();
-		//}
-		//
-		//_p_elementPromise.then(x -> {
-		//	NotImplementedException.raise_stop();
-		//	assert x == element;
-		//});
+		if (element instanceof FunctionDef fd) {
+			NotImplementedException.raise_stop();
+			if (_p_elementPromise.isResolved()) {
+				_p_elementPromise.then(e -> {
+					assert e == fd;
+				});
+			} else {
+				_p_elementPromise.resolve(fd);
+			}
+		}
+
+		_p_elementPromise.then(x -> {
+			NotImplementedException.raise_stop();
+			assert x == element;
+		});
 	}
 
 	public EvaExpression<IdentExpression> evaExpression() {
 		return ident;
 	}
 }
+
 //
 // vim:set shiftwidth=4 softtabstop=0 noexpandtab:
 //

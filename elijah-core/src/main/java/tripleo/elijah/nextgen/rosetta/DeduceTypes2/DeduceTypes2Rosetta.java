@@ -14,8 +14,16 @@ public class DeduceTypes2Rosetta {
 		request = aRequest;
 	}
 
-	public OS_Module getModule() {
-		return request.getModule();
+	public ElLog createAndAddLog_DeduceTypes2() {
+		ElLog log = createLog_DeduceTypes2();
+
+		getDeducePhase().addLog(log);
+
+		return log;
+	}
+
+	public ElLog createLog_DeduceTypes2() {
+		return new ElLog(getModule().getFileName(), getVerbosity(), DeduceTypes2.PHASE);
 	}
 
 	public DeducePhase getDeducePhase() {
@@ -26,19 +34,11 @@ public class DeduceTypes2Rosetta {
 		return request.getModule().getCompilation().getErrSink();
 	}
 
-	public ElLog createLog_DeduceTypes2() {
-		return new ElLog(getModule().getFileName(), getVerbosity(), DeduceTypes2.PHASE);
+	public OS_Module getModule() {
+		return request.getModule();
 	}
 
 	private ElLog.@NotNull Verbosity getVerbosity() {
 		return request.getVerbosity();
-	}
-
-	public ElLog createAndAddLog_DeduceTypes2() {
-		ElLog log = createLog_DeduceTypes2();
-
-		getDeducePhase().addLog(log);
-
-		return log;
 	}
 }

@@ -9,6 +9,7 @@
  */
 package tripleo.elijah.stages.deduce;
 
+import com.google.common.base.Preconditions;
 import org.jdeferred2.DoneCallback;
 import org.jdeferred2.FailCallback;
 import org.jetbrains.annotations.Contract;
@@ -17,10 +18,7 @@ import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.comp.Finally;
 import tripleo.elijah.diagnostic.Diagnostic;
-import tripleo.elijah.lang.i.Context;
-import tripleo.elijah.lang.i.LookupResultList;
-import tripleo.elijah.lang.i.OS_Element;
-import tripleo.elijah.lang.i.RegularTypeName;
+import tripleo.elijah.lang.i.*;
 import tripleo.elijah.lang.impl.ContextImpl;
 import tripleo.elijah.lang.impl.VariableStatementImpl;
 import tripleo.elijah.stages.deduce.nextgen.DR_Ident;
@@ -155,21 +153,20 @@ public class DeducePath {
 
 	@Nullable
 	private OS_Element elementForIndex(final @NotNull ProcIA ia2) {
-		@Nullable OS_Element          el;
 		final @NotNull ProcTableEntry procTableEntry = ia2.getEntry();
-		el = procTableEntry.getResolvedElement(); // .expression?
+		@Nullable OS_Element          el             = procTableEntry.getResolvedElement(); // .expression?
 		// TODO no setStatus here?
 
 		var dt2 = procTableEntry._deduceTypes2();
 
 		if (procTableEntry.expression_num instanceof IdentIA identIA) {
-			var id = procTableEntry.__gf.getIdent(identIA.getEntry());
+			final DR_Ident drid = procTableEntry.__gf.getIdent(identIA.getEntry());
 
 			if (el != null) {
 				final DR_Ident.ElementUnderstanding understanding = dt2._inj().new_DR_Ident_ElementUnderstanding(el);
-				id.u.add(understanding);
+				drid.u.add(understanding);
 			} else {
-				for (DR_Ident.Understanding understanding : id.u) {
+				for (DR_Ident.Understanding understanding : drid.u) {
 					if (understanding instanceof DR_Ident.ElementUnderstanding eu) {
 						el = eu.getElement();
 					}
@@ -215,6 +212,8 @@ public class DeducePath {
 		MemberContext context();
 
 		OS_Element element();
+
+		OS_NamedElement namedElement();
 
 		int getIndex();
 
@@ -277,6 +276,13 @@ public class DeducePath {
 		@Override
 		public OS_Element element() {
 			return element;
+		}
+
+		@Override
+		public OS_NamedElement namedElement() {
+			Preconditions.checkState(element instanceof OS_NamedElement);
+
+			return (OS_NamedElement) element;
 		}
 
 		@Override

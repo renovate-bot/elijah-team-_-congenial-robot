@@ -8,19 +8,22 @@
  */
 package tripleo.elijah.stages.gen_fn;
 
+import com.google.common.base.Preconditions;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jdeferred2.DoneCallback;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.Eventual;
 import tripleo.elijah.EventualRegister;
+import tripleo.elijah.ci.CompilerInstructionsImpl;
 import tripleo.elijah.comp.i.ErrSink;
-import tripleo.elijah.lang.i.Context;
-import tripleo.elijah.lang.i.IExpression;
-import tripleo.elijah.lang.i.OS_Type;
+import tripleo.elijah.lang.i.*;
 import tripleo.elijah.stages.deduce.*;
 import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_ProcTableEntry;
 import tripleo.elijah.stages.deduce.post_bytecode.IDeduceElement3;
+import tripleo.elijah.stages.deduce.umbrella.DS_FunctionDef;
+import tripleo.elijah.stages.deduce.umbrella.DS_Rider;
 import tripleo.elijah.stages.instructions.IdentIA;
 import tripleo.elijah.stages.instructions.InstructionArgument;
 import tripleo.elijah.stages.instructions.IntegerIA;
@@ -44,8 +47,8 @@ public class ProcTableEntry extends BaseTableEntry implements TableEntryIV {
 	 * <br/>
 	 * Or for synthetic methods
 	 */
-	public final IExpression          __debug_expression;
-	public final InstructionArgument  expression_num;
+	public final          IExpression          __debug_expression;
+	public final          InstructionArgument  expression_num;
 
 	public final @NotNull EvaExpression<IExpression> expression;
 
@@ -63,6 +66,7 @@ public class ProcTableEntry extends BaseTableEntry implements TableEntryIV {
 	private         DeduceElement3_ProcTableEntry                   _de3;
 	private         ClassInvocation                                 classInvocation;
 	private         FunctionInvocation                              functionInvocation;
+	private final List<Pair<?,?>> zzResolvers=new ArrayList<>();
 
 	public ProcTableEntry(final int aIndex, final IExpression aExpression, final @Nullable InstructionArgument aExpressionNum, final List<TypeTableEntry> aArgs) {
 		index              = aIndex;
@@ -177,16 +181,17 @@ public class ProcTableEntry extends BaseTableEntry implements TableEntryIV {
 		return getDeduceElement3(_deduceTypes2(), __gf);
 	}
 
-	public DeduceTypes2 _deduceTypes2() {
-		return __dt2;
-	}
-
 	public @NotNull IDeduceElement3 getDeduceElement3(final @NotNull DeduceTypes2 aDeduceTypes2,
 													  final @NotNull BaseEvaFunction aGeneratedFunction) {
 		if (_de3 == null) {
+			Preconditions.checkNotNull(aDeduceTypes2);
 			_de3 = new DeduceElement3_ProcTableEntry(this, aDeduceTypes2, aGeneratedFunction);
 		}
 		return _de3;
+	}
+
+	public DeduceTypes2 _deduceTypes2() {
+		return __dt2;
 	}
 
 	public FunctionInvocation getFunctionInvocation() {
@@ -275,10 +280,6 @@ public class ProcTableEntry extends BaseTableEntry implements TableEntryIV {
 		return typeResolve.typeResolution();
 	}
 
-	public Eventual<GenType> typePromise() {
-		return typeResolvePromise();
-	}
-
 	public EvaExpression<IExpression> getEvaExpression() {
 		return expression;
 	}
@@ -291,13 +292,45 @@ public class ProcTableEntry extends BaseTableEntry implements TableEntryIV {
 		typePromise();
 	}
 
+	public Eventual<GenType> typePromise() {
+		return typeResolvePromise();
+	}
+
+	public void resolveWith(final DS_FunctionDef aDSFunctionDef, final DS_Rider aDSRider) {
+		_p_elementPromise.then(element -> {
+			if (element instanceof FunctionDef fd2) {
+				aDSFunctionDef.accept(fd2);
+			}
+		});
+		_p_onFunctionInvocations.then(aDSFunctionDef::accept);
+		zzResolvers.add(Pair.of(aDSFunctionDef, aDSRider));
+		__doResolve(aDSFunctionDef, aDSRider);
+	}
+
+	private void __doResolve(final DS_FunctionDef aDSFunctionDef, final DS_Rider aDSRider) {
+		var procTableEntry = this;
+
+		InstructionArgument xxx = procTableEntry.expression_num;
+		if (xxx instanceof final @NotNull IdentIA identIA2) {
+			final @NotNull IdentTableEntry ite        = identIA2.getEntry();
+			final DeducePath               deducePath = ite.buildDeducePath(aDSRider.generatedFunction());
+			final @Nullable OS_Element     el5        = deducePath.getElement(deducePath.size() - 1);
+
+			int y = 2;
+
+			aDSFunctionDef.accept((FunctionDef) el5);
+		}
+	}
+
 	public enum ECT {exp, exp_num}
 
 	private class _StatusListener_PTE_67 implements StatusListener {
 		@Override
 		public void onChange(/*@NotNull*/ IElementHolder eh, Status newStatus) {
 			if (newStatus == Status.KNOWN) {
-				setResolvedElement(eh.getElement());
+				setResolvedElement(eh.getElement(), new GG_ResolveEvent() {
+					String id = "_StatusListener_PTE_67::onChange";
+				});
 			}
 		}
 	}

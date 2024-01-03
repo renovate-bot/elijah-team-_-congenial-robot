@@ -39,7 +39,7 @@ public class DeduceTypeResolve {
 	@Nullable     BaseTableEntry                               backlink;
 	private final Eventual<GenType> typeResolution = new Eventual<>();
 	//private final DeduceTypes2                                 _dt2;
-	private final Supplier<DeduceTypes2>                       _dt2s;
+	private Supplier<DeduceTypes2>                       _dt2s;
 
 	public DeduceTypeResolve(BaseTableEntry aBte, final Supplier<DeduceTypes2> aDt2) {
 		bte   = aBte;

@@ -17,6 +17,7 @@ import tripleo.elijah.contexts.ModuleContext;
 import tripleo.elijah.lang.i.*;
 import tripleo.elijah.lang.impl.*;
 import tripleo.elijah.nextgen.rosetta.DeduceTypes2.DeduceTypes2Request;
+import tripleo.elijah.nextgen.rosetta.Rosetta;
 import tripleo.elijah.stages.deduce.*;
 import tripleo.elijah.stages.gdm.GDM_IdentExpression;
 import tripleo.elijah.stages.instructions.IdentIA;
@@ -167,7 +168,7 @@ public class TestIdentNormal {
 		final Scope3Impl sco1 = new Scope3Impl(fd2);
 
 		final GeneratePhase     generatePhase     = boilerplate.pipelineLogic().generatePhase;
-		final GenerateFunctions generateFunctions = boilerplate.pipelineLogic().generatePhase.getGenerateFunctions(mod);
+		final GenerateFunctions generateFunctions = generatePhase.getGenerateFunctions(mod);
 
 		sco1.add(new StatementWrapperImpl(pce, ctx2, fd2));
 		fd2.scope(sco1);
@@ -176,9 +177,16 @@ public class TestIdentNormal {
 		ch.setName(capitalX);
 		cs.setHeader(ch);
 
-		ClassInvocation    ci   = phase.registerClassInvocation(cs);
+		final DeduceTypes2 deduceTypes2 = boilerplate.defaultDeduceTypes2(mod);
+assert false;
+		final ClassInvocation    ci   = phase.registerClassInvocation(cs, deduceTypes2);
 		ProcTableEntry     pte2 = null;
-		FunctionInvocation fi   = new FunctionInvocation(fd, pte2, ci, generatePhase);
+
+		final var dp = boilerplate.pipelineLogic().dp;
+
+		assert dp == phase;
+
+		FunctionInvocation fi   = dp._inj().new_FunctionInvocation(fd, pte2, ci, generatePhase);
 //		when(fd.returnType()).thenReturn(null);
 		final FormalArgList formalArgList = new FormalArgListImpl();
 //		when(fd.fal()).thenReturn(formalArgList);
@@ -216,17 +224,14 @@ public class TestIdentNormal {
 		//
 		//
 
-		DeduceTypes2 d2 = new DeduceTypes2(new DeduceTypes2Request(mod, phase, ElLog.Verbosity.VERBOSE));
+		DeduceTypes2 d2 = Rosetta.create(new DeduceTypes2Request(mod, phase, ElLog.Verbosity.VERBOSE));
 
 
 		ClassInvocation    invocation2   = new ClassInvocation(cs, null, new ReadySupplier_1<>(d2));
 		invocation2 = phase.registerClassInvocation(invocation2);
 		ProcTableEntry     pte3               = null;
-		FunctionInvocation fi2                = new FunctionInvocation(fd2, pte3, invocation2, generatePhase);
-		EvaFunction        generatedFunction2 = generateFunctions.generateFunction(fd2, fd2.getParent(), fi2);//new EvaFunction(fd2);
-//		generatedFunction2.addVariableTableEntry("self", VariableTableType.SELF, null, null);
-//		final TypeTableEntry type = null;
-//		int res = generatedFunction2.addVariableTableEntry("Result", VariableTableType.RESULT, type, null);
+		FunctionInvocation fi2                = dp._inj().new_FunctionInvocation(fd2, pte3, invocation2, generatePhase);
+		//EvaFunction        generatedFunction2 = generateFunctions.generateFunction(fd2, fd2.getParent(), fi2);//new EvaFunction(fd2);
 
 		//
 		//

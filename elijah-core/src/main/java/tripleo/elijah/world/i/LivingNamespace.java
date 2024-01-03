@@ -1,5 +1,6 @@
 package tripleo.elijah.world.i;
 
+import tripleo.elijah.comp.functionality.f291.AmazingPart;
 import tripleo.elijah.lang.i.NamespaceStatement;
 import tripleo.elijah.stages.garish.GarishNamespace;
 import tripleo.elijah.stages.gen_c.GenerateC;
@@ -17,6 +18,8 @@ public interface LivingNamespace extends LivingNode {
 	NamespaceStatement getElement();
 
 	GarishNamespace getGarish();
+
+	void offer(AmazingPart aAp);
 
 	//void setGarish(GarishClass aGarishClass);
 }

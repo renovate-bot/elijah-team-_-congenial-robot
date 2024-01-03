@@ -1,9 +1,13 @@
 package tripleo.elijah.stages.gen_generic;
 
 import io.reactivex.rxjava3.core.Observer;
+import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.ci.LibraryStatementPart;
 import tripleo.elijah.stages.gen_c.OutputFileC;
 import tripleo.elijah.stages.gen_fn.*;
+import tripleo.elijah.stages.pp.IPP_Function;
+import tripleo.elijah.stages.pp.PP_Constructor;
+import tripleo.elijah.stages.pp.PP_Function;
 import tripleo.util.buffer.Buffer;
 
 import java.util.List;
@@ -18,11 +22,14 @@ public interface GenerateResult {
 
 	void addClass(TY ty, EvaClass aClass, Buffer aBuf, LibraryStatementPart aLsp);
 
+	/* (non-Javadoc)
+	 * @see tripleo.elijah.stages.gen_generic.GenerateResult#addFunction(tripleo.elijah.stages.gen_fn.BaseEvaFunction, tripleo.util.buffer.Buffer, tripleo.elijah.stages.gen_generic.Old_GenerateResult.TY, tripleo.elijah.ci.LibraryStatementPart)
+	 */
+	void addFunction(IPP_Function aGeneratedFunction, @NotNull Buffer aBuffer, @NotNull TY aTY, LibraryStatementPart aLsp);
+
 	void additional(GenerateResult aGenerateResult);
 
-	void addConstructor(EvaConstructor aEvaConstructor, Buffer aBuffer, TY aTY, LibraryStatementPart aLsp);
-
-	void addFunction(BaseEvaFunction aGeneratedFunction, Buffer aBuffer, TY aTY, LibraryStatementPart aLsp);
+	void addConstructor(PP_Constructor aEvaConstructor, Buffer aBuffer, TY aTY, LibraryStatementPart aLsp);
 
 	void completeItem(GenerateResultItem aGenerateResultItem);
 

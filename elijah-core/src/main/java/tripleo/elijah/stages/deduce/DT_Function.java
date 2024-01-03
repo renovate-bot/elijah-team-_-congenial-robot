@@ -13,10 +13,14 @@ import tripleo.elijah.stages.instructions.IntegerIA;
 import tripleo.elijah.stages.instructions.VariableTableType;
 
 public class DT_Function {
+	public BaseEvaFunction getGeneratedFunction() {
+		return generatedFunction;
+	}
+
 	private final BaseEvaFunction generatedFunction;
-	private final DeduceTypes2 d;
-	private boolean            deducedAlready;
-	private DeducePhase __state_dp;
+	private final DeduceTypes2    d;
+	private       boolean         deducedAlready;
+	private       DeducePhase     __state_dp;
 
 	public DT_Function(final BaseEvaFunction aGeneratedFunction, final DeduceTypes2 aD) {
 		generatedFunction = aGeneratedFunction;
@@ -192,9 +196,10 @@ public class DT_Function {
 				OS_Element el  = vs.getParent().getParent();
 				OS_Element el2 = aEvaConstructor.getFD().getParent();
 				if (el != el2) {
-					if (el instanceof ClassStatement || el instanceof NamespaceStatement)
+					if (el instanceof ClassStatement || el instanceof NamespaceStatement) {
 						// NOTE there is no concept of gf here
 						aDeducePhase.registerResolvedVariable(identTableEntry, el, vs.getName());
+					}
 				}
 			}
 		}

@@ -8,6 +8,7 @@ import tripleo.elijah.nextgen.outputstatement.EG_Statement;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputFile;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputTree;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputType;
+import tripleo.elijah.nextgen.outputtree.EOT_FileNameProvider;
 import tripleo.elijah.world.i.LivingRepo;
 import tripleo.elijah.world.i.WorldModule;
 
@@ -26,20 +27,20 @@ public class CompilationAccess2Impl implements ICompilationAccess2 {
 	}
 
 	@Override
-	public void addCodeOutput(final EOT_OutputFile.FileNameProvider aFileNameProvider, final EOT_OutputFile aOutputFile) {
+	public void addCodeOutput(final EOT_FileNameProvider aFileNameProvider, final EOT_OutputFile aOutputFile) {
 		c.reports().addCodeOutput(aFileNameProvider, aOutputFile);
 	}
 
 	@Override
 	public EOT_OutputFile createOutputFile(final List<EIT_Input> aInputs,
-										   final EOT_OutputFile.FileNameProvider aFilename,
+										   final EOT_FileNameProvider aFilename,
 										   final EOT_OutputType aEOTOutputType,
 										   final EG_Statement aStatement) {
 		return new EOT_OutputFile(aInputs, aFilename, aEOTOutputType, aStatement);
 	}
 
 	@Override
-	public void addCodeOutput(final EOT_OutputFile.FileNameProvider aFilename, final EOT_OutputFile aOutputFile, final boolean addFlag) {
+	public void addCodeOutput(final EOT_FileNameProvider aFilename, final EOT_OutputFile aOutputFile, final boolean addFlag) {
 		addCodeOutput(aFilename, aOutputFile);
 		getOutputTree().add(aOutputFile);
 	}

@@ -112,49 +112,6 @@ public class CompilationRunner extends _RegistrationTarget {
 		public static void register(final @NotNull _RegistrationTarget art) {
 			//EXIT_RESOLVE            = registerState(new ST.ExitResolveState());
 			INITIAL = art.registerState(new ST.InitialState());
-			//EXIT_CONVERT_USER_TYPES = registerState(new ST.ExitConvertUserTypes());
-		}
-
-		static class ExitConvertUserTypes implements State {
-			private StateRegistrationToken identity;
-
-			@Override
-			public void apply(final DefaultStateful element) {
-				//final VariableTableEntry vte = ((DeduceElement3_VariableTableEntry) element).principal;
-
-				//final DeduceTypes2         dt2     = ((DeduceElement3_VariableTableEntry) element).deduceTypes2();
-			}
-
-			@Override
-			public boolean checkState(final DefaultStateful aElement3) {
-				return true;
-			}
-
-			@Override
-			public void setIdentity(final StateRegistrationToken aId) {
-				identity = aId;
-			}
-		}
-
-		static class ExitResolveState implements State {
-
-			private StateRegistrationToken identity;
-
-			@Override
-			public void apply(final DefaultStateful element) {
-				//final VariableTableEntry vte = ((DeduceElement3_VariableTableEntry) element).principal;
-			}
-
-			@Override
-			public boolean checkState(final DefaultStateful aElement3) {
-				//return ((DeduceElement3_VariableTableEntry) aElement3).st == DeduceElement3_VariableTableEntry.ST.INITIAL;
-				return false; // FIXME
-			}
-
-			@Override
-			public void setIdentity(final StateRegistrationToken aId) {
-				identity = aId;
-			}
 		}
 
 		static class InitialState implements State {

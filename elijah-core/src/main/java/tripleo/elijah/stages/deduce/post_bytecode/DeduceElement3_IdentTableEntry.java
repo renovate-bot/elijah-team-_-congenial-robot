@@ -10,6 +10,9 @@ import tripleo.elijah.contexts.ModuleContext;
 import tripleo.elijah.lang.i.*;
 import tripleo.elijah.lang.impl.BaseFunctionDef;
 import tripleo.elijah.lang.imports.NormalImportStatement;
+import tripleo.elijah.nextgen.rosetta.Rosetta;
+import tripleo.elijah.stages.deduce_r.RegisterClassInvocation_resp;
+import tripleo.elijah.stages.gen_fn_r.RegisterClassInvocation_env;
 import tripleo.elijah.util.Mode;
 import tripleo.elijah.stages.deduce.*;
 import tripleo.elijah.stages.deduce.nextgen.DR_Ident;
@@ -26,14 +29,17 @@ import tripleo.elijah.util.Operation2;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class DeduceElement3_IdentTableEntry extends DefaultStateful implements IDeduceElement3 {
 
-	public final  IdentTableEntry     principal;
-	public        DeduceTypes2        deduceTypes2;
-	public        BaseEvaFunction     generatedFunction;
-	private       GenType             _resolved;
-	private final DeduceElement3_Type _type = new DeduceElement3_Type() {
+	public static final int                 __makeGenerated_fi__Eventual_ENTER            = 330;
+	public static final int                 __makeGenerated_fi__Eventual__TYPERESOLVE_VAR = 336;
+	public final        IdentTableEntry     principal;
+	public              DeduceTypes2        deduceTypes2;
+	public              BaseEvaFunction     generatedFunction;
+	private             GenType             _resolved;
+	private final       DeduceElement3_Type _type                                         = new DeduceElement3_Type() {
 
 		@Contract(pure = true)
 		@Override
@@ -64,7 +70,7 @@ public class DeduceElement3_IdentTableEntry extends DefaultStateful implements I
 	};
 	Context context;
 	Context fdCtx;
-	private       GenType             genType;
+	private GenType genType;
 
 	@Contract(pure = true)
 	public DeduceElement3_IdentTableEntry(final IdentTableEntry aIdentTableEntry) {
@@ -384,8 +390,8 @@ public class DeduceElement3_IdentTableEntry extends DefaultStateful implements I
 							var ci = pte.getClassInvocation();
 							var fi = pte.getFunctionInvocation();
 
-							//System.err.println("322 " + ci);
-							//System.err.println("323 " + fi);
+							System.err.println("322 " + ci);
+							System.err.println("323 " + fi);
 
 
 							var pt = dt2._inj().new_DR_PossibleTypeCI(ci, fi);
@@ -395,56 +401,7 @@ public class DeduceElement3_IdentTableEntry extends DefaultStateful implements I
 
 							// README taking a chance here
 							var eef = deduceTypes2.creationContext().makeGenerated_fi__Eventual(fi);
-
-							eef.then(new DoneCallback<BaseEvaFunction>() {
-								@Override
-								public void onDone(final BaseEvaFunction gf) {
-									printString(330, "" + gf);
-
-									InstructionArgument ret = (gf.vte_lookup("Result"));
-									if (ret instanceof IntegerIA aIntegerIA) {
-										var retvte = aIntegerIA.getEntry();
-										retvte.typeResolvePromise().then(gt -> {
-											printString(336, ""+gt);
-
-											System.exit(336);
-										});
-										var retvtept = retvte.potentialTypes();
-										for (TypeTableEntry typeTableEntry : retvtept) {
-
-										}
-
-										var retvtety = retvte.getType();
-										if (retvtety.getAttached() != null) {
-											var att  = retvtety.getAttached();
-											var resl = att.resolve(principal.getIdent().getContext());
-
-											if (resl != null) {
-												var ci11 = deduceTypes2.phase.registerClassInvocation(resl.getClassOf());
-
-												final Compilation c = deduceTypes2.module.getCompilation();
-												if (c.reports().outputOn(Finally.Outs.Out_350)) {
-													printString(350, ""+ resl);
-												}
-												var pt2 = dt2._inj().new_DR_PossibleTypeCI(ci11, null);
-												b.addPossibleType(pt2);
-											} else {
-												final Compilation c = deduceTypes2.module.getCompilation();
-												if (c.reports().outputOn(Finally.Outs.Out_364)) {
-													System.err.println("364 " + principal.getIdent().getText());
-												}
-											}
-										}
-									}
-								}
-
-								private static void printString(final int code, final String txt) {
-									if (code == 330) return;
-									System.err.println(""+code+" "+txt);
-									if (code == 336)
-										printString(336, "********************");
-								}
-							});
+							eef.then(gf -> __makeGenerated_fi__Eventual(gf, b));
 						}
 					}
 
@@ -489,6 +446,71 @@ public class DeduceElement3_IdentTableEntry extends DefaultStateful implements I
 			final IDeduceElement3 de3 = pte1.getDeduceElement3();
 		}
 		return el;
+	}
+
+	private static void printString(final int code, final String txt) {
+		if (code != __makeGenerated_fi__Eventual_ENTER) {
+			System.err.println("" + code + " " + txt);
+		}
+		switch (code) {
+		case __makeGenerated_fi__Eventual__TYPERESOLVE_VAR -> {
+			// 24j2 let's see recursive
+			printString(__makeGenerated_fi__Eventual__TYPERESOLVE_VAR, "********************");
+		}
+		}
+	}
+
+	private void __makeGenerated_fi__Eventual(final BaseEvaFunction gf, final DR_Ident b) {
+		printString(__makeGenerated_fi__Eventual_ENTER, "" + gf);
+
+		InstructionArgument ret = (gf.vte_lookup("Result"));
+		if (ret instanceof IntegerIA aIntegerIA) {
+			var retvte = aIntegerIA.getEntry();
+			retvte.typeResolvePromise().then(gt -> {
+				printString(__makeGenerated_fi__Eventual__TYPERESOLVE_VAR, "" + gt);
+
+				System.exit(__makeGenerated_fi__Eventual__TYPERESOLVE_VAR);
+			});
+			var retvtept = retvte.potentialTypes();
+			for (TypeTableEntry typeTableEntry : retvtept) {
+
+			}
+
+			final TypeTableEntry retvtety = retvte.getType();
+			if (retvtety.getAttached() != null) {
+				var att  = retvtety.getAttached();
+				var resl = att.resolve(principal.getIdent().getContext());
+
+				if (resl != null) {
+					final ClassStatement classStatement = resl.getClassOf();
+
+					final RegisterClassInvocation_env env = new RegisterClassInvocation_env(classStatement,
+																							deduceTypes2,
+																							deduceTypes2._phase());
+					final RegisterClassInvocation_resp resp = new RegisterClassInvocation_resp();
+					final Rosetta.RCIE                 rcie = Rosetta.create(env, resp);
+					rcie.apply();
+
+					resp.onSuccess((ClassInvocation ci3) -> {
+						final Compilation c = deduceTypes2.module.getCompilation();
+						if (c.reports().outputOn(Finally.Outs.Out_350)) {
+							printString(350, "" + resl);
+						}
+
+						final DeduceTypes2 dt2 = deduceTypes2;
+						var pt2 = dt2._inj().new_DR_PossibleTypeCI(ci3, null);
+						b.addPossibleType(pt2);
+					});
+
+
+				} else {
+					final Compilation c = deduceTypes2.module.getCompilation();
+					if (c.reports().outputOn(Finally.Outs.Out_364)) {
+						System.err.println("364 " + principal.getIdent().getText());
+					}
+				}
+			}
+		}
 	}
 
 	@Nullable
@@ -621,31 +643,20 @@ public class DeduceElement3_IdentTableEntry extends DefaultStateful implements I
 
 		@Override
 		public void apply(final DefaultStateful element) {
-			final DeduceElement3_IdentTableEntry ite_de          = ((DeduceElement3_IdentTableEntry) element);
+			assert element instanceof DeduceElement3_IdentTableEntry;
+
+			final DeduceElement3_IdentTableEntry ite_de          = (DeduceElement3_IdentTableEntry) element;
 			final IdentTableEntry                identTableEntry = ite_de.principal;
 
-			identTableEntry.backlinkSet().then(new DoneCallback<InstructionArgument>() {
-				@Override
-				public void onDone(final InstructionArgument backlink0) {
-					BaseTableEntry backlink;
-
-					if (backlink0 instanceof IdentIA) {
-						backlink = ((IdentIA) backlink0).getEntry();
-						setBacklinkCallback(backlink);
-					} else if (backlink0 instanceof IntegerIA) {
-						backlink = ((IntegerIA) backlink0).getEntry();
-						setBacklinkCallback(backlink);
-					} else if (backlink0 instanceof ProcIA) {
-						backlink = ((ProcIA) backlink0).getEntry();
-						setBacklinkCallback(backlink);
-					} else
-						backlink = null;
-				}
-
-				public void setBacklinkCallback(BaseTableEntry backlink) {
+			identTableEntry.backlinkSet().then((InstructionArgument backlink0) -> {
+				final Consumer<BaseTableEntry> setBacklinkCallback2 = (BaseTableEntry backlink) -> {
 					if (backlink instanceof final ProcTableEntry procTableEntry) {
 						procTableEntry.typeResolvePromise().then((final @NotNull GenType result) -> {
 							final DeduceElement3_IdentTableEntry de3_ite = identTableEntry.getDeduceElement3();
+
+
+							assert de3_ite == ite_de;
+
 
 							if (result.getCi() == null && result.getNode() == null)
 								result.genCIForGenType2(de3_ite.deduceTypes2());
@@ -657,13 +668,29 @@ public class DeduceElement3_IdentTableEntry extends DefaultStateful implements I
 							}
 						});
 					}
+				};
+
+				@Nullable BaseTableEntry backlink;
+
+				if (backlink0 instanceof IdentIA) {
+					backlink = ((IdentIA) backlink0).getEntry();
+					setBacklinkCallback2.accept(backlink);
+				} else if (backlink0 instanceof IntegerIA) {
+					backlink = ((IntegerIA) backlink0).getEntry();
+					setBacklinkCallback2.accept(backlink);
+				} else if (backlink0 instanceof ProcIA) {
+					backlink = ((ProcIA) backlink0).getEntry();
+					setBacklinkCallback2.accept(backlink);
+				} else {
+					//noinspection UnusedAssignment
+					backlink = null;
 				}
 			});
 		}
 
 		@Override
 		public boolean checkState(final DefaultStateful aElement3) {
-			return true;
+			return aElement3 instanceof DeduceElement3_IdentTableEntry;
 		}
 
 		@Override

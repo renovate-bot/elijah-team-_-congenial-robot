@@ -13,6 +13,7 @@ import java.util.function.Supplier;
 public record GM_GenerateModuleRequest(@NotNull GN_GenerateNodesIntoSink generateNodesIntoSink,
 									   @NotNull OS_Module mod,
 									   @NotNull GN_GenerateNodesIntoSinkEnv env) {
+	@SuppressWarnings("static-access")
 	@Contract("_ -> new")
 	public @NotNull GenerateFiles getGenerateFiles(final Supplier<GenerateResultEnv> fgs) {
 		var params = params();

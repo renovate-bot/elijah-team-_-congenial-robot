@@ -234,31 +234,17 @@ class Unnamed_ITE_Resolver1 implements ITE_Resolver {
 
 		private void onChangePTE(@NotNull ProcTableEntry aPte) {
 			if (aPte.getStatus() == BaseTableEntry.Status.KNOWN) { // TODO might be obvious
-				if (aPte.getFunctionInvocation() != null) {
-					FunctionInvocation fi = aPte.getFunctionInvocation();
-					FunctionDef        fd = fi.getFunction();
-					if (fd instanceof ConstructorDef) {
-						fi.generateDeferred().done(new DoneCallback<BaseEvaFunction>() {
-							@Override
-							public void onDone(BaseEvaFunction result) {
-								@NotNull EvaConstructor constructorDef = (EvaConstructor) result;
-
-								@NotNull FunctionDef ele = constructorDef.getFD();
-
-								try {
-									LookupResultList     lrl  = DeduceLookupUtils.lookupExpression(ite.getIdent(), ele.getContext(), dt2);
-									@Nullable OS_Element best = lrl.chooseBest(null);
-									assert best != null;
-									ite.setStatus(BaseTableEntry.Status.KNOWN, _inj().new_GenericElementHolder(best));
-								} catch (ResolveError aResolveError) {
-									aResolveError.printStackTrace();
-									dt2._errSink().reportDiagnostic(aResolveError);
-								}
-							}
-						});
-					}
-				} else
+				if (aPte.getFunctionInvocation() == null) {
 					throw new NotImplementedException();
+				}
+
+				final FunctionInvocation fi = aPte.getFunctionInvocation();
+				final FunctionDef        fd = fi.getFunction();
+				if (!(fd instanceof ConstructorDef)) {
+					throw new NotImplementedException();
+				}
+
+				fi.generateDeferred().done(result -> __onChangePTE_helper((EvaConstructor) result));
 			} else {
 				dt2.LOG.info("1621");
 				@Nullable LookupResultList lrl = null;
@@ -266,12 +252,28 @@ class Unnamed_ITE_Resolver1 implements ITE_Resolver {
 					lrl = DeduceLookupUtils.lookupExpression(ite.getIdent(), ctx, dt2);
 					@Nullable OS_Element best = lrl.chooseBest(null);
 					assert best != null;
-					ite.setResolvedElement(best);
+					ite.setResolvedElement(best, new GG_ResolveEvent() {String id="Unnamed_ITE_Resolver1::FoundParent";});
 					dt2.found_element_for_ite(null, ite, best, ctx, dt2.central());
 //						ite.setStatus(BaseTableEntry.Status.KNOWN, best);
 				} catch (ResolveError aResolveError) {
 					aResolveError.printStackTrace();
 				}
+			}
+		}
+
+		private void __onChangePTE_helper(final EvaConstructor result) {
+			@NotNull EvaConstructor constructorDef = result;
+
+			@NotNull FunctionDef ele = constructorDef.getFD();
+
+			try {
+				LookupResultList     lrl  = DeduceLookupUtils.lookupExpression(ite.getIdent(), ele.getContext(), dt2);
+				@Nullable OS_Element best = lrl.chooseBest(null);
+				assert best != null;
+				ite.setStatus(BaseTableEntry.Status.KNOWN, _inj().new_GenericElementHolder(best));
+			} catch (ResolveError aResolveError) {
+				aResolveError.printStackTrace();
+				dt2._errSink().reportDiagnostic(aResolveError);
 			}
 		}
 
@@ -413,7 +415,7 @@ class Unnamed_ITE_Resolver1 implements ITE_Resolver {
 				@Nullable OS_Element best = lrl.chooseBest(null);
 //							ite.setStatus(BaseTableEntry.Status.KNOWN, best);
 				assert best != null;
-				ite.setResolvedElement(best);
+				ite.setResolvedElement(best, new GG_ResolveEvent() {String id="Unnamed_ITE_Resolver1::vte_pot_size_is_1_USER_CLASS_TYPE";});
 
 				final @NotNull GenType          genType  = dt2._inj().new_GenTypeImpl(klass);
 				final TypeName                  typeName = vte.getType().genType.getNonGenericTypeName();

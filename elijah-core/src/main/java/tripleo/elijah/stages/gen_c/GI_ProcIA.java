@@ -26,7 +26,7 @@ import java.text.MessageFormat;
 import java.util.List;
 import java.util.function.Consumer;
 
-class GI_ProcIA implements GenerateC_Item {
+public class GI_ProcIA implements GenerateC_Item {
 	private final          GenerateC      gc;
 	private final @NotNull ProcTableEntry pte;
 	private                EvaNode        _evaNode;

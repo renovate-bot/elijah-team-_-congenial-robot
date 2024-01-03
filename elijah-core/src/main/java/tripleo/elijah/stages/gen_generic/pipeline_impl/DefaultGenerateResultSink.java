@@ -2,6 +2,7 @@ package tripleo.elijah.stages.gen_generic.pipeline_impl;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.UnintendedUseException;
 import tripleo.elijah.comp.i.IPipelineAccess;
 import tripleo.elijah.nextgen.output.NG_OutputClass;
 import tripleo.elijah.nextgen.output.NG_OutputFunction;
@@ -10,12 +11,13 @@ import tripleo.elijah.stages.garish.GarishClass;
 import tripleo.elijah.stages.garish.GarishNamespace;
 import tripleo.elijah.stages.gen_c.C2C_Result;
 import tripleo.elijah.stages.gen_c.GenerateC;
-import tripleo.elijah.stages.gen_fn.BaseEvaFunction;
 import tripleo.elijah.stages.gen_fn.EvaClass;
 import tripleo.elijah.stages.gen_fn.EvaNamespace;
 import tripleo.elijah.stages.gen_fn.EvaNode;
 import tripleo.elijah.stages.gen_generic.GenerateFiles;
 import tripleo.elijah.stages.gen_generic.GenerateResult;
+import tripleo.elijah.stages.pp.IPP_Function;
+import tripleo.elijah.stages.pp.PP_Constructor;
 import tripleo.elijah.world.i.LivingClass;
 import tripleo.elijah.world.i.LivingNamespace;
 import tripleo.util.buffer.Buffer;
@@ -50,7 +52,7 @@ public class DefaultGenerateResultSink implements GenerateResultSink {
 	}
 
 	@Override
-	public void addFunction(final BaseEvaFunction aGf, final List<C2C_Result> aRs, final GenerateFiles aGenerateFiles) {
+	public void addFunction(final IPP_Function aGf, final List<C2C_Result> aRs, final GenerateFiles aGenerateFiles) {
 		NG_OutputFunction o = new NG_OutputFunction();
 		o.setFunction(aGf, aGenerateFiles, aRs);
 		pa.addOutput(o);
@@ -83,5 +85,10 @@ public class DefaultGenerateResultSink implements GenerateResultSink {
 	@Override
 	public LivingNamespace getLivingNamespaceForEva(final EvaNamespace aEvaNamespace) {
 		return pa.getCompilation().livingRepo().getNamespace(aEvaNamespace);
+	}
+
+	@Override
+	public void addFunction(final PP_Constructor aPPConstructor, final List<C2C_Result> aRs, final GenerateC aGenerateC) {
+		throw new UnintendedUseException();
 	}
 }

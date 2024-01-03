@@ -9,6 +9,7 @@
  */
 package tripleo.elijah.stages.deduce;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Multimap;
@@ -17,8 +18,9 @@ import org.jdeferred2.DoneCallback;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tripleo.elijah.ElijahInternal;
+import tripleo.elijah.u.ElijahInternal;
 import tripleo.elijah.Eventual;
+import tripleo.elijah.EventualRegister;
 import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.comp.i.CompilationEnclosure;
@@ -66,18 +68,16 @@ import static tripleo.elijah.util.Helpers.List_of;
 /**
  * Created 12/24/20 3:59 AM
  */
-public class DeducePhase extends _RegistrationTarget implements ReactiveDimension {
-	private @NotNull
-	final DeducePhaseInjector __inj = new DeducePhaseInjector();
+public class DeducePhase extends _RegistrationTarget implements ReactiveDimension, EventualRegister {
+	private @NotNull final DeducePhaseInjector __inj = new DeducePhaseInjector();
+	private static final   String              PHASE = "DeducePhase";
 
 
 	public final @NotNull  ICodeRegistrar                               codeRegistrar;
 	public final @NotNull  GeneratedClasses                             generatedClasses;
 	public final @NotNull  GeneratePhase                                generatePhase;
-	@NotNull
-	public final           List<IFunctionMapHook>                       functionMapHooks        = _inj().new_ArrayList__IFunctionMapHook();
-	private final String PHASE = "DeducePhase";
-	final Multimap<OS_Module, Consumer<DeduceTypes2>> iWantModules = ArrayListMultimap.create();
+	public final @NotNull  List<IFunctionMapHook>                       functionMapHooks        = _inj().new_ArrayList__IFunctionMapHook();
+	final                  Multimap<OS_Module, Consumer<DeduceTypes2>>  iWantModules            = ArrayListMultimap.create();
 	private final @NotNull ICompilationAccess                           ca;
 	private final          Map<NamespaceStatement, NamespaceInvocation> namespaceInvocationMap  = _inj().new_HashMap__NamespaceInvocationMap();
 	private final          ExecutorService                              classGenerator          = Executors.newCachedThreadPool();
@@ -91,9 +91,9 @@ public class DeducePhase extends _RegistrationTarget implements ReactiveDimensio
 	private final          List<DE3_Active>                             _actives                = _inj().new_ArrayList__DE3_Active();
 	private final @NotNull Multimap<ClassStatement, ClassInvocation>    classInvocationMultimap = ArrayListMultimap.create();
 	private final @NotNull List<DeferredMember>                         deferredMembers         = _inj().new_ArrayList__DeferredMember();
-	private final @NotNull Multimap<ClassStatement, OnClass>       onclasses          = ArrayListMultimap.create();
-	private final @NotNull Multimap<OS_Element, ResolvedVariables> resolved_variables = ArrayListMultimap.create();
-	private final @NotNull DRS                                     drs                = _inj().new_DRS();
+	private final @NotNull Multimap<ClassStatement, OnClass>            onclasses               = ArrayListMultimap.create();
+	private final @NotNull Multimap<OS_Element, ResolvedVariables>      resolved_variables      = ArrayListMultimap.create();
+	private final @NotNull DRS                                          drs                     = _inj().new_DRS();
 	private final @NotNull WAITS                                        waits                   = _inj().new_WAITS();
 	public                 IPipelineAccess                              pa;
 
@@ -209,7 +209,7 @@ public class DeducePhase extends _RegistrationTarget implements ReactiveDimensio
 	}
 
 	public @NotNull DeduceTypes2 deduceModule(DeducePhase_deduceModule_Request aRequest) {
-		OS_Module         m   = aRequest.getModule();
+//		OS_Module         m   = aRequest.getModule();
 		Iterable<EvaNode> lgf = aRequest.getListOfEvaFunctions();
 
 		final @NotNull DeduceTypes2 deduceTypes2 = DeducePhase_deduceModule_Request.Companion.createDeduceTypes2Singleton(aRequest);
@@ -225,9 +225,9 @@ public class DeducePhase extends _RegistrationTarget implements ReactiveDimensio
 	private void logProgress(final @NotNull DeducePhaseProvenance aProvenance, final Object o) {
 		switch (aProvenance) {
 		case DeduceTypes_create -> {
-			List<? extends Object> l = (List<? extends Object>) o;
-			DeduceTypes2 deduceTypes2 = (DeduceTypes2) l.get(0);
-			List<EvaNode> lgf = ((GeneratedClasses) l.get(1)).generatedClasses;
+			List<? extends Object> l            = (List<? extends Object>) o;
+			DeduceTypes2           deduceTypes2 = (DeduceTypes2) l.get(0);
+			List<EvaNode>          lgf          = ((GeneratedClasses) l.get(1)).generatedClasses;
 			LOG.info("196 DeduceTypes " + deduceTypes2.getFileName());
 			{
 				final List<EvaNode> p = _inj().new_ArrayList__EvaNode();
@@ -349,9 +349,9 @@ public class DeducePhase extends _RegistrationTarget implements ReactiveDimensio
 		resolved_variables.put(parent, resolvedVariable);
 	}
 
-	public @NotNull ClassInvocation registerClassInvocation(final @NotNull ClassStatement aParent) {
-		final Supplier<DeduceTypes2> deduceTypes2Supplier = new NULL_DeduceTypes2(); // !! 08/28
-		final ClassInvocation        classInvocation      = _inj().new_ClassInvocation(aParent, null, deduceTypes2Supplier);
+	public @NotNull ClassInvocation registerClassInvocation(final @NotNull ClassStatement aClassStatement, final DeduceTypes2 aDeduceTypes2) {
+		final Supplier<DeduceTypes2> deduceTypes2Supplier = () -> aDeduceTypes2;
+		final ClassInvocation        classInvocation      = _inj().new_ClassInvocation(aClassStatement, null, deduceTypes2Supplier);
 		return registerClassInvocation(classInvocation);
 	}
 
@@ -649,7 +649,11 @@ public class DeducePhase extends _RegistrationTarget implements ReactiveDimensio
 //									});
 //								}
 
-								deferredMember.externalRefDeferred().resolve(result);
+								if (true) {
+									throw new Error();
+								} else if (false) {
+									deferredMember.externalRefDeferred().resolve(result);
+								}
 /*
 							if (genType.resolved == null) {
 								// HACK need to resolve, but this shouldn't be here
@@ -733,7 +737,7 @@ public class DeducePhase extends _RegistrationTarget implements ReactiveDimensio
 
 	// helper function. no generics!
 	public @Nullable ClassInvocation registerClassInvocation(@NotNull ClassStatement aParent, String aConstructorName, final Supplier<DeduceTypes2> aDeduceTypes2) {
-		//@Nullable ClassInvocation ci = _inj().new_ClassInvocation(aParent, aConstructorName, aDeduceTypes2);
+		//@Nullable ClassInvocation ci = _inj().new_ClassInvocation(aParent, aConstructorName, deduceTypes2);
 		@Nullable ClassInvocation ci = _inj().new_ClassInvocation(aParent, aConstructorName, aDeduceTypes2); // !! 08/28
 		if (ci != null) {
 			ci = registerClassInvocation(ci);
@@ -781,6 +785,14 @@ public class DeducePhase extends _RegistrationTarget implements ReactiveDimensio
 
 	public @NotNull Multimap<FunctionDef, EvaFunction> _functionMap() {
 		return functionMap;
+	}
+
+	public <T> Eventual<T> new_Eventual() {
+		final Eventual<T> R = new Eventual<>();
+
+		R.register(this);
+
+		return R;
 	}
 
 	enum DeducePhaseProvenance {
@@ -965,14 +977,11 @@ public class DeducePhase extends _RegistrationTarget implements ReactiveDimensio
 		}
 
 		public void add(EvaNode aClass) {
+			Preconditions.checkArgument(aClass instanceof EvaClass);
+
 			pa._send_GeneratedClass(aClass);
 
 			generatedClasses.add(aClass);
-		}
-
-		public void addAll(@NotNull List<EvaNode> lgc) {
-			// TODO is this method really needed
-			generatedClasses.addAll(lgc);
 		}
 
 		public @NotNull List<EvaNode> copy() {
@@ -1210,6 +1219,60 @@ public class DeducePhase extends _RegistrationTarget implements ReactiveDimensio
 			return new WlGenerateClass(aGenerateFunctions, aClassInvocation, aGeneratedClasses, aCodeRegistrar, aEnv);
 		}
 	}
+
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//public class DefaultEventualRegister implements EventualRegister {
+		final List<Eventual<?>> _eventuals = new ArrayList<Eventual<?>>();
+
+		//public DefaultEventualRegister() {
+		//}
+
+		@Override
+		public <P> void register(final Eventual<P> e) {
+			_eventuals.add(e);
+		}
+
+		@Override
+		public void checkFinishEventuals() {
+			int y = 0;
+			for (Eventual<?> eventual : _eventuals) {
+				if (eventual.isResolved()) {
+				} else {
+					System.err.println("[PipelineLogic::checkEventual] failed for " + eventual.description());
+				}
+			}
+		}
+	//}
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+
 }
 
 //

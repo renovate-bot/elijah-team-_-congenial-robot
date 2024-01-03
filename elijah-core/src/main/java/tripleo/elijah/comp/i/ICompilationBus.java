@@ -11,20 +11,6 @@ public interface ICompilationBus {
 
 	CompilerDriver getCompilationDriver();
 
-	class COutputString implements CB_OutputString {
-
-		private final String _text;
-
-		public COutputString(final String aText) {
-			_text = aText;
-		}
-
-		@Override
-		public String getText() {
-			return _text;
-		}
-	}
-
 	void add(CB_Process aProcess);
 
 	void inst(ILazyCompilerInstructions aLazyCompilerInstructions);
@@ -32,5 +18,4 @@ public interface ICompilationBus {
 	void option(CompilationChange aChange);
 
 	List<CB_Process> processes();
-
 }

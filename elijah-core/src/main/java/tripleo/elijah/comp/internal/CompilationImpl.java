@@ -9,7 +9,7 @@
 package tripleo.elijah.comp.internal;
 
 import io.reactivex.rxjava3.core.Observer;
-import io.smallrye.mutiny.Multi;
+//import io.smallrye.mutiny.Multi;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.ci.LibraryStatementPart;
@@ -17,6 +17,7 @@ import tripleo.elijah.ci.i.CompilerInstructions;
 import tripleo.elijah.comp.*;
 import tripleo.elijah.comp.i.*;
 import tripleo.elijah.comp.nextgen.CP_Paths;
+import tripleo.elijah.comp.nextgen.i.CK_Marker;
 import tripleo.elijah.lang.i.ClassStatement;
 import tripleo.elijah.lang.i.OS_Module;
 import tripleo.elijah.lang.i.OS_Package;
@@ -206,33 +207,11 @@ public class CompilationImpl implements Compilation {
 
 	@Override
 	public void feedInputs(final @NotNull List<CompilerInput> inputs, final @NotNull CompilerController controller) {
-		if (inputs.size() == 0) {
+		CK_Marker m;
+
+		if (inputs.isEmpty()) {
 			controller.printUsage();
 			return;
-		}
-
-		{
-			//Uni.createFrom().item("hello")
-			//		.onItem().transform(item -> item + " mutiny")
-			//		.onItem().transform(String::toUpperCase)
-			//		.subscribe().with(item -> System.out.println(">> " + item))
-			//;
-
-			Multi.createFrom().items(1, 2, 3, 4)
-					//Multi.<Integer>createFrom()
-
-/*
-							//.emitter(em -> { new MultiEmitter<>() })
-
-							//.deferred(() -> Multi.createFrom()
-									.item(Helpers.List_of(1,2,3))
-							//)
-*/
-
-					.onItem().transform(item -> item)
-					.subscribe().with(item -> System.out.println(">> " + item));
-
-			int y = 2;
 		}
 
 		_inputs = inputs; // !!

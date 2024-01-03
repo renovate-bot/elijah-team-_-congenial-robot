@@ -7,12 +7,9 @@ The elijah-lang compiler.
 
 ```shell
 E=`mktemp -d`
-git clone https://github.com/elijah-team/congenial-robot -b 2023-11-rosetta-w $E
-mkdir $E/COMP
-#cd congenial-robot
-#mkdir COMP
+git clone https://github.com/elijah-team/congenial-robot -b 2023-congenial-12wp $E
+#mkdir $E/COMP
 (cd $E && nix-shell -p maven jdk17 --pure --command "mvn test")
-#mvn test
 ```
 
 This project is licensed under LGPL.
@@ -36,3 +33,10 @@ LINEAGE
 `Rosetta` - Encapsulating state/environment. Pull model.
 
 `Congenial` - Testablility/verification
+
+TODO
+-----
+
+- Convert to ant
+- Finish vision
+- Stop fuddling

@@ -11,8 +11,10 @@ package tripleo.elijah.lang.impl;
 import antlr.Token;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
-import org.eclipse.jdt.annotation.Nullable;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import tripleo.elijah.UnintendedUseException;
 import tripleo.elijah.ci.LibraryStatementPart;
 import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.contexts.ModuleContext;
@@ -42,10 +44,10 @@ public class OS_ModuleImpl implements OS_Element, OS_Container, tripleo.elijah.l
 	public @NotNull List<EntryPoint>     entryPoints    = new ArrayList<EntryPoint>();
 	public @NotNull List<ModuleItem>     items          = new ArrayList<ModuleItem>();
 	public          OS_Module            prelude;
-	private         IndexingStatement    indexingStatement;
 	private         String               _fileName;
 	private         LibraryStatementPart lsp;
 	private         Compilation          parent;
+	private IndexingStatement indexingStatement;
 
 	@Override
 	public void add(final ModuleItem anElement) {
@@ -242,7 +244,7 @@ public class OS_ModuleImpl implements OS_Element, OS_Container, tripleo.elijah.l
 
 	@Override
 	public void setIndexingStatement(final IndexingStatement i) {
-		indexingStatement = i;
+		this.indexingStatement = i;
 	}
 
 	/**

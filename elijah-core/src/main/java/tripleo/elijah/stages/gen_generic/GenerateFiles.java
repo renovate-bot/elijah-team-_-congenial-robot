@@ -10,6 +10,10 @@ import tripleo.elijah.stages.gen_fn.EvaFunction;
 import tripleo.elijah.stages.gen_fn.EvaNode;
 import tripleo.elijah.stages.gen_generic.pipeline_impl.GenerateResultSink;
 import tripleo.elijah.stages.logging.ElLog;
+import tripleo.elijah.stages.pp.IPP_Constructor;
+import tripleo.elijah.stages.pp.IPP_Function;
+import tripleo.elijah.stages.pp.PP_Constructor;
+import tripleo.elijah.stages.pp.PP_Function;
 import tripleo.elijah.work.WorkList;
 import tripleo.elijah.work.WorkManager;
 
@@ -17,9 +21,9 @@ import java.util.Collection;
 import java.util.List;
 
 public interface GenerateFiles extends CodeGenerator {
-	void generate_constructor(EvaConstructor aGf, GenerateResult aGr, WorkList aWl, GenerateResultSink aResultSink, final WorkManager aWorkManager, final @NotNull GenerateResultEnv aFileGen);
+	void generate_constructor(IPP_Constructor aGf, GenerateResult aGr, WorkList aWl, GenerateResultSink aResultSink, final WorkManager aWorkManager, final @NotNull GenerateResultEnv aFileGen);
 
-	void generate_function(EvaFunction aEvaFunction, GenerateResult aGenerateResult, WorkList aWorkList, GenerateResultSink aResultSink);
+	void generate_function(IPP_Function aEvaFunction, GenerateResult aGenerateResult, WorkList aWorkList, GenerateResultSink aResultSink);
 
 	GenerateResult generateCode(Collection<EvaNode> lgn, @NotNull GenerateResultEnv aFileGen);
 

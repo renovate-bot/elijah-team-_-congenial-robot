@@ -8,31 +8,32 @@
  */
 package tripleo.elijah.stages.deduce.declarations;
 
-import lombok.Getter;
+//import lombok.Getter;
 import org.jdeferred2.Promise;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.Eventual;
 import tripleo.elijah.diagnostic.Diagnostic;
-import tripleo.elijah.lang.i.NamespaceStatement;
+//import tripleo.elijah.lang.i.NamespaceStatement;
 import tripleo.elijah.lang.i.VariableStatement;
 import tripleo.elijah.lang.impl.VariableStatementImpl;
 import tripleo.elijah.stages.deduce.DeduceElementWrapper;
 import tripleo.elijah.stages.deduce.IInvocation;
 import tripleo.elijah.stages.gen_fn.EvaNode;
 import tripleo.elijah.stages.gen_fn.GenType;
-import tripleo.elijah.util.NotImplementedException;
+//import tripleo.elijah.util.NotImplementedException;
 
 /**
  * Created 6/27/21 1:41 AM
  */
 public class DeferredMember {
-	private final     DeferredObject<EvaNode, Void, Void>       externalRef = new DeferredObject<>();
-	@Getter
+	private final     Eventual<EvaNode>       externalRef = new Eventual<>();
+	//@Getter
 	private final IInvocation                               invocation;
-	@Getter
+	//@Getter
 	private final DeduceElementWrapper                      parent;
 	private final     DeferredObject<GenType, Diagnostic, Void> typePromise = new DeferredObject<>();
-	@lombok.Getter
+	//@Getter
 	private final VariableStatementImpl                     variableStatement;
 
 	public DeferredMember(DeduceElementWrapper aParent, IInvocation aInvocation, VariableStatementImpl aVariableStatement) {
@@ -41,11 +42,11 @@ public class DeferredMember {
 		variableStatement = aVariableStatement;
 	}
 
-	public Promise<EvaNode, Void, Void> externalRef() {
-		return externalRef.promise();
+	public Eventual<EvaNode> externalRef() {
+		return externalRef;
 	}
 
-	public @NotNull DeferredObject<EvaNode, Void, Void> externalRefDeferred() {
+	public @NotNull Eventual<EvaNode> externalRefDeferred() {
 		return externalRef;
 	}
 
@@ -66,22 +67,22 @@ public class DeferredMember {
 		return typePromise;
 	}
 
-	private final DeferredMemberInjector __inj = new DeferredMemberInjector();
+	//private final DeferredMemberInjector __inj = new DeferredMemberInjector();
 
-	public DeferredMemberInjector _inj() {
-		return __inj;
-	}
+	//public DeferredMemberInjector _inj() {
+	//	return __inj;
+	//}
 
-	public static class DeferredMemberInjector {
-
-		public DeferredObject<EvaNode, java.lang.Void, java.lang.Void> new_DeferredObject__EvaNode() {
-			return new DeferredObject<EvaNode, Void, Void>();
-		}
-
-		public DeferredObject<GenType, Diagnostic, Void> new_DeferredObject__GenType() {
-			return new DeferredObject<GenType, Diagnostic, Void>();
-		}
-	}
+	//public static class DeferredMemberInjector {
+	//
+	//	public DeferredObject<EvaNode, java.lang.Void, java.lang.Void> new_DeferredObject__EvaNode() {
+	//		return new DeferredObject<EvaNode, Void, Void>();
+	//	}
+	//
+	//	public DeferredObject<GenType, Diagnostic, Void> new_DeferredObject__GenType() {
+	//		return new DeferredObject<GenType, Diagnostic, Void>();
+	//	}
+	//}
 
 	public IInvocation getInvocation() {
 		return this.invocation;

@@ -28,7 +28,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class DeduceElement3_ProcTableEntry implements IDeduceElement3 {
-	@Nullable
+	@NotNull
 	private final DeduceTypes2    deduceTypes2;
 	private final BaseEvaFunction generatedFunction;
 
@@ -36,7 +36,9 @@ public class DeduceElement3_ProcTableEntry implements IDeduceElement3 {
 
 	private Instruction instruction;
 
-	public DeduceElement3_ProcTableEntry(final ProcTableEntry aProcTableEntry, final DeduceTypes2 aDeduceTypes2, final BaseEvaFunction aGeneratedFunction) {
+	public DeduceElement3_ProcTableEntry(final ProcTableEntry aProcTableEntry,
+										 final @NotNull DeduceTypes2 aDeduceTypes2,
+										 final BaseEvaFunction aGeneratedFunction) {
 		principal         = aProcTableEntry;
 		deduceTypes2      = aDeduceTypes2;
 		generatedFunction = aGeneratedFunction;
@@ -88,7 +90,7 @@ public class DeduceElement3_ProcTableEntry implements IDeduceElement3 {
 				fi = phase.newFunctionInvocation(null, pte, ci);
 			} else if (resolvedElement instanceof final @NotNull FunctionDef functionDef) {
 				final IInvocation invocation = dc.getInvocation((EvaFunction) generatedFunction);
-				fi = phase.newFunctionInvocation((BaseFunctionDef) functionDef, pte, invocation);
+				fi = phase.newFunctionInvocation(functionDef, pte, invocation);
 				if (functionDef.getParent() instanceof ClassStatement) {
 					final ClassStatement classStatement = (ClassStatement) fi.getFunction().getParent();
 					ci = _inj().new_ClassInvocation(classStatement, null, new ReadySupplier_1<>(dt2)); // TODO generics
@@ -139,7 +141,7 @@ public class DeduceElement3_ProcTableEntry implements IDeduceElement3 {
 							vte.typePromise().then(left_type -> {
 								final ClassStatement cs = left_type.getResolved().getClassOf(); // TODO we want a DeduceClass here. EvaClass may suffice
 
-								final ClassInvocation ci = deduceTypes2._phase().registerClassInvocation(cs);
+								final ClassInvocation ci = deduceTypes2._phase().registerClassInvocation(cs, deduceTypes2());
 								ci.resolvePromise().then(gc2 -> {
 									gc[0] = gc2;
 								});
@@ -203,7 +205,7 @@ public class DeduceElement3_ProcTableEntry implements IDeduceElement3 {
 	public void lfoe_action(final @NotNull DeduceTypes2 aDeduceTypes2,
 							final @NotNull WorkList wl,
 							final @NotNull Consumer<WorkList> addJobs) {
-		//assert aDeduceTypes2 == deduceTypes2; interesting
+		//assert deduceTypes2 == deduceTypes2; interesting
 
 		final __LFOE_Q q = new __LFOE_Q(aDeduceTypes2.wm, wl, aDeduceTypes2);
 
@@ -234,7 +236,7 @@ public class DeduceElement3_ProcTableEntry implements IDeduceElement3 {
 			if (ci == null) {
 				if (/*fi.getClassInvocation() == null &&*/ fi.getNamespaceInvocation() == null) {
 					// Assume default constructor
-					ci = aDeduceTypes2.phase.registerClassInvocation((ClassStatement) principal.getResolvedElement());
+					ci = aDeduceTypes2.phase.registerClassInvocation((ClassStatement) principal.getResolvedElement(), deduceTypes2());
 					fi.setClassInvocation(ci);
 				} else
 					throw new NotImplementedException();
@@ -331,7 +333,7 @@ public class DeduceElement3_ProcTableEntry implements IDeduceElement3 {
 		return principal;
 	}
 
-	private static @Nullable FunctionInvocation __lfoe_action__getFunctionInvocation(final @NotNull ProcTableEntry pte, final @NotNull DeduceTypes2 aDeduceTypes2) {
+	private @Nullable FunctionInvocation __lfoe_action__getFunctionInvocation(final @NotNull ProcTableEntry pte, final @NotNull DeduceTypes2 aDeduceTypes2) {
 		FunctionInvocation fi;
 		if (pte.__debug_expression != null && pte.expression_num != null) {
 			if (pte.__debug_expression instanceof final @NotNull ProcedureCallExpression exp) {
@@ -343,14 +345,14 @@ public class DeduceElement3_ProcTableEntry implements IDeduceElement3 {
 						if (e instanceof ClassStatement) {
 							ClassStatement classStatement = (ClassStatement) e;
 
-							final ClassInvocation ci = aDeduceTypes2.phase.registerClassInvocation(classStatement);
+							final ClassInvocation ci = aDeduceTypes2.phase.registerClassInvocation(classStatement, deduceTypes2());
 							pte.setClassInvocation(ci);
 						} else if (e instanceof final @NotNull FunctionDef functionDef) {
 
 
 							ClassStatement classStatement = (ClassStatement) e.getParent();
 
-							final ClassInvocation ci = aDeduceTypes2.phase.registerClassInvocation(classStatement);
+							final ClassInvocation ci = aDeduceTypes2.phase.registerClassInvocation(classStatement, deduceTypes2());
 							pte.setClassInvocation(ci);
 						} else
 							throw new NotImplementedException();

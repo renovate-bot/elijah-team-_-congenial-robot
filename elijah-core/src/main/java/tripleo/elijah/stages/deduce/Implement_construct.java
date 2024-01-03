@@ -40,7 +40,7 @@ public class Implement_construct {
 			genTypeCI_and_ResolveTypeToClass(co, clsinv);
 		}
 		pte.setClassInvocation(clsinv);
-		pte.setResolvedElement(best);
+		pte.setResolvedElement(best, new GG_ResolveEvent() {String id="Implement_construct::_implement_construct_type";});
 		// set FunctionInvocation with pte args
 		{
 			@Nullable ConstructorDef cc = null;

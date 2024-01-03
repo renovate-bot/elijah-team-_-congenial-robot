@@ -2,6 +2,7 @@ package tripleo.elijah.stages.gen_c;
 
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.nextgen.outputstatement.EG_Statement;
+import tripleo.elijah.stages.gen_c.statements.C2C_CodeForConstructor_Statement;
 import tripleo.elijah.stages.gen_fn.EvaClass;
 import tripleo.elijah.stages.gen_fn.EvaConstructor;
 import tripleo.elijah.stages.gen_fn.EvaContainerNC;
@@ -31,6 +32,19 @@ class C2C_CodeForConstructor implements Generate_Code_For_Method.C2C_Results {
 		this.yf = aYf;
 
 		gf      = aYf.cheat();
+		fileGen = aFileGen;
+		gr      = fileGen.gr();
+	}
+
+	public C2C_CodeForConstructor(
+			@NotNull Generate_Code_For_Method aGenerateCodeForMethod,
+			@NotNull DeducedEvaConstructor gf2, 
+			@NotNull GenerateResultEnv aFileGen, 
+			@NotNull WhyNotGarish_Constructor aYf) {
+		generateCodeForMethod = aGenerateCodeForMethod;
+
+		yf 		= aYf;
+		gf      = yf.cheat();
 		fileGen = aFileGen;
 		gr      = fileGen.gr();
 	}

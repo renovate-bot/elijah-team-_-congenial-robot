@@ -1,6 +1,8 @@
 package tripleo.elijah.stages.gen_c;
 
-interface GenerateC_Statement {
+import tripleo.elijah.stages.gen_c.statements.GCR_Rule;
+
+public interface GenerateC_Statement {
 	String getText();
 
 	GCR_Rule rule();

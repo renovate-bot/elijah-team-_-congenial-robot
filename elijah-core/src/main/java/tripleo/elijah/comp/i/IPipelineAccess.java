@@ -82,8 +82,6 @@ public interface IPipelineAccess {
 
 	void waitGenC(OS_Module mod, Consumer<GenerateC> aCb);
 
-	void resolveWaitGenC(OS_Module mod, GenerateC gc);
-
 	void install_notate(Provenance aProvenance, Class<? extends GN_Notable> aRunClass, Class<? extends GN_Env> aEnvClass);
 
 	void notate(Provenance aProvenance, GN_Env aPlRun2);

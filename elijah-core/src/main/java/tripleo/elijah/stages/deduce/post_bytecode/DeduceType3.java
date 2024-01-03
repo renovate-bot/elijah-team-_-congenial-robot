@@ -32,7 +32,7 @@ class DeduceType3 implements DED {
 	}
 
 //	public static IDeduceElement3 dispatch(final @NotNull IdentTableEntry aIdentTableEntry) {
-//		return aIdentTableEntry.getDeduceElement3(null/*aDeduceTypes2*/, null/*aGeneratedFunction*/);
+//		return aIdentTableEntry.getDeduceElement3(null/*deduceTypes2*/, null/*aGeneratedFunction*/);
 //	}
 
 //	public static IDeduceElement3 dispatch(final @NotNull ConstantTableEntry aConstantTableEntry) {

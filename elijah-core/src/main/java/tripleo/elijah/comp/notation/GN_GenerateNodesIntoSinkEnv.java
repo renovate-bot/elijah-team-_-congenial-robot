@@ -63,6 +63,8 @@ public record GN_GenerateNodesIntoSinkEnv(List<ProcessedNode> lgc,
 
 	@Contract("_, _ -> new")
 	@NotNull OutputFileFactoryParams getParams(final OS_Module mod, final @NotNull GN_GenerateNodesIntoSink aGNGenerateNodesIntoSink) {
-		return new OutputFileFactoryParams(mod, aGNGenerateNodesIntoSink._env().ce());
+		final CompilationEnclosure ce2 = aGNGenerateNodesIntoSink._env().ce();
+		assert ce == ce2;
+		return new OutputFileFactoryParams(mod, ce);
 	}
 }

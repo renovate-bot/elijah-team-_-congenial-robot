@@ -69,7 +69,7 @@ public class FT_FnCallArgs implements ITastic {
 			final LookupResultList     lrl  = ctx.lookup(s);
 			final @Nullable OS_Element best = lrl.chooseBest(null);
 			if (best != null) {
-				pte.setResolvedElement(best);
+				pte.setResolvedElement(best, new GG_ResolveEvent() {String id="FT_FnCallArgs::do_assign_call";});
 
 				// TODO do we need to add a dependency for class, etc?
 				if (true) {

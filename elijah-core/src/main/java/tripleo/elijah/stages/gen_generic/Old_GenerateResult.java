@@ -13,9 +13,13 @@ import io.reactivex.rxjava3.subjects.ReplaySubject;
 import io.reactivex.rxjava3.subjects.Subject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tripleo.elijah.UnintendedUseException;
 import tripleo.elijah.ci.LibraryStatementPart;
 import tripleo.elijah.stages.gen_c.OutputFileC;
 import tripleo.elijah.stages.gen_fn.*;
+import tripleo.elijah.stages.pp.IPP_Function;
+import tripleo.elijah.stages.pp.PP_Constructor;
+import tripleo.elijah.stages.pp.PP_Function;
 import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 import tripleo.util.buffer.Buffer;
 
@@ -66,17 +70,12 @@ public class Old_GenerateResult implements GenerateResult {
 		add(aBuf, aClass, ty, aLsp, aClass.getDependency());
 	}
 
-	@Override
-	public void addConstructor(@NotNull EvaConstructor aEvaConstructor, @NotNull Buffer aBuffer, @NotNull TY aTY, LibraryStatementPart aLsp) {
-		addFunction(aEvaConstructor, aBuffer, aTY, aLsp);
-	}
-
 	/* (non-Javadoc)
 	 * @see tripleo.elijah.stages.gen_generic.GenerateResult#addFunction(tripleo.elijah.stages.gen_fn.BaseEvaFunction, tripleo.util.buffer.Buffer, tripleo.elijah.stages.gen_generic.Old_GenerateResult.TY, tripleo.elijah.ci.LibraryStatementPart)
 	 */
 	@Override
-	public void addFunction(@NotNull BaseEvaFunction aGeneratedFunction, @NotNull Buffer aBuffer, @NotNull TY aTY, LibraryStatementPart aLsp) {
-		add(aBuffer, aGeneratedFunction, aTY, aLsp, aGeneratedFunction.getDependency());
+	public void addFunction(IPP_Function aGeneratedFunction, @NotNull Buffer aBuffer, @NotNull TY aTY, LibraryStatementPart aLsp) {
+		add(aBuffer, aGeneratedFunction.get2Carrier().getEvaNodeEscapeHatch(), aTY, aLsp, aGeneratedFunction.get2Carrier().getDependency());
 	}
 
 	/* (non-Javadoc)
@@ -87,6 +86,11 @@ public class Old_GenerateResult implements GenerateResult {
 		// TODO find something better
 		//results()
 		_res.addAll(aGenerateResult.results());
+	}
+
+	@Override
+	public void addConstructor(final PP_Constructor aEvaConstructor, final Buffer aBuffer, final TY aTY, final LibraryStatementPart aLsp) {
+throw new UnintendedUseException();
 	}
 
 	/* (non-Javadoc)

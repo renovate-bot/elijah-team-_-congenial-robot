@@ -4,8 +4,6 @@ import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.ci.LibraryStatementPart;
 import tripleo.elijah.nextgen.reactive.Reactivable;
 import tripleo.elijah.nextgen.reactive.ReactiveDimension;
-import tripleo.elijah.stages.gen_fn.BaseEvaFunction;
-import tripleo.elijah.stages.gen_fn.EvaConstructor;
 import tripleo.elijah.stages.gen_fn.EvaFunction;
 import tripleo.elijah.stages.gen_generic.GenerateResult;
 import tripleo.util.buffer.Buffer;
@@ -16,10 +14,10 @@ public class GCFM implements Reactivable {
 
 	private       Buffer          buf;
 	private       Buffer          bufHdr;
-	private final BaseEvaFunction gf;
+	private final @NotNull DeducedBaseEvaFunction gf;
 	private final GenerateResult  gr;
 
-	public GCFM(final @NotNull List<C2C_Result> aRs, final BaseEvaFunction aGf, final GenerateResult aGr) {
+	public GCFM(final @NotNull List<C2C_Result> aRs, final @NotNull DeducedBaseEvaFunction aGf, final GenerateResult aGr) {
 		gf = aGf;
 		gr = aGr;
 
@@ -37,14 +35,18 @@ public class GCFM implements Reactivable {
 	@Override
 	public void respondTo(final ReactiveDimension aDimension) {
 		if (aDimension instanceof GenerateC generateC) {
-			final LibraryStatementPart lsp = gf.module().getLsp();
-
-			gr.addFunction(gf, buf, GenerateResult.TY.IMPL, lsp);
-			gr.addFunction(gf, bufHdr, GenerateResult.TY.HEADER, lsp);
+			//final LibraryStatementPart lsp = gf.evaLayer_module_lsp();
+			//
+			//gr.addFunction(gf, buf, GenerateResult.TY.IMPL, lsp);
+			//gr.addFunction(gf, bufHdr, GenerateResult.TY.HEADER, lsp);
 
 			var gr2 = generateC.generateResultProgressive();
-			gr2.addFunction((EvaFunction) gf, buf, GenerateResult.TY.IMPL);
-			gr2.addFunction((EvaFunction) gf, bufHdr, GenerateResult.TY.HEADER);
+
+			gr2.addFunction_lagging(gf, buf, GenerateResult.TY.IMPL, gr);
+			gr2.addFunction_lagging(gf, bufHdr, GenerateResult.TY.HEADER, gr);
+
+			//gr2.addFunction((EvaFunction) gf, buf, GenerateResult.TY.IMPL);
+			//gr2.addFunction((EvaFunction) gf, bufHdr, GenerateResult.TY.HEADER);
 		}
 	}
 }

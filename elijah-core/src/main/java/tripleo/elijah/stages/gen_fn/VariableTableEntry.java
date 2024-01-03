@@ -8,11 +8,13 @@
  */
 package tripleo.elijah.stages.gen_fn;
 
+import org.jdeferred2.Deferred;
 import org.jdeferred2.Promise;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.Eventual;
+import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.lang.i.Context;
 import tripleo.elijah.lang.i.OS_Element;
 import tripleo.elijah.lang.i.OS_Type;
@@ -30,6 +32,7 @@ import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * Created 9/10/20 4:51 PM
@@ -61,7 +64,7 @@ public class VariableTableEntry extends BaseTableEntry1 implements Constructable
 			assert vtt == VariableTableType.VAR;
 
 			this._vs = vs;
-			this.setResolvedElement(vs.getNameToken());
+			this.setResolvedElement(vs.getNameToken(), new GG_ResolveEvent() {String id="VariableTableEntry::ctor";});
 		} else {
 			switch (vtt) {
 			case ARG -> {
@@ -70,7 +73,7 @@ public class VariableTableEntry extends BaseTableEntry1 implements Constructable
 			case SELF, RESULT, TEMP -> {
 			}
 			}
-			this.setResolvedElement(el);
+			this.setResolvedElement(el, new GG_ResolveEvent() {String id="VariableTableEntry::ctor";});
 			this._vs = null;
 		}
 		setupResolve();
@@ -81,6 +84,21 @@ public class VariableTableEntry extends BaseTableEntry1 implements Constructable
 			getGenType().setNode(aNode);
 			type.resolve(aNode); // TODO maybe this obviates above
 		});
+	}
+
+	@Override
+	protected Deferred<OS_Element, Diagnostic, Void> __elementPromise_resolve(final OS_Element resolve, final Function<@Nullable OS_Element, Deferred<OS_Element, Diagnostic, Void>> c, Deferred<OS_Element, Diagnostic, Void> identity) {
+		if (resolve == null) {
+			var vte = this;
+				switch (vte.getVtt()) {
+				case SELF, TEMP, RESULT -> {
+					return c.apply(resolve);
+				}
+			}
+			NotImplementedException.raise();
+			return identity; // README 12/24 This part is different than before the refactor
+		}
+		return c.apply(resolve);
 	}
 
 	@Override

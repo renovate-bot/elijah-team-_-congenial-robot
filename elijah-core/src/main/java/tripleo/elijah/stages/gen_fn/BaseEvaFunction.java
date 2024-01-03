@@ -8,6 +8,7 @@
  */
 package tripleo.elijah.stages.gen_fn;
 
+import com.google.common.base.Preconditions;
 import org.jdeferred2.DoneCallback;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
@@ -313,6 +314,8 @@ public abstract class BaseEvaFunction extends AbstractDependencyTracker implemen
 
 	@Override
 	public EvaNode getGenClass() {
+		Preconditions.checkState(genClass != null);
+
 		return genClass;
 	}
 

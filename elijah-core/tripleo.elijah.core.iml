@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module version="4">
+  <component name="AdditionalModuleElements">
+    <content url="file://$MODULE_DIR$" dumb="true">
+      <sourceFolder url="file://$MODULE_DIR$/src-bnxn/tripleo-reactive/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/xtend-gen/src/main/java" isTestSource="false" />
+    </content>
+  </component>
+  <component name="AutoImportedSourceRoots">
+    <option name="directories">
+      <list>
+        <option value="src-bnxn/elijah-nextgen-outputstatement/src/main/java" />
+        <option value="src-bnxn/elijah-reactive/src/main/java" />
+        <option value="src-bnxn/elijah-stateful/src/main/java" />
+        <option value="src-bnxn/tripleo-reactive/src/main/java" />
+        <option value="src-bnxn/tripleo-small/src/main/java" />
+        <option value="src-damar/elijah-good-api/src/main/java" />
+        <option value="src-damar/elijah-sourcemodel-api/src/main/java" />
+        <option value="src-damar/elijah-sourcemodel-impl/src/main/java" />
+        <option value="src/main/java" />
+        <option value="src/test/java" />
+        <option value="target/generated-sources/annotations" />
+        <option value="target/generated-sources/kapt" />
+        <option value="target/generated-sources/kaptKotlin" />
+        <option value="target/generated-test-sources/test-annotations" />
+        <option value="xtend-gen/src/main/java" />
+      </list>
+    </option>
+  </component>
+</module>

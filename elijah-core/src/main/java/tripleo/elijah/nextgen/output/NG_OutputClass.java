@@ -1,7 +1,7 @@
 package tripleo.elijah.nextgen.output;
 
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.nextgen.outputtree.EOT_OutputFile;
+import tripleo.elijah.nextgen.outputtree.EOT_FileNameProvider;
 import tripleo.elijah.stages.garish.GarishClass;
 import tripleo.elijah.stages.gen_c.GenerateC;
 import tripleo.elijah.stages.gen_fn.EvaClass;
@@ -33,7 +33,7 @@ public class NG_OutputClass implements NG_OutputItem {
 	}
 
 	@Override
-	public EOT_OutputFile.FileNameProvider outName(final @NotNull OutputStrategyC aOutputStrategyC, final GenerateResult.@NotNull TY ty) {
+	public EOT_FileNameProvider outName(final @NotNull OutputStrategyC aOutputStrategyC, final GenerateResult.@NotNull TY ty) {
 		final EvaClass x = garishClass.getLiving().evaNode();
 
 		return aOutputStrategyC.nameForClass1(x, ty);

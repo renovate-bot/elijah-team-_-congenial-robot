@@ -80,7 +80,7 @@ public class GetIdentIAPathTest_ForC {
 		int             int_index = gf.addVariableTableEntry("x", VariableTableType.VAR, tte, mock(VariableStatement.class));
 		int             ite_index = gf.addIdentTableEntry(foo_ident, null);
 		IdentTableEntry ite       = gf.getIdentTableEntry(ite_index);
-		ite.setResolvedElement(foo_vs);
+		ite.setResolvedElement(foo_vs, new GG_ResolveEvent() {String id="GetIdentIAPathTest_ForC::testManualXDotFoo";});
 		ite.setBacklink(new IntegerIA(int_index, gf));
 		IdentIA ident_ia = new IdentIA(ite_index, gf);
 		String  x        = getIdentIAPath(ident_ia, gf, generateC, compilation.getCompilationEnclosure());
@@ -128,14 +128,14 @@ public class GetIdentIAPathTest_ForC {
 		InstructionArgument xx   = gen.simplify_expression(expr, gf, ctx);
 		//
 		@NotNull IdentTableEntry x_ite = gf.getIdentTableEntry(0); // x
-		x_ite.setResolvedElement(x_vs);
+		x_ite.setResolvedElement(x_vs, new GG_ResolveEvent() {String id="GetIdentIAPathTest_ForC::testManualXDotFoo2";});
 		@NotNull IdentTableEntry foo_ite = gf.getIdentTableEntry(1); // foo
-		foo_ite.setResolvedElement(foo_vs);
+		foo_ite.setResolvedElement(foo_vs, new GG_ResolveEvent() {String id="GetIdentIAPathTest_ForC::testManualXDotFoo2";});
 		//
 		IdentIA ident_ia = (IdentIA) xx;
 		String  x        = getIdentIAPath(ident_ia, gf, generateC, compilation.getCompilationEnclosure());
 //		Assert.assertEquals("vvx->vmfoo", x);  // TODO real expectation, IOW output below is wrong
-		// FIXME actually compiler should comlain that it can't find x
+		// FIXME actually compiler should complain that it can't find x
 		//Assert.assertEquals("->vmx->vmfoo", x);
 		Assert.assertEquals("vmx->vmfoo", x);
 	}
@@ -174,7 +174,7 @@ public class GetIdentIAPathTest_ForC {
 
 		IdentIA                  ident_ia = (IdentIA) xx;
 		@NotNull IdentTableEntry ite      = ((IdentIA) xx).getEntry();
-		ite.setResolvedElement(foo_vs);
+		ite.setResolvedElement(foo_vs, new GG_ResolveEvent() {String id="GetIdentIAPathTest_ForC::testManualXDotFoo3";});
 
 		String x = getIdentIAPath(ident_ia, gf, generateC, compilation.getCompilationEnclosure());
 //		Assert.assertEquals("vvx->vmfoo", x); // TODO real expectation

@@ -4,6 +4,7 @@ import io.reactivex.rxjava3.subjects.Subject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.Eventual;
+import tripleo.elijah.ci.LibraryStatementPart;
 import tripleo.elijah.lang.i.*;
 import tripleo.elijah.stages.deduce.DeduceElement;
 import tripleo.elijah.stages.deduce.FunctionInvocation;
@@ -14,6 +15,7 @@ import tripleo.elijah.stages.deduce.nextgen.DR_Type;
 import tripleo.elijah.stages.deduce.nextgen.DR_Variable;
 import tripleo.elijah.stages.gen_fn.*;
 import tripleo.elijah.stages.gen_generic.Dependency;
+import tripleo.elijah.stages.gen_generic.GenerateResultEnv;
 import tripleo.elijah.stages.instructions.*;
 import tripleo.util.range.Range;
 
@@ -305,6 +307,33 @@ public class DefaultDeducedBaseEvaFunction implements DeducedBaseEvaFunction {
 	@Override
 	public Eventual<GenType> typePromise() {
 		return carrier.typePromise();
+	}
+
+	@Override
+	public void generateCodeForMethod(final Generate_Code_For_Method aGcfm, final GenerateResultEnv aFileGen) {
+		aGcfm.generateCodeForMethod(this, aFileGen);
+	}
+
+	@Override
+	public LibraryStatementPart evaLayer_module_lsp() {
+		return ((EvaNode) getCarrier()).module().getLsp();
+	}
+
+	@Override
+	public EvaNode getEvaNodeEscapeHatch() {
+
+		// FIXME 12/21 Is this correct??
+		return new EvaNode() {
+			@Override
+			public String identityString() {
+				return identityString();
+			}
+
+			@Override
+			public OS_Module module() {
+				return getModule__();
+			}
+		};
 	}
 
 	@Override

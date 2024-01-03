@@ -20,6 +20,8 @@ import tripleo.elijah.lang.types.OS_UnitType;
 import tripleo.elijah.nextgen.outputstatement.EG_SingleStatement;
 import tripleo.elijah.nextgen.outputstatement.EG_Statement;
 import tripleo.elijah.nextgen.outputstatement.EX_Explanation;
+import tripleo.elijah.stages.gen_c.statements.*;
+import tripleo.elijah.stages.pp.PP_Function;
 import tripleo.elijah.util.Mode;
 import tripleo.elijah.stages.deduce.nextgen.DR_Ident;
 import tripleo.elijah.stages.deduce.nextgen.DR_Item;
@@ -558,7 +560,7 @@ public class Generate_Code_For_Method {
 		return Operation2.failure(new Diagnostic_8886());
 	}
 
-	void generateCodeForConstructor(final @NotNull EvaConstructor gf,
+	void generateCodeForConstructor(final @NotNull DeducedEvaConstructor gf,
 									final GenerateResult gr__,
 									final WorkList aWorkList__,
 									final @NotNull GenerateResultEnv fileGen
@@ -567,9 +569,9 @@ public class Generate_Code_For_Method {
 		var gr        = fileGen.gr();
 		var aWorkList = fileGen.wl();
 
-		var yf = gc.a_lookup(gf);
+		var yf = gf.getWhyNotGarishFunction(gc);
 
-		final C2C_CodeForConstructor cfm = new C2C_CodeForConstructor(this, gf, fileGen, yf);
+		final C2C_CodeForConstructor cfm = new C2C_CodeForConstructor(this, /*gc.deduced*/((EvaConstructor) gf.getCarrier()), fileGen, yf);
 
 		//cfm.calculate();
 		var rs = cfm.getResults();
@@ -585,16 +587,14 @@ public class Generate_Code_For_Method {
 		}
 	}
 
-	void generateCodeForMethod(final @NotNull BaseEvaFunction gf, final @NotNull GenerateResultEnv aFileGen) {
+	void generateCodeForMethod(final @NotNull DeducedEvaFunctionBase gf, final @NotNull GenerateResultEnv aFileGen) {
 		// TODO separate into method and method_header??
-		C2C_CodeForMethod cfm = new C2C_CodeForMethod(this, gf, aFileGen);
+		final C2C_CodeForMethod cfm = new C2C_CodeForMethod(this, (DeducedBaseEvaFunction) gf, aFileGen);
 
 		//cfm.calculate();
-		var rs = cfm.getResults();
-
-		GenerateResult gr = cfm.getGenerateResult();
-
-		final GCFM gcfm = new GCFM(rs, gf, gr);
+		final List<C2C_Result> rs   = cfm.getResults();
+		final GenerateResult   gr   = cfm.getGenerateResult();
+		final GCFM             gcfm = new GCFM(rs, (DeducedBaseEvaFunction) gf, gr);
 
 		gf.reactive().add(gcfm);
 
@@ -605,10 +605,11 @@ public class Generate_Code_For_Method {
 		// FIXME 06/17
 		final GenerateResultSink sink = aFileGen.resultSink();
 
-		if (sink != null)
-			sink.addFunction(gf, rs, gc);
-		else
+		if (sink != null) {
+			sink.addFunction(new PP_Function((DeducedBaseEvaFunction) gf), rs, gc);
+		} else {
 			System.err.println("sink failed");
+		}
 	}
 
 	public GenerateC _gc() {

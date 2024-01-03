@@ -4,7 +4,6 @@
  * The contents of this library are released under the LGPL licence v3,
  * the GNU Lesser General Public License text was downloaded from
  * http://www.gnu.org/licenses/lgpl.html from `Version 3, 29 June 2007'
- *
  */
 package tripleo.elijah.stages.gen_fn;
 
@@ -22,6 +21,7 @@ import tripleo.elijah.util.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * Created 2/4/21 10:11 PM
@@ -30,33 +30,36 @@ public abstract class BaseTableEntry {
 	protected final DeferredObject2<OS_Element, Diagnostic, Void> _p_elementPromise  = new DeferredObject2<OS_Element, Diagnostic, Void>() {
 		@Override
 		public Deferred<OS_Element, Diagnostic, Void> resolve(final @Nullable OS_Element resolve) {
-			if (resolve == null) {
-				if (BaseTableEntry.this instanceof VariableTableEntry vte) {
-					switch (vte.getVtt()) {
-					case SELF, TEMP, RESULT -> {
-						return super.resolve(resolve);
-					}
-					}
-				}
-				NotImplementedException.raise();
-			}
-			return super.resolve(resolve);
+			return __elementPromise_resolve(resolve, (@Nullable OS_Element r) -> super.resolve(r), this);
 		}
 	};
+
+	protected Deferred<OS_Element, Diagnostic, Void> __elementPromise_resolve(final OS_Element resolve,
+																			  final Function<@Nullable OS_Element, Deferred<OS_Element, Diagnostic, Void>> c,
+																			  final Deferred<OS_Element, Diagnostic, Void> identity) {
+		if (resolve == null) {
+			NotImplementedException.raise();
+			return null; // README 12/24 kinda never reached
+			//return identity;
+		}
+		return c.apply(resolve);
+	}
+
 	private final List<StatusListener> statusListenerList = new ArrayList<StatusListener>();
-	protected     DeduceTypes2         __dt2;
 	public        BaseEvaFunction      __gf;
-	// region status
-	protected       Status                                        status             = Status.UNCHECKED;
+	protected     DeduceTypes2         __dt2;
+	protected     Status               status             = Status.UNCHECKED;
 	DeduceTypeResolve typeResolve;
 
-	// region resolved_element
-
 	public void _fix_table(final DeduceTypes2 aDeduceTypes2, final @NotNull BaseEvaFunction aEvaFunction) {
-		__dt2 = aDeduceTypes2;
+		provide(aDeduceTypes2);
 		__gf  = aEvaFunction;
 
 		//aEvaFunction._informGF((GenerateFunctions gf11)->{});
+	}
+
+	public void provide(DeduceTypes2 aDeduceTypes2) {
+		__dt2 = aDeduceTypes2;
 	}
 
 	public Status getStatus() {
@@ -106,17 +109,16 @@ public abstract class BaseTableEntry {
 		return null;
 	}
 
-	// endregion resolved_element
-
 	public Eventual<GenType> typeResolvePromise() {
 		return typeResolve.typeResolution();
 	}
 
-	public void setResolvedElement(OS_Element aResolved_element) {
+	public void setResolvedElement(OS_Element aResolved_element, GG_ResolveEvent ggre) {
 		if (_p_elementPromise.isResolved()) {
 			NotImplementedException.raise();
-		} else
+		} else {
 			_p_elementPromise.resolve(aResolved_element);
+		}
 	}
 
 	public void typeResolve(final GenType aGt) {

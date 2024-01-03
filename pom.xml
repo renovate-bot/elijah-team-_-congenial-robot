@@ -5,9 +5,10 @@
 	<groupId>tripleo.elijah</groupId>
 	<artifactId>congenial-robot</artifactId>
 	<packaging>pom</packaging>
-	<version>2023.congenial.11.something-after-rosetta</version>
+	<version>congenial.2023-12</version>
 
-	<name>eljc-almost</name>
+	<!-- TODO 12/31 naming here -->
+	<name>eljc-almost-congenial-robot</name>
 	<url>http://git.sr.ht/~tripleo/el-almost</url>
 
 	<properties>
@@ -32,37 +33,24 @@
 		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
 
 		<!-- for edu 2022.2 -->
-<!--		<kotlin.version>1.7.10</kotlin.version>-->
+		<!--		<kotlin.version>1.7.10</kotlin.version>-->
 		<kotlin.version>1.9.21</kotlin.version>
 	</properties>
 
 	<modules>
-		<!--
-			<module>annotation-processing</module>
-			<module>annotation-user</module>
-			<module>elijah-compiler-gen</module>
-			<module>annotations</module>
-		-->
-
-		<module>tripleo-small</module>
-		<module>elijah-nextgen-outputstatement</module>
-		<module>elijah-stateful</module>
-		<module>tripleo-reactive</module>
-		<module>elijah-sourcemodel-api</module>
-		<module>elijah-sourcemodel-impl</module>
-		<module>elijah-good-api</module>
 		<module>elijah-core</module>
-		<!--		<module>typeinf</module>-->
 	</modules>
 
 	<dependencies>
 
 		<!-- https://smallrye.io/smallrye-mutiny/2.5.1/tutorials/getting-mutiny/ -->
+<!--
 		<dependency>
 			<groupId>io.smallrye.reactive</groupId>
 			<artifactId>mutiny</artifactId>
 			<version>2.5.1</version>
 		</dependency>
+-->
 
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -70,14 +58,6 @@
 			<version>1.18.28</version>
 			<scope>provided</scope>
 		</dependency>
-
-		<!--
-				<dependency>
-					<groupId>com.github.dritter-hd</groupId>
-					<artifactId>dlog</artifactId>
-					<version>1.0.0</version>
-				</dependency>
-		-->
 
 		<!-- https://mvnrepository.com/artifact/javax.annotation/javax.annotation-api -->
 		<dependency>
@@ -139,6 +119,7 @@
 				</dependency>
 		-->
 
+<!--
 		<dependency>
 			<groupId>com.github.spotbugs</groupId>
 			<artifactId>spotbugs-annotations</artifactId>
@@ -150,19 +131,32 @@
 			<artifactId>guava</artifactId>
 			<version>${guava.version}</version>
 		</dependency>
+-->
 
 		<dependency>
+			<groupId>com.gitlab.tripleo1</groupId>
+			<artifactId>buffers</artifactId>
+			<version>3038ff102c</version>
+<!--
 			<groupId>tripleo.buffers</groupId>
 			<artifactId>buffers-v1</artifactId>
-			<version>${buffers.version}</version>
+			<version>0.0.3</version>
+-->
 		</dependency>
 
 		<dependency>
+<!--
 			<groupId>tripleo.util.range</groupId>
 			<artifactId>range-v1</artifactId>
 			<version>${range.version}</version>
+-->
+			<groupId>com.gitlab.Tripleo</groupId>
+			<artifactId>range</artifactId>
+			<version>v0.0.3b</version>
 		</dependency>
 
+
+<!--
 		<dependency>
 			<groupId>org.jetbrains.kotlin</groupId>
 			<artifactId>kotlin-stdlib-jdk8</artifactId>
@@ -174,31 +168,38 @@
 			<version>${kotlin.version}</version>
 			<scope>test</scope>
 		</dependency>
+-->
 
 	</dependencies>
 
 	<repositories>
 		<repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
+		</repository>
+<!--
+		<repository>
 			<id>gitlab-maven-buffers</id>
 			<url>https://gitlab.com/api/v4/projects/20346374/packages/maven</url>
 		</repository>
+-->
+<!--
+		<repository>
+			<id>gitlab-good-api</id>
+			<url>https://gitlab.com/api/v4/projects/52876826/packages/maven</url>
+		</repository>
+-->
+<!--
 		<repository>
 			<id>gitlab-maven-range</id>
 			<url>https://gitlab.com/api/v4/projects/21223510/packages/maven</url>
 		</repository>
+-->
 	</repositories>
 
+<!--
 	<build>
 		<plugins>
-			<!-- To use the plugin goals in your POM or parent POM -->
-			<!--
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-surefire-report-plugin</artifactId>
-							<version>3.0.0-M5</version>
-						</plugin>
-			-->
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
@@ -274,4 +275,5 @@
 			</plugin>
 		</plugins>
 	</build>
+-->
 </project>

@@ -83,7 +83,7 @@ public interface EvaContainer extends EvaNode {
 					_de3 = new DeduceElement3_VarTableEntry(this);
 				}
 
-				_de3.__passthru = passthruEnv;
+				//_de3.__passthru = passthruEnv;
 			}
 		}
 

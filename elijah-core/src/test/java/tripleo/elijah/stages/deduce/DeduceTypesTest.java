@@ -13,6 +13,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import tripleo.elijah.Eventual;
 import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.contexts.FunctionContext;
 import tripleo.elijah.contexts.ModuleContext;
@@ -62,8 +63,8 @@ public class DeduceTypesTest {
 		cs.setHeader(ch);
 		final FunctionDef fd = cs.funcDef();
 		fd.setName(Helpers.string_to_ident("test"));
-		final Scope3           scope3 = new Scope3Impl(fd);
-		final VariableSequence vss    = scope3.statementClosure().varSeq(fd.getContext());
+		final Scope3            scope3  = new Scope3Impl(fd);
+		final VariableSequence  vss     = scope3.statementClosure().varSeq(fd.getContext());
 		final VariableStatement vs      = vss.next();
 		final IdentExpression   x_ident = Helpers.string_to_ident("x");
 		x_ident.setContext(fd.getContext());
@@ -80,32 +81,28 @@ public class DeduceTypesTest {
 		final IdentExpression x1 = Helpers.string_to_ident("x");
 		x1.setContext(fc);
 
-		mod.setPrelude(mod.getCompilation().findPrelude("c").success().module());
-
-		//final PipelineLogic pl           = boilerplate.pipelineLogic;
-
-
-		final ElLog.Verbosity verbosity = Compilation.gitlabCIVerbosity();
-		final DeducePhase     dp        = boilerplate.getDeducePhase();
-		final DeduceTypes2    d         = dp.deduceModule(new DeducePhase_deduceModule_Request(mod, dp.generatedClasses, verbosity, dp));
-
-		//final @NotNull GenerateFunctions gf = boilerplate.pr.pipelineLogic().generatePhase.getGenerateFunctions(mod);
-
-		final BaseEvaFunction bgf = mock(BaseEvaFunction.class);
-
-		final IdentTableEntry                ite     = new IdentTableEntry(0, x1, x1.getContext(), bgf);
-		final DeduceElementIdent             dei     = new DeduceElementIdent(ite);
-		final DeduceElement3_IdentTableEntry de3_ite = ite.getDeduceElement3(d, bgf);
-
+		final ElLog.Verbosity                verbosity = Compilation.gitlabCIVerbosity();
+		final DeducePhase                    dp        = boilerplate.getDeducePhase();
+		final DeduceTypes2                   d         = dp.deduceModule(new DeducePhase_deduceModule_Request(mod, dp.generatedClasses, verbosity, dp));
+		final BaseEvaFunction                bgf       = mock(BaseEvaFunction.class);
+		final IdentTableEntry                ite       = new IdentTableEntry(0, x1, x1.getContext(), bgf);
+		final DeduceElementIdent             dei       = new DeduceElementIdent(ite); // TODO 12/24 This is here to say why is this here?
+		final DeduceElement3_IdentTableEntry de3_ite   = ite.getDeduceElement3(d, bgf);
 
 		final Operation2<WorldModule> fpl0 = boilerplate.comp.findPrelude("c");
 		assert fpl0.mode() == Mode.SUCCESS;
 		//final Operation2<OS_Module>   fpl  = boilerplate.comp.findPrelude("c");
 		mod.setPrelude(fpl0.success().module());
 
-		final DeduceElement3_IdentTableEntry xxx = DeduceLookupUtils.deduceExpression2(de3_ite, fc);
-		this.x = xxx.genType();
-		SimplePrintLoggerToRemoveSoon.println_out_2(String.valueOf(this.x));
+		final Eventual<DeduceElement3_IdentTableEntry> entryEventual = DeduceLookupUtils.deduceExpression2(de3_ite, fc);
+
+		entryEventual.then(xxx -> {
+			this.x = xxx.genType();
+			SimplePrintLoggerToRemoveSoon.println_out_2(String.valueOf(this.x));
+		});
+		entryEventual.onFail(fail -> {
+			// TODO 12/24 nop for now
+		});
 	}
 
 	/**
@@ -132,6 +129,10 @@ public class DeduceTypesTest {
 		Assert.assertTrue(genTypeTypenameEquals(new OS_UserType(tn), x/*.getTypeName()*/));
 	}
 
+	private boolean genTypeTypenameEquals(OS_Type aType, @NotNull GenType genType) {
+		return genType.getTypeName().equals(aType);
+	}
+
 	@Test
 	public void testDeduceIdentExpression3() {
 		final VariableTypeName tn  = new VariableTypeNameImpl();
@@ -151,10 +152,6 @@ public class DeduceTypesTest {
 		Assert.assertEquals(new OS_UserType(tn).getTypeName(), x.getTypeName().getTypeName());
 		Assert.assertTrue(genTypeTypenameEquals(new OS_UserType(tn), x));
 		Assert.assertEquals(new OS_UserType(tn).toString(), x.getTypeName().toString());
-	}
-
-	private boolean genTypeTypenameEquals(OS_Type aType, @NotNull GenType genType) {
-		return genType.getTypeName().equals(aType);
 	}
 
 }

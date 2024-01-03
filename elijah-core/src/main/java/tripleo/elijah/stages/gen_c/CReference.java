@@ -14,6 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.Eventual;
 import tripleo.elijah.comp.i.CompilationEnclosure;
 import tripleo.elijah.nextgen.outputstatement.EG_Statement;
+import tripleo.elijah.stages.gen_c.statements.GCR_Rule;
 import tripleo.elijah.stages.gen_fn.*;
 import tripleo.elijah.stages.instructions.IdentIA;
 import tripleo.elijah.stages.instructions.InstructionArgument;

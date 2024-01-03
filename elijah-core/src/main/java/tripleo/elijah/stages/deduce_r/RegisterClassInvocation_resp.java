@@ -5,13 +5,13 @@ import tripleo.elijah.Eventual;
 import tripleo.elijah.stages.deduce.ClassInvocation;
 
 public class RegisterClassInvocation_resp {
-	private Eventual<ClassInvocation> ciPromise = new Eventual<>();
+	private final Eventual<ClassInvocation> ciPromise = new Eventual<>();
 
 	public void onSuccess(final DoneCallback<ClassInvocation> cb) {
 		ciPromise.then(cb);
 	}
 
-	public void succeed(final ClassInvocation aCi2) {
+	public void succeed(final ClassInvocation aCi2) { // TODO 24j2 duplication??
 		ciPromise.resolve(aCi2);
 	}
 }

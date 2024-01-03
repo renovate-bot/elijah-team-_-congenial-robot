@@ -18,7 +18,10 @@ class Default_C2C_Result implements C2C_Result {
 	private boolean      _calculated;
 	private EG_Statement _my_statement;
 
-	public Default_C2C_Result(final Buffer aBuffer, final GenerateResult.TY aTY, final String aExplanationMessage, final @NotNull WhyNotGarish_BaseFunction aWhyNotGarishFunction) {
+	public Default_C2C_Result(final Buffer aBuffer,
+							  final GenerateResult.TY aTY,
+							  final String aExplanationMessage,
+							  final @NotNull WhyNotGarish_BaseFunction aWhyNotGarishFunction) {
 		buffer               = aBuffer;
 		_ty                  = aTY;
 		explanation_message  = aExplanationMessage;

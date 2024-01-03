@@ -9,11 +9,14 @@
 package tripleo.elijah;
 
 import org.junit.Test;
+import tripleo.elijah.comp.CompilerInput;
 import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.comp.IO;
 import tripleo.elijah.comp.StdErrSink;
+import tripleo.elijah.comp.internal.DefaultCompilerController;
 import tripleo.elijah.factory.comp.CompilationFactory;
 
+import static org.junit.Assert.assertEquals;
 import static tripleo.elijah.util.Helpers.List_of;
 
 /**
@@ -22,43 +25,51 @@ import static tripleo.elijah.util.Helpers.List_of;
 public class ClassInstantiationTest {
 
 	@Test
-	public void classInstantiation() throws Exception {
+	public void classInstantiation() {
 		String      f = "test/basic1/class_instantiation/";
 		final Compilation  c    = CompilationFactory.mkCompilationSilent(new StdErrSink(), new IO());
 
-		c.feedCmdLine(List_of(f));
+		c.feedInputs(List_of(new CompilerInput(f)), new DefaultCompilerController());
 
 		System.err.println("Errorcount is " + c.errorCount());
+
+		assertEquals(1_000_000, c.errorCount());
 	}
 
 	@Test
-	public void classInstantiation2() throws Exception {
+	public void classInstantiation2() {
 		String      f = "test/basic1/class_instantiation2/";
 		final Compilation  c    = CompilationFactory.mkCompilationSilent(new StdErrSink(), new IO());
 
-		c.feedCmdLine(List_of(f));
+		c.feedInputs(List_of(new CompilerInput(f)), new DefaultCompilerController());
 
 		System.err.println("Errorcount is " + c.errorCount());
+
+		assertEquals(1_000_000, c.errorCount());
 	}
 
 	@Test
-	public void classInstantiation3() throws Exception {
+	public void classInstantiation3() {
 		String      f = "test/basic1/class_instantiation3/";
 		final Compilation  c    = CompilationFactory.mkCompilationSilent(new StdErrSink(), new IO());
 
-		c.feedCmdLine(List_of(f));
+		c.feedInputs(List_of(new CompilerInput(f)), new DefaultCompilerController());
 
 		System.err.println("Errorcount is " + c.errorCount());
+
+		assertEquals(1_000_000, c.errorCount());
 	}
 
 	@Test
-	public void classInstantiation4() throws Exception {
+	public void classInstantiation4() {
 		String      f = "test/basic1/class_instantiation4/";
 		final Compilation  c    = CompilationFactory.mkCompilationSilent(new StdErrSink(), new IO());
 
-		c.feedCmdLine(List_of(f));
+		c.feedInputs(List_of(new CompilerInput(f)), new DefaultCompilerController());
 
 		System.err.println("Errorcount is " + c.errorCount());
+
+		assertEquals(1_000_000, c.errorCount());
 	}
 }
 

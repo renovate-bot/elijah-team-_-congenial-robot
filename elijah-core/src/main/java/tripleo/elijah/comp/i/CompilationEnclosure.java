@@ -11,19 +11,28 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.comp.*;
 import tripleo.elijah.comp.internal.CB_Output;
-import tripleo.elijah.comp.internal.CR_State;
 import tripleo.elijah.comp.internal.CompilationRunner;
 import tripleo.elijah.comp.internal.CompilerDriver;
+import tripleo.elijah.comp.internal.__Plugins;
+import tripleo.elijah.comp.nextgen.CP_Path;
+import tripleo.elijah.comp.nextgen.i.CE_Path;
+import tripleo.elijah.factory.comp.NextgenFactory;
 import tripleo.elijah.lang.i.OS_Module;
+import tripleo.elijah.nextgen.ER_Node;
+import tripleo.elijah.nextgen.outputstatement.EG_Statement;
 import tripleo.elijah.nextgen.reactive.Reactivable;
 import tripleo.elijah.nextgen.reactive.Reactive;
 import tripleo.elijah.nextgen.reactive.ReactiveDimension;
+import tripleo.elijah.nextgen.spi.SPI_Loggable;
+import tripleo.elijah.nextgen.spi.SPI_ReactiveDimension;
 import tripleo.elijah.pre_world.Mirror_EntryPoint;
 import tripleo.elijah.stages.gen_fn.IClassGenerator;
 import tripleo.elijah.stages.inter.ModuleThing;
 import tripleo.elijah.stages.logging.ElLog;
+import tripleo.elijah.util.NotImplementedException;
 import tripleo.elijah.world.i.WorldModule;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,14 +40,14 @@ import java.util.Map;
 
 public class CompilationEnclosure {
 	public final  DeferredObject<IPipelineAccess, Void, Void> pipelineAccessPromise = new DeferredObject<>();
-	private final CB_Output _cbOutput = new CB_Output();
-	private final Compilation compilation;
+	private final CB_Output                                   _cbOutput             = new CB_Output();
+	private final Compilation                                 compilation;
 	private final DeferredObject<AccessBus, Void, Void>       accessBusPromise      = new DeferredObject<>();
-	private final Map<OS_Module, ModuleThing> moduleThings = new HashMap<>();
-	private final Subject<ReactiveDimension> dimensionSubject   = ReplaySubject.<ReactiveDimension>create();
-	private final Subject<Reactivable>       reactivableSubject = ReplaySubject.<Reactivable>create();
-	private final List<ModuleListener> _moduleListeners = new ArrayList<>();
-	Observer<ReactiveDimension> dimensionObserver = new Observer<ReactiveDimension>() {
+	private final Map<OS_Module, ModuleThing>                 moduleThings          = new HashMap<>();
+	private final Subject<ReactiveDimension>                  dimensionSubject      = ReplaySubject.<ReactiveDimension>create();
+	private final Subject<Reactivable>                        reactivableSubject    = ReplaySubject.<Reactivable>create();
+	private final List<ModuleListener>                        _moduleListeners      = new ArrayList<>();
+	Observer<ReactiveDimension> dimensionObserver   = new Observer<ReactiveDimension>() {
 		@Override
 		public void onSubscribe(@NonNull final Disposable d) {
 
@@ -60,7 +69,7 @@ public class CompilationEnclosure {
 
 		}
 	};
-	Observer<Reactivable> reactivableObserver = new Observer<Reactivable>() {
+	Observer<Reactivable>       reactivableObserver = new Observer<Reactivable>() {
 
 		@Override
 		public void onSubscribe(@NonNull final Disposable d) {
@@ -91,6 +100,7 @@ public class CompilationEnclosure {
 	private List<CompilerInput> inp;
 	private IPipelineAccess     pa;
 	private PipelineLogic       pipelineLogic;
+	private NextgenFactory      _nextgenFactory;
 
 	public CompilationEnclosure(final Compilation aCompilation) {
 		compilation = aCompilation;
@@ -100,51 +110,18 @@ public class CompilationEnclosure {
 
 			accessBusPromise.resolve(ab);
 
-			ab.addPipelinePlugin(new CR_State.HooliganPipelinePlugin());
-			ab.addPipelinePlugin(new CR_State.EvaPipelinePlugin());
-			ab.addPipelinePlugin(new CR_State.DeducePipelinePlugin());
-			ab.addPipelinePlugin(new CR_State.WritePipelinePlugin());
-			ab.addPipelinePlugin(new CR_State.WriteMakefilePipelinePlugin());
-			ab.addPipelinePlugin(new CR_State.WriteMesonPipelinePlugin());
-			ab.addPipelinePlugin(new CR_State.WriteOutputTreePipelinePlugin());
+			ab.addPipelinePlugin(new __Plugins.HooliganPipelinePlugin());
+			ab.addPipelinePlugin(new __Plugins.EvaPipelinePlugin());
+			ab.addPipelinePlugin(new __Plugins.DeducePipelinePlugin());
+			ab.addPipelinePlugin(new __Plugins.WritePipelinePlugin());
+			ab.addPipelinePlugin(new __Plugins.WriteMakefilePipelinePlugin());
+			ab.addPipelinePlugin(new __Plugins.WriteMesonPipelinePlugin());
+			ab.addPipelinePlugin(new __Plugins.WriteOutputTreePipelinePlugin());
 
 			pa._setAccessBus(ab);
 
 			this.pa = pa;
 		});
-	//
-	//	compilation.world().addModuleProcess(new CompletableProcess<WorldModule>() {
-	//		@Override
-	//		public void add(final WorldModule item) {
-	//			// TODO Reactive pattern (aka something ala ReplaySubject)
-	//			for (final ModuleListener moduleListener : _moduleListeners) {
-	//				moduleListener.listen(item);
-	//			}
-	//		}
-	//
-	//		@Override
-	//		public void complete() {
-	//			// TODO Reactive pattern (aka something ala ReplaySubject)
-	//			for (final ModuleListener moduleListener : _moduleListeners) {
-	//				moduleListener.close();
-	//			}
-	//		}
-	//
-	//		@Override
-	//		public void error(final Diagnostic d) {
-	//
-	//		}
-	//
-	//		@Override
-	//		public void preComplete() {
-	//
-	//		}
-	//
-	//		@Override
-	//		public void start() {
-	//
-	//		}
-	//	});
 	}
 
 	@Contract(pure = true)
@@ -316,7 +293,7 @@ public class CompilationEnclosure {
 	public void setPipelineLogic(final PipelineLogic aPipelineLogic) {
 		pipelineLogic = aPipelineLogic;
 
-		getPipelineAccessPromise().then(pa->pa.resolvePipelinePromise(aPipelineLogic));
+		getPipelineAccessPromise().then(pa -> pa.resolvePipelinePromise(aPipelineLogic));
 	}
 
 	private void _resolvePipelineAccess(final PipelineLogic aPipelineLogic) {
@@ -346,7 +323,7 @@ public class CompilationEnclosure {
 		// throw new IllegalStateException("Error");
 
 		// aReactive.join();
-		System.err.println("reactiveJoin "+ aReactive.toString());
+		System.err.println("reactiveJoin " + aReactive.toString());
 	}
 
 	public void addModuleListener(final ModuleListener aModuleListener) {
@@ -364,6 +341,19 @@ public class CompilationEnclosure {
 		aMirrorEntryPoint.generate(dcg);
 	}
 
+	public void spi(final Object spiable) {
+		if (spiable instanceof SPI_Loggable) {
+			addLog(((SPI_Loggable) spiable).spiGetLog());
+		}
+		if (spiable instanceof SPI_ReactiveDimension) {
+			addReactiveDimension(((SPI_ReactiveDimension) spiable).spiGetReactiveDimension());
+		}
+	}
+
+	public void spi(final Object spiable, final Object cacheUnderKey) {
+		throw new NotImplementedException("12/31/23");
+	}
+
 	public void addLog(final ElLog aLOG) {
 		var ce = this;
 		ce.getAccessBusPromise()
@@ -374,6 +364,37 @@ public class CompilationEnclosure {
 
 	public ICompilationAccess2 ca2() {
 		return compilation.getCompilationAccess2();
+	}
+
+	public NextgenFactory nextgenFactory() {
+		if (_nextgenFactory == null) {
+			_nextgenFactory = new NextgenFactory() {
+				@Override
+				public ER_Node createERNode(final CP_Path aPath, final EG_Statement aSeq) {
+					/**
+					 * See {@link tripleo.elijah.comp.nextgen.i.CompOutput#writeToPath(CE_Path, EG_Statement)}
+					 */
+					return new ER_Node() {
+						@Override
+						public @NotNull String toString() {
+							return "17 ER_Node " + aPath.toFile();
+						}
+
+						@Override
+						public Path getPath() {
+							final Path pp = aPath.getPath();
+							return pp;
+						}
+
+						@Override
+						public EG_Statement getStatement() {
+							return aSeq;
+						}
+					};
+				}
+			};
+		}
+		return _nextgenFactory;
 	}
 
 	public interface ModuleListener {

@@ -26,15 +26,11 @@ import tripleo.elijah.Eventual;
 import tripleo.elijah.EventualRegister;
 import tripleo.elijah.comp.AccessBus;
 import tripleo.elijah.comp.CompilerInput;
-import tripleo.elijah.comp.DeducePipeline;
 import tripleo.elijah.comp.EvaPipeline;
-import tripleo.elijah.comp.HooliganPipeline;
 import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.comp.PipelineMember;
-import tripleo.elijah.comp.WriteMakefilePipeline;
-import tripleo.elijah.comp.WriteMesonPipeline;
-import tripleo.elijah.comp.WriteOutputTreePipeline;
 import tripleo.elijah.comp.WritePipeline;
+import tripleo.elijah.comp.functionality.f291.B;
 import tripleo.elijah.comp.i.CB_Action;
 import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.comp.i.CompilationEnclosure;
@@ -88,42 +84,6 @@ public class CR_State {
 		String name();
 	}
 
-	public static class DeducePipelinePlugin implements PipelinePlugin {
-		@Override
-		public @NotNull PipelineMember instance(final @NotNull AccessBus ab0) {
-			return new DeducePipeline(ab0.getPipelineAccess());
-		}
-
-		@Override
-		public @NotNull String name() {
-			return "DeducePipeline";
-		}
-	}
-
-	public static class EvaPipelinePlugin implements PipelinePlugin {
-		@Override
-		public @NotNull PipelineMember instance(final @NotNull AccessBus ab0) {
-			return new EvaPipeline(ab0.getPipelineAccess());
-		}
-
-		@Override
-		public @NotNull String name() {
-			return "EvaPipeline";
-		}
-	}
-
-	public static class HooliganPipelinePlugin implements PipelinePlugin {
-		@Override
-		public @NotNull PipelineMember instance(final @NotNull AccessBus ab0) {
-			return new HooliganPipeline(ab0.getPipelineAccess());
-		}
-
-		@Override
-		public @NotNull String name() {
-			return "HooliganPipeline";
-		}
-	}
-
 	private static class ProcessRecordImpl implements ProcessRecord {
 		//private final DeducePipeline                             dpl;
 		private final @NotNull ICompilationAccess ca;
@@ -175,54 +135,6 @@ public class CR_State {
 		}
 	}
 
-	public static class WriteMakefilePipelinePlugin implements PipelinePlugin {
-		@Override
-		public @NotNull PipelineMember instance(final @NotNull AccessBus ab0) {
-			return new WriteMakefilePipeline(ab0.getPipelineAccess());
-		}
-
-		@Override
-		public @NotNull String name() {
-			return "WriteMakefilePipeline";
-		}
-	}
-
-	public static class WriteMesonPipelinePlugin implements PipelinePlugin {
-		@Override
-		public @NotNull PipelineMember instance(final @NotNull AccessBus ab0) {
-			return new WriteMesonPipeline(ab0.getPipelineAccess());
-		}
-
-		@Override
-		public @NotNull String name() {
-			return "WriteMesonPipeline";
-		}
-	}
-
-	public static class WriteOutputTreePipelinePlugin implements PipelinePlugin {
-		@Override
-		public @NotNull PipelineMember instance(final @NotNull AccessBus ab0) {
-			return new WriteOutputTreePipeline(ab0.getPipelineAccess());
-		}
-
-		@Override
-		public @NotNull String name() {
-			return "WriteOutputTreePipeline";
-		}
-	}
-
-	public static class WritePipelinePlugin implements PipelinePlugin {
-		@Override
-		public @NotNull PipelineMember instance(final @NotNull AccessBus ab0) {
-			return new WritePipeline(ab0.getPipelineAccess());
-		}
-
-		@Override
-		public @NotNull String name() {
-			return "WritePipeline";
-		}
-	}
-
 	class ProcessRecord_PipelineAccess implements IPipelineAccess, EventualRegister {
 		private final @NotNull List<EvaNode>                                         _l_classes       = new ArrayList<>();
 		private final @NotNull List<EvaClass>                                        activeClasses    = new ArrayList<>();
@@ -230,7 +142,6 @@ public class CR_State {
 		private final @NotNull List<EvaNamespace>                                    activeNamespaces = new ArrayList<>();
 		private final @NotNull Eventual<PipelineLogic>                               _p_pipelineLogic = new Eventual<>();
 		private final @NotNull Eventual<EvaPipeline>                                 _p_EvaPipeline   = new Eventual<>();
-		private final          Map<OS_Module, DeferredObject<GenerateC, Void, Void>> gc2m_map         = new HashMap<>();
 		private final @NotNull Map<Provenance, Pair<Class, Class>>                   installs         = new HashMap<>();
 		private final          DeferredObject<List<EvaNode>, Void, Void>             nodeListPromise  = new DeferredObject<>();
 		private final          List<NG_OutputItem>                                   outputs          = new ArrayList<NG_OutputItem>();
@@ -394,20 +305,13 @@ public class CR_State {
 
 		@Override
 		public void waitGenC(final OS_Module mod, final Consumer<GenerateC> cb) {
-			final DeferredObject<GenerateC, Void, Void> v = gc2m_map.get(mod);
-			assert v != null;
-			v.then(ggc -> cb.accept(ggc));
+			B.INSTANCE.push(mod, cb);
 		}
 
 		@Override
-		public void resolveWaitGenC(final OS_Module mod, final GenerateC gc) {
-			DeferredObject<GenerateC, Void, Void> gcp = new DeferredObject<>();
-			gcp.resolve(gc);
-			gc2m_map.put(mod, gcp);
-		}
-
-		@Override
-		public void install_notate(final Provenance aProvenance, final Class<? extends GN_Notable> aRunClass, final Class<? extends GN_Env> aEnvClass) {
+		public void install_notate(final Provenance aProvenance,
+								   final Class<? extends GN_Notable> aRunClass,
+								   final Class<? extends GN_Env> aEnvClass) {
 			installs.put(aProvenance, Pair.of(aRunClass, aEnvClass));
 		}
 

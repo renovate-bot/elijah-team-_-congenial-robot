@@ -47,9 +47,9 @@ public interface EntryPointProcessor {
 		@Override
 		public void process() {
 			final @NotNull FunctionDef     f  = afep.getFunction();
-			@NotNull final ClassInvocation ci = deducePhase.registerClassInvocation((ClassStatement) afep.getParent());
+			final @NotNull ClassInvocation ci = deducePhase.registerClassInvocation((ClassStatement) afep.getParent(), null); // !!
 
-			final WlGenerateClass job = new WlGenerateClass(generateFunctions, ci, deducePhase.generatedClasses,/*, deducePhase.codeRegistrar*/codeRegistrar);
+			final WlGenerateClass job = new WlGenerateClass(generateFunctions, ci, deducePhase.generatedClasses, codeRegistrar);
 			wl.addJob(job);
 
 			final @NotNull FunctionInvocation fi = deducePhase.newFunctionInvocation((BaseFunctionDef) f, null, ci);

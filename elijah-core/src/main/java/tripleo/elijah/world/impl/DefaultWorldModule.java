@@ -1,6 +1,6 @@
 package tripleo.elijah.world.impl;
 
-import lombok.Getter;
+//import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.Eventual;
 import tripleo.elijah.comp.i.CompilationEnclosure;
@@ -15,7 +15,7 @@ public class DefaultWorldModule implements WorldModule {
 	private final OS_Module   mod;
 	private       ModuleThing thing;
 
-	@Getter
+	//@Getter
 	private GN_PL_Run2.GenerateFunctionsRequest rq;
 
 	final Eventual<DeducePhase.GeneratedClasses> _p_GeneratedClasses = new Eventual<>();
