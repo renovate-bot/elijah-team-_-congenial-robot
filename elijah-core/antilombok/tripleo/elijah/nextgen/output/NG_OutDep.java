@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.lang.i.OS_Module;
 import tripleo.elijah.nextgen.comp_model.CM_Module;
-import tripleo.elijah.u.ElIntrinsics;
+import tripleo.elijah.sanaa.ElIntrinsics;
 
 public final class NG_OutDep implements CM_Module {
    @NotNull

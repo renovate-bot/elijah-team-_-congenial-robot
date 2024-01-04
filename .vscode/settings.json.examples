@@ -1,10 +1,10 @@
 {
-    "java.jdt.ls.java.home": "/home/nobody/.jdks/semeru-17.0.4.1/",
+    "java.jdt.ls.java.home": "/home/mclovin/.jdks/liberica-17.0.9/",
 
     "java.configuration.runtimes": [
 	{
 	    "name": "JavaSE-17",
-	    "path": "/home/nobody/.jdks/semeru-17.0.4.1/",
+	    "path": "/home/mclovin/.jdks/liberica-17.0.9/",
 	}
     ]
 }

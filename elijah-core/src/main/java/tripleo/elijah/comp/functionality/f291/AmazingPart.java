@@ -7,7 +7,7 @@ import tripleo.elijah.comp.i.CompilationEnclosure;
 
 import tripleo.elijah.stages.write_stage.pipeline_impl.WritePipelineSharedState;
 
-import tripleo.elijah.u.ElIntrinsics;
+import tripleo.elijah.sanaa.ElIntrinsics;
 
 import tripleo.elijah.lang.i.OS_Module;
 

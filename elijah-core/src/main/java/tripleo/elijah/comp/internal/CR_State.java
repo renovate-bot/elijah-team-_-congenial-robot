@@ -85,30 +85,16 @@ public class CR_State {
 	}
 
 	private static class ProcessRecordImpl implements ProcessRecord {
-		//private final DeducePipeline                             dpl;
 		private final @NotNull ICompilationAccess ca;
 		private final          IPipelineAccess    pa;
 		private final @NotNull PipelineLogic      pipelineLogic;
-		private                AccessBus          ab;
 
 		public ProcessRecordImpl(final @NotNull ICompilationAccess ca0) {
 			ca = ca0;
 
-			//ca.getCompilation().getCompilationEnclosure().getAccessBusPromise()
-			//		.then(iab->ab=iab);
-			ca.getCompilation().getCompilationEnclosure().getAccessBusPromise().then((final @NotNull AccessBus iab) -> {
-				ab = iab;
-			});
-
 			pa = ca.getCompilation().get_pa();
 
 			pipelineLogic = new PipelineLogic(pa, ca);
-		}
-
-		@Contract(pure = true)
-		@Override
-		public AccessBus ab() {
-			return ab;
 		}
 
 		@Contract(pure = true)

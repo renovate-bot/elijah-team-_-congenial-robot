@@ -9,7 +9,7 @@ import tripleo.elijah.stages.deduce.DeducePhase;
 import tripleo.elijah.stages.deduce.DeduceTypes2;
 import tripleo.elijah.stages.gen_fn.EvaNode;
 import tripleo.elijah.stages.logging.ElLog;
-import tripleo.elijah.u.ElIntrinsics;
+import tripleo.elijah.sanaa.ElIntrinsics;
 
 public final class DeducePhase_deduceModule_Request {
    @NotNull

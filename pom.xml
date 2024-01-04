@@ -17,20 +17,19 @@
 		<java.version>17</java.version>
 		<maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>17</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+		<downloadSources>true</downloadSources>
 
 		<jacoco.version>0.8.9</jacoco.version>
-		<downloadSources>true</downloadSources>
 		<guava.version>32.0.0-jre</guava.version>
 
 		<buffers.version>0.0.3</buffers.version>
 		<range.version>0.0.3b</range.version>
 
-		<maven-site-plugin.version>3.7.1</maven-site-plugin.version>
-		<maven-javadoc-plugin.version>3.0.0-M1</maven-javadoc-plugin.version>
-		<jdeferred.version>2.0.0</jdeferred.version>
-
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+
+		<jdeferred.version>2.0.0</jdeferred.version>
 
 		<!-- for edu 2022.2 -->
 		<!--		<kotlin.version>1.7.10</kotlin.version>-->
@@ -44,13 +43,13 @@
 	<dependencies>
 
 		<!-- https://smallrye.io/smallrye-mutiny/2.5.1/tutorials/getting-mutiny/ -->
-<!--
-		<dependency>
-			<groupId>io.smallrye.reactive</groupId>
-			<artifactId>mutiny</artifactId>
-			<version>2.5.1</version>
-		</dependency>
--->
+		<!--
+				<dependency>
+					<groupId>io.smallrye.reactive</groupId>
+					<artifactId>mutiny</artifactId>
+					<version>2.5.1</version>
+				</dependency>
+		-->
 
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -91,85 +90,35 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.eclipse.jdt/org.eclipse.jdt.annotation -->
 		<!--
 				<dependency>
-					<groupId>org.eclipse.jdt</groupId>
-					<artifactId>org.eclipse.jdt.annotation</artifactId>
-					<version>2.2.600</version>
+					<groupId>com.github.spotbugs</groupId>
+					<artifactId>spotbugs-annotations</artifactId>
+					<version>4.7.3</version>
 				</dependency>
 		-->
-
-		<!-- https://mvnrepository.com/artifact/org.jetbrains/annotations -->
-		<!--
-				<dependency>
-					<groupId>org.jetbrains</groupId>
-					<artifactId>annotations</artifactId>
-					<version>24.0.1</version>
-				</dependency>
-		-->
-
-		<!-- https://mvnrepository.com/artifact/junit/junit -->
-		<!--
-				<dependency>
-					<groupId>junit</groupId>
-					<artifactId>junit</artifactId>
-					<version>4.13.2</version>
-					<scope>test</scope>
-				</dependency>
-		-->
-
-<!--
-		<dependency>
-			<groupId>com.github.spotbugs</groupId>
-			<artifactId>spotbugs-annotations</artifactId>
-			<version>4.7.3</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>${guava.version}</version>
-		</dependency>
--->
 
 		<dependency>
 			<groupId>com.gitlab.tripleo1</groupId>
 			<artifactId>buffers</artifactId>
 			<version>3038ff102c</version>
-<!--
-			<groupId>tripleo.buffers</groupId>
-			<artifactId>buffers-v1</artifactId>
-			<version>0.0.3</version>
--->
+			<!--
+						<groupId>tripleo.buffers</groupId>
+						<artifactId>buffers-v1</artifactId>
+						<version>0.0.3</version>
+			-->
 		</dependency>
 
 		<dependency>
-<!--
-			<groupId>tripleo.util.range</groupId>
-			<artifactId>range-v1</artifactId>
-			<version>${range.version}</version>
--->
+			<!--
+						<groupId>tripleo.util.range</groupId>
+						<artifactId>range-v1</artifactId>
+						<version>${range.version}</version>
+			-->
 			<groupId>com.gitlab.Tripleo</groupId>
 			<artifactId>range</artifactId>
 			<version>v0.0.3b</version>
 		</dependency>
-
-
-<!--
-		<dependency>
-			<groupId>org.jetbrains.kotlin</groupId>
-			<artifactId>kotlin-stdlib-jdk8</artifactId>
-			<version>${kotlin.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.jetbrains.kotlin</groupId>
-			<artifactId>kotlin-test</artifactId>
-			<version>${kotlin.version}</version>
-			<scope>test</scope>
-		</dependency>
--->
-
 	</dependencies>
 
 	<repositories>
@@ -177,103 +126,51 @@
 			<id>jitpack.io</id>
 			<url>https://jitpack.io</url>
 		</repository>
-<!--
-		<repository>
-			<id>gitlab-maven-buffers</id>
-			<url>https://gitlab.com/api/v4/projects/20346374/packages/maven</url>
-		</repository>
--->
-<!--
-		<repository>
-			<id>gitlab-good-api</id>
-			<url>https://gitlab.com/api/v4/projects/52876826/packages/maven</url>
-		</repository>
--->
-<!--
-		<repository>
-			<id>gitlab-maven-range</id>
-			<url>https://gitlab.com/api/v4/projects/21223510/packages/maven</url>
-		</repository>
--->
 	</repositories>
 
-<!--
 	<build>
+		<pluginManagement>
+			<plugins>
+			<plugin>
+				<groupId>org.owasp</groupId>
+				<artifactId>dependency-check-maven</artifactId>
+				<version>8.2.1</version>
+				<configuration>
+					<skipProvidedScope>true</skipProvidedScope>
+					<cveValidForHours>8</cveValidForHours>
+					<!-- Increasing from default 4000 because MacOS GitHub Action builds are failing to successfully download -->
+					<!-- Also note that NIST has a limit of 5 requests per 30 second window -->
+<!-- gah! macos!
+					<cveWaitTime>12000</cveWaitTime>
+-->
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>versions-maven-plugin</artifactId>
+				<version>2.15.0</version>
+			</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+
+	<reporting>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<version>3.2.0</version>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>3.3.0</version>
 				<configuration>
-					<attach>true</attach>
+					<configLocation>checkstyle.xml</configLocation>
 				</configuration>
-				<executions>
-					<execution>
-						<id>package</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.jetbrains.kotlin</groupId>
-				<artifactId>kotlin-maven-plugin</artifactId>
-				<version>${kotlin.version}</version>
-				<executions>
-					<execution>
-						<id>compile</id>
-						<phase>compile</phase>
-						<goals>
-							<goal>compile</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>test-compile</id>
-						<phase>test-compile</phase>
-						<goals>
-							<goal>test-compile</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<jvmTarget>${maven.compiler.target}</jvmTarget>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>${maven-compiler-plugin.version}</version>
-				<executions>
-					<execution>
-						<id>default-compile</id>
-						<phase>none</phase>
-					</execution>
-					<execution>
-						<id>default-testCompile</id>
-						<phase>none</phase>
-					</execution>
-					<execution>
-						<id>compile</id>
-						<phase>compile</phase>
-						<goals>
-							<goal>compile</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>testCompile</id>
-						<phase>test-compile</phase>
-						<goals>
-							<goal>testCompile</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<source>${java.version}</source>
-					<target>${java.version}</target>
-				</configuration>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>checkstyle</report>
+						</reports>
+					</reportSet>
+				</reportSets>
 			</plugin>
 		</plugins>
-	</build>
--->
+	</reporting>
 </project>

@@ -11,12 +11,9 @@ import java.util.List;
 
 public class OutputItems {
 	private final WPIS_GenerateOutputs   WPISGenerateOutputs;
-	//@Getter
 	private final OutputStrategy         osg;
-	//@Getter
-	private final List<NG_OutputRequest> outputRequestList;
-	//@Getter
-	private final List<NG_OutputItem>    itms;
+	private final List<NG_OutputRequest> ngOutputRequestList;
+	private final List<NG_OutputItem>    ngOutputItemList;
 	private final OutputStrategyC        outputStrategyC;
 	private       int                    _readyCount;
 	private       int                    _addTally;
@@ -25,20 +22,20 @@ public class OutputItems {
 		WPISGenerateOutputs = aWPISGenerateOutputs;
 		osg                 = WPISGenerateOutputs.__st().sys.outputStrategyCreator.get();
 		outputStrategyC     = new OutputStrategyC(osg);
-		outputRequestList   = new ArrayList<>();
-		itms                = new ArrayList<>();
+		ngOutputRequestList = new ArrayList<>();
+		ngOutputItemList    = new ArrayList<>();
 	}
 
 	public void addItem(final NG_OutputItem aOutputItem) {
-		itms.add(aOutputItem);
+		ngOutputItemList.add(aOutputItem);
 
 		++_addTally;
 
 		if (_addTally == _readyCount) {
 			final Compilation compilation = WPISGenerateOutputs.__st().c;
 
-			final WPIS_GenerateOutputsFinaliation f = new WPIS_GenerateOutputsFinaliation(outputRequestList, outputStrategyC, compilation.getCompilationAccess2());
-			WPIS_GenerateOutputsFinalizer._finalizeItems(itms, f);
+			final WPIS_GenerateOutputsFinaliation f = new WPIS_GenerateOutputsFinaliation(ngOutputRequestList, outputStrategyC, compilation.getCompilationAccess2());
+			WPIS_GenerateOutputsFinalizer._finalizeItems(ngOutputItemList, f);
 		}
 	}
 

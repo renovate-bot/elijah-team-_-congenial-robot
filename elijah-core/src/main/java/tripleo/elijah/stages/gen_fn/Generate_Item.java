@@ -6,6 +6,7 @@ import tripleo.elijah.lang.impl.MatchConditionalImpl;
 import tripleo.elijah.lang.impl.NumericExpressionImpl;
 import tripleo.elijah.lang.types.OS_BuiltinType;
 import tripleo.elijah.lang.types.OS_UserType;
+import tripleo.elijah.lang.xlang.GenerateFunctions3;
 import tripleo.elijah.lang2.BuiltInTypes;
 import tripleo.elijah.lang2.SpecialFunctions;
 import tripleo.elijah.stages.instructions.*;
@@ -190,50 +191,15 @@ class Generate_Item {
 			final @NotNull Label label_end  = gf.addLabel();
 
 			{
+				final GenerateFunctions3 generateFunctions3 = getGenerateFunctions3();
+
 				for (final MatchConditional.MC1 part : mc.getParts()) {
-					if (part instanceof final MatchConditionalImpl.@NotNull MatchArm_TypeMatch mc1) {
-						final TypeName        tn = mc1.getTypeName();
-						final IdentExpression id = mc1.getIdent();
-
-						final int begin0 = generateFunctions.add_i(gf, InstructionName.ES, null, cctx);
-
-						final int                   tmp     = generateFunctions.addTempTableEntry(new OS_UserType(tn), id, gf, id); // TODO no context!
-						@NotNull VariableTableEntry vte_tmp = gf.getVarTableEntry(tmp);
-						final TypeTableEntry        t       = vte_tmp.getType();
-						generateFunctions.add_i(gf, InstructionName.IS_A, List_of(i, new IntegerIA(t.getIndex(), gf), /*TODO not*/new LabelIA(label_next)), cctx);
-						final Context context = mc1.getContext();
-
-						generateFunctions.add_i(gf, InstructionName.DECL, List_of(new SymbolIA("tmp"), new IntegerIA(tmp, gf)), context);
-						final int cast_inst = generateFunctions.add_i(gf, InstructionName.CAST_TO, List_of(new IntegerIA(tmp, gf), new IntegerIA(t.getIndex(), gf), (i)), context);
-						vte_tmp.addPotentialType(cast_inst, t); // TODO in the future instructionIndex may be unsigned
-
-						for (final FunctionItem item : mc1.getItems()) {
-							generateFunctions.generate_item(item, gf, context);
-						}
-
-						generateFunctions.add_i(gf, InstructionName.JMP, List_of(label_end), context);
-						generateFunctions.add_i(gf, InstructionName.XS, List_of(new IntegerIA(begin0, gf)), cctx);
-						gf.place(label_next);
-						label_next = gf.addLabel();
-					} else if (part instanceof final MatchConditionalImpl.@NotNull MatchConditionalPart2 mc2) {
-						final IExpression id = mc2.getMatchingExpression();
-
-						final int begin0 = generateFunctions.add_i(gf, InstructionName.ES, null, cctx);
-
-						final InstructionArgument i2 = generateFunctions.simplify_expression(id, gf, cctx);
-						generateFunctions.add_i(gf, InstructionName.JNE, List_of(i, i2, label_next), cctx);
-						final Context context = mc2.getContext();
-
-						for (final FunctionItem item : mc2.getItems()) {
-							generateFunctions.generate_item(item, gf, context);
-						}
-
-						generateFunctions.add_i(gf, InstructionName.JMP, List_of(label_end), context);
-						generateFunctions.add_i(gf, InstructionName.XS, List_of(new IntegerIA(begin0, gf)), cctx);
-						gf.place(label_next);
-//							label_next = gf.addLabel();
-					} else if (part instanceof MatchConditionalImpl.MatchConditionalPart3) {
-						generateFunctions.LOG.err("Don't know what this is");
+					if (part instanceof final MatchConditionalImpl.@NotNull MatchArm_TypeMatch_ mc1) {
+						label_next = mc1.generate_match_conditional(gf, cctx, i, label_next, label_end, generateFunctions3);
+					} else if (part instanceof final @NotNull MatchConditional.MatchConditionalPart2 mc2) {
+						mc2.generate_match_conditional(gf, cctx, i, label_next, label_end, generateFunctions3);
+					} else if (part instanceof MatchConditional.MatchConditionalPart3 mc3) {
+						mc3.generate_match_conditional(null, null, -1, null, null, generateFunctions3);
 					}
 				}
 				gf.place(label_next);
@@ -241,6 +207,38 @@ class Generate_Item {
 				gf.place(label_end);
 			}
 		}
+	}
+
+	@NotNull
+	private GenerateFunctions3 getGenerateFunctions3() {
+		final GenerateFunctions xgf = this.generateFunctions;
+		final GenerateFunctions3 generateFunctions3 = new GenerateFunctions3() {
+			@Override
+			public int add_i(final BaseEvaFunction aEvaFunction, final InstructionName aInstructionName, final List<InstructionArgument> aInstructionArgumentList, final Context aContext) {
+				return xgf.add_i(aEvaFunction, aInstructionName, aInstructionArgumentList, aContext);
+			}
+
+			@Override
+			public int addTempTableEntry(final OS_Type aOSType, final IdentExpression aIdentExpression, final BaseEvaFunction aEvaFunction, final IdentExpression aIdentExpression1) {
+				return xgf.addTempTableEntry(aOSType, aIdentExpression, aEvaFunction, aIdentExpression1);
+			}
+
+			@Override
+			public void generate_item(final FunctionItem aFunctionItem, final BaseEvaFunction aEvaFunction, final Context aContext) {
+				xgf.generate_item(aFunctionItem, aEvaFunction, aContext);
+			}
+
+			@Override
+			public InstructionArgument simplify_expression(final IExpression aExpression, final BaseEvaFunction aEvaFunction, final Context aContext) {
+				return xgf.simplify_expression(aExpression, aEvaFunction, aContext);
+			}
+
+			@Override
+			public void logErr(final String aS) {
+				xgf.LOG.err(aS);
+			}
+		};
+		return generateFunctions3;
 	}
 
 	void generate_statement_wrapper(final StatementWrapper aStatementWrapper,

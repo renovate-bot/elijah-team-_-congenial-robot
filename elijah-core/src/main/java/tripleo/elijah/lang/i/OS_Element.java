@@ -9,6 +9,7 @@
 package tripleo.elijah.lang.i;
 
 import org.jetbrains.annotations.Nullable;
+import tripleo.elijah.UnintendedUseException;
 import tripleo.elijah.lang2.ElElementVisitor;
 
 public interface OS_Element {
@@ -19,6 +20,10 @@ public interface OS_Element {
 	void visitGen(ElElementVisitor visit);
 
 	void serializeTo(SmallWriter sw);
+
+	default String asString() {
+		throw new UnintendedUseException("24j3 no intended targets");
+	}
 }
 
 //

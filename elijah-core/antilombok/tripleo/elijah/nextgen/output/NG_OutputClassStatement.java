@@ -9,7 +9,7 @@ import tripleo.elijah.lang.i.OS_Module;
 import tripleo.elijah.nextgen.inputtree.EIT_ModuleInput;
 import tripleo.elijah.nextgen.outputstatement.EX_Explanation;
 import tripleo.elijah.stages.gen_generic.GenerateResult;
-import tripleo.elijah.u.ElIntrinsics;
+import tripleo.elijah.sanaa.ElIntrinsics;
 import tripleo.elijah.util.BufferTabbedOutputStream;
 
 public final class NG_OutputClassStatement implements NG_OutputStatement {

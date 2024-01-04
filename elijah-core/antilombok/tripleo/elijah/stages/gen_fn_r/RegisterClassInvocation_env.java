@@ -6,7 +6,7 @@ import tripleo.elijah.lang.i.ClassStatement;
 import tripleo.elijah.stages.deduce.ClassInvocation;
 import tripleo.elijah.stages.deduce.DeducePhase;
 import tripleo.elijah.stages.deduce.DeduceTypes2;
-import tripleo.elijah.u.ElIntrinsics;
+import tripleo.elijah.sanaa.ElIntrinsics;
 
 public final class RegisterClassInvocation_env {
 	

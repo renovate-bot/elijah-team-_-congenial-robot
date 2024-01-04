@@ -13,13 +13,21 @@ import tripleo.elijah.comp.*;
 import tripleo.elijah.comp.internal.CB_Output;
 import tripleo.elijah.comp.internal.CompilationRunner;
 import tripleo.elijah.comp.internal.CompilerDriver;
+import tripleo.elijah.comp.internal.MalBulge;
+import tripleo.elijah.comp.internal.Provenance;
 import tripleo.elijah.comp.internal.__Plugins;
 import tripleo.elijah.comp.nextgen.CP_Path;
 import tripleo.elijah.comp.nextgen.i.CE_Path;
+import tripleo.elijah.comp.notation.GN_WriteLogs;
 import tripleo.elijah.factory.comp.NextgenFactory;
 import tripleo.elijah.lang.i.OS_Module;
 import tripleo.elijah.nextgen.ER_Node;
+import tripleo.elijah.nextgen.outputstatement.EG_Naming;
+import tripleo.elijah.nextgen.outputstatement.EG_SequenceStatement;
+import tripleo.elijah.nextgen.outputstatement.EG_SingleStatement;
 import tripleo.elijah.nextgen.outputstatement.EG_Statement;
+import tripleo.elijah.nextgen.outputtree.EOT_OutputFile;
+import tripleo.elijah.nextgen.outputtree.EOT_OutputType;
 import tripleo.elijah.nextgen.reactive.Reactivable;
 import tripleo.elijah.nextgen.reactive.Reactive;
 import tripleo.elijah.nextgen.reactive.ReactiveDimension;
@@ -29,16 +37,23 @@ import tripleo.elijah.pre_world.Mirror_EntryPoint;
 import tripleo.elijah.stages.gen_fn.IClassGenerator;
 import tripleo.elijah.stages.inter.ModuleThing;
 import tripleo.elijah.stages.logging.ElLog;
+import tripleo.elijah.stages.logging.LogEntry;
 import tripleo.elijah.util.NotImplementedException;
 import tripleo.elijah.world.i.WorldModule;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import static tripleo.elijah.util.Helpers.List_of;
+
 public class CompilationEnclosure {
+	public final          List<ElLog>                                            elLogs                  = new LinkedList<>();
+
+	
 	public final  DeferredObject<IPipelineAccess, Void, Void> pipelineAccessPromise = new DeferredObject<>();
 	private final CB_Output                                   _cbOutput             = new CB_Output();
 	private final Compilation                                 compilation;
@@ -101,6 +116,9 @@ public class CompilationEnclosure {
 	private IPipelineAccess     pa;
 	private PipelineLogic       pipelineLogic;
 	private NextgenFactory      _nextgenFactory;
+
+
+	private MalBulge _mb;
 
 	public CompilationEnclosure(final Compilation aCompilation) {
 		compilation = aCompilation;
@@ -355,11 +373,7 @@ public class CompilationEnclosure {
 	}
 
 	public void addLog(final ElLog aLOG) {
-		var ce = this;
-		ce.getAccessBusPromise()
-				.then(ab -> {
-					ab.subscribePipelineLogic(pl -> pl.addLog(aLOG));
-				});
+		elLogs.add(aLOG);
 	}
 
 	public ICompilationAccess2 ca2() {
@@ -397,10 +411,46 @@ public class CompilationEnclosure {
 		return _nextgenFactory;
 	}
 
+	public void __addLogs(final @NotNull List<EOT_OutputFile> l) {
+		final List<ElLog>          logs                 = elLogs;
+		final String               s1                   = logs.get(0).getFileName();
+
+		for (final ElLog log : logs) {
+			final List<EG_Statement> stmts = new ArrayList<>();
+
+			if (log.getEntries().isEmpty()) continue; // FIXME 24j1 Prelude.elijjah "fails" here
+
+			for (final LogEntry entry : log.getEntries()) {
+				final String logentry = String.format("[%s] [%tD %tT] %s %s", s1, entry.time, entry.time, entry.level, entry.message);
+				stmts.add(new EG_SingleStatement(logentry + "\n"));
+			}
+
+			final EG_SequenceStatement seq      = new EG_SequenceStatement(new EG_Naming("wot.log.seq"), stmts); // <- ??
+			final String               fileName = log.getFileName().replace("/", "~~");
+			final EOT_OutputFile       off      = new EOT_OutputFile(List_of(), fileName, EOT_OutputType.LOGS, seq);
+			l.add(off);
+		}
+	}
+
 	public interface ModuleListener {
 		void listen(WorldModule module);
 
 		void close();
+	}
+
+	public void writeLogs() {
+		final IPipelineAccess      pa            = compilation.pa();
+		final GN_WriteLogs aNotable = new GN_WriteLogs(ca, elLogs);
+		
+		pa.notate(Provenance.DefaultCompilationAccess__writeLogs, aNotable);
+	}
+
+	public void setMalbulge(MalBulge mb) {
+		this._mb = mb;
+	}
+
+	public MalBulge getMalBulge() {
+		return this._mb;
 	}
 }
 

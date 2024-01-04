@@ -21,7 +21,7 @@ public class EIT_ModuleInput implements EIT_Input {
 	}
 
 	public @NotNull SM_Module computeSourceModel() {
-		final SM_Module sm = new SM_Module_(/*this*/);
+		final SM_Module sm = new SM_Module_(this);
 		return sm;
 	}
 

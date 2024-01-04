@@ -8,7 +8,6 @@ import org.jetbrains.annotations.NotNull;
 
 import tripleo.elijah.Eventual;
 import tripleo.elijah.comp.AccessBus;
-import tripleo.elijah.comp.CompilerInput;
 import tripleo.elijah.comp.EvaPipeline;
 import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.comp.WritePipeline;

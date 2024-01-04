@@ -5,7 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.lang.i.ClassStatement;
 import tripleo.elijah.stages.deduce.ClassInvocation;
 import tripleo.elijah.stages.gen_fn.GenerateFunctions;
-import tripleo.elijah.u.ElIntrinsics;
+import tripleo.elijah.sanaa.ElIntrinsics;
 
 public final class GenerateEvaClassRequest {
    private final @NotNull GenerateFunctions generateFunctions;

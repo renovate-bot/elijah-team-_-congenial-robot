@@ -135,6 +135,15 @@ public class CompilationRunner extends _RegistrationTarget {
 	}
 
 	public void start(final CompilerInstructions ci, final @NotNull IPipelineAccess pa) {
+		var ce = pa.getCompilationEnclosure();
+		var mb = new MalBulge(ce);
+
+		ce.setMalbulge(mb);
+		
+		
+		
+		
+		
 		// FIXME only run once 06/16
 		if (startAction == null) {
 			startAction = new CB_StartCompilationRunnerAction(this, pa, ci);

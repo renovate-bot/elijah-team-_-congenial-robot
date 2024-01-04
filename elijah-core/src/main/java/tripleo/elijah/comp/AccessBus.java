@@ -22,13 +22,12 @@ public class AccessBus {
 	public final  Old_GenerateResult gr                    = new Old_GenerateResult();
 	private final Compilation        _c;
 	private final IPipelineAccess    _pa;
-	private final stepA_mal.@NotNull MalEnv2                     env;
 	private final DeferredObject<Old_GenerateResult, Void, Void> generateResultPromise = new DeferredObject<>();
 	private final DeferredObject<List<EvaNode>, Void, Void>      lgcPromise            = new DeferredObject<>();
 	private final Map<String, CR_State.PipelinePlugin>           pipelinePlugins       = new HashMap<>();
 
 	public stepA_mal.@NotNull MalEnv2 env() {
-		return env;
+		return _pa.getCompilationEnclosure().getMalBulge().getEnv();
 	}
 
 	public @NotNull Compilation getCompilation() {
@@ -38,8 +37,6 @@ public class AccessBus {
 	public AccessBus(final Compilation aC, final IPipelineAccess aPa) {
 		_c  = aC;
 		_pa = aPa;
-
-		env = new stepA_mal.MalEnv2(null); // TODO what does null mean?
 	}
 
 	public void add(final @NotNull Function<AccessBus, PipelineMember> aCr) {

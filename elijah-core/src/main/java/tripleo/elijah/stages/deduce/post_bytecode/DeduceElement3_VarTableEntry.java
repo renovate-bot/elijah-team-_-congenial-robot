@@ -3,6 +3,7 @@ package tripleo.elijah.stages.deduce.post_bytecode;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.ReadySupplier_1;
 import tripleo.elijah.lang.i.*;
 import tripleo.elijah.lang.impl.AliasStatementImpl;
@@ -16,9 +17,14 @@ import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 import java.util.List;
 
 public class DeduceElement3_VarTableEntry implements IDeduceElement3 {
-	private final EvaContainer.VarTableEntry _principal;
-	private final DeduceTypes2                _deduceTypes2;
-	public        RegisterClassInvocation_env __passthru;
+	public static final int RVTE = 108;
+	public static final int ONE_USER_CLASS = 105;
+	public static final int NOT_A_USER_CLASS = 177;
+	public static final int CANT_RESOLVE = 114;
+
+	private final           EvaContainer.VarTableEntry  _principal;
+	private final @Nullable DeduceTypes2                _deduceTypes2;
+	public                  RegisterClassInvocation_env __passthru;
 
 	@Contract(pure = true)
 	public DeduceElement3_VarTableEntry(final @NotNull EvaContainer.VarTableEntry aVarTableEntry,
@@ -48,7 +54,7 @@ public class DeduceElement3_VarTableEntry implements IDeduceElement3 {
 			//assert attachedType == OS_Type.Type.USER_CLASS;
 			if (attachedType != OS_Type.Type.USER_CLASS) {
 				final OS_Type att = potentialType.getAttached();
-				noteNonsense(105, String.valueOf(att));
+				noteNonsense(ONE_USER_CLASS, String.valueOf(att));
 			}
 
 			{
@@ -92,13 +98,13 @@ public class DeduceElement3_VarTableEntry implements IDeduceElement3 {
 				// README be explicit about doing nothing
 			} else {
 				NotImplementedException.raise();
-				noteNonsense(177, "not a USER_CLASS " + potentialType.getAttached());
+				noteNonsense(NOT_A_USER_CLASS, "not a USER_CLASS " + potentialType.getAttached());
 			}
 		}
 		if (potentialType.isResolved())
 			varTableEntry.resolve(potentialType.resolved());
 		else
-			noteNonsense(114, "Can't resolve " + varTableEntry);
+			noteNonsense(CANT_RESOLVE, "Can't resolve " + varTableEntry);
 
 		if (!sc)
 			throw new STOP();
@@ -144,7 +150,7 @@ public class DeduceElement3_VarTableEntry implements IDeduceElement3 {
 			while (best instanceof AliasStatementImpl) {
 				NotImplementedException.raise();
 				//assert false;
-				best = DeduceLookupUtils._resolveAlias((AliasStatementImpl) best, deduceTypes2());
+				best = DeduceLookupUtils._resolveAlias((AliasStatement) best, deduceTypes2());
 			}
 
 			// 5. effect
@@ -210,10 +216,10 @@ public class DeduceElement3_VarTableEntry implements IDeduceElement3 {
 		final TypeName             typeName       = varTableEntry.typeName;
 
 		try {
-			if (potentialTypes.size() == 0 && (varTableEntry.varType == null || typeName.isNull())) {
+			if (potentialTypes.isEmpty() && (varTableEntry.varType == null || typeName.isNull())) {
 				__zero_potential(varTableEntry, typeName);
 			} else {
-				noteNonsenseErr(108, String.format("%s %s", varTableEntry.nameToken, potentialTypes));
+				noteNonsenseErr(RVTE, String.format("%s %s", varTableEntry.nameToken, potentialTypes));
 
 				if (potentialTypes.size() == 1) {
 					__one_potential(aDeducePhase, varTableEntry, potentialTypes, typeName, ci);
@@ -232,6 +238,7 @@ public class DeduceElement3_VarTableEntry implements IDeduceElement3 {
 		SimplePrintLoggerToRemoveSoon.println_out_2(String.format("%d %s%n", code, message));
 	}
 
+	@SuppressWarnings("SameParameterValue")
 	private static void noteNonsenseErr(int code, String message) {
 		SimplePrintLoggerToRemoveSoon.println_err2(String.format("** [noteNonsenseErr] %d %s%n", code, message));
 	}

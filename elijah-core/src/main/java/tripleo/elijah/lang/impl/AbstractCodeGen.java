@@ -32,17 +32,8 @@ public abstract class AbstractCodeGen implements ElElementVisitor {
 		defaultAction(module);
 	}
 
-	public void defaultAction(final OS_Element anElement) {
-
-	}
-
 	@Override
 	public void visitAccessNotation(final AccessNotation aAccessNotation) {
-		defaultAction(aAccessNotation);
-	}
-
-	@Override
-	public void visitAccessNotation(AccessNotationImpl aAccessNotation) {
 		defaultAction(aAccessNotation);
 	}
 
@@ -52,22 +43,12 @@ public abstract class AbstractCodeGen implements ElElementVisitor {
 	}
 
 	@Override
-	public void visitAliasStatement(AliasStatementImpl aAliasStatement) {
-		defaultAction(aAliasStatement);
-	}
-
-	@Override
 	public void visitCaseConditional(final CaseConditional aCaseConditional) {
 		defaultAction(aCaseConditional);
 	}
 
 	@Override
-	public void visitCaseConditional(CaseConditionalImpl caseConditionalImpl) {
-		defaultAction(caseConditionalImpl);
-	}
-
-	@Override
-	public void visitCaseScope(final CaseConditionalImpl.CaseScopeImpl aCaseScope) {
+	public void visitCaseScope(final CaseConditional.CaseScope aCaseScope) {
 		defaultAction(aCaseScope);
 	}
 
@@ -167,22 +148,12 @@ public abstract class AbstractCodeGen implements ElElementVisitor {
 	}
 
 	@Override
-	public void visitVariableSequence(final VariableSequence aVariableSequence) {
+	public void visitVariableSequence(VariableSequence aVariableSequence) {
 		defaultAction(aVariableSequence);
 	}
 
 	@Override
-	public void visitVariableSequence(VariableSequenceImpl aVariableSequence) {
-		defaultAction(aVariableSequence);
-	}
-
-	@Override
-	public void visitVariableStatement(final VariableStatement aVariableStatement) {
-		defaultAction(aVariableStatement);
-	}
-
-	@Override
-	public void visitVariableStatement(VariableStatementImpl aVariableStatement) {
+	public void visitVariableStatement(VariableStatement aVariableStatement) {
 		defaultAction(aVariableStatement);
 	}
 
@@ -192,18 +163,12 @@ public abstract class AbstractCodeGen implements ElElementVisitor {
 	}
 
 	@Override
-	public void visitWithStatement(WithStatementImpl aWithStatement) {
-		defaultAction(aWithStatement);
-	}
-
-	@Override
 	public void visitYield(final YieldExpression aYieldExpression) {
 		defaultAction(aYieldExpression);
 	}
 
-	@Override
-	public void visitYield(YieldExpressionImpl aYieldExpression) {
-		defaultAction(aYieldExpression);
+	public void defaultAction(final OS_Element anElement) {
+
 	}
 }
 

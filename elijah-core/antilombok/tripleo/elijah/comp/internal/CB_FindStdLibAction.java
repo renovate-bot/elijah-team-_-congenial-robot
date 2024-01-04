@@ -15,9 +15,8 @@ import tripleo.elijah.comp.i.COutputString;
 import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.comp.i.Compilation.CompilationAlways;
 import tripleo.elijah.comp.i.Compilation.CompilationAlways.Tokens;
-import tripleo.elijah.u.ElIntrinsics;
+import tripleo.elijah.sanaa.ElIntrinsics;
 import tripleo.elijah.comp.i.CompilationEnclosure;
-import tripleo.elijah.comp.i.ICompilationBus;
 import tripleo.elijah.util.Mode;
 import tripleo.elijah.util.Operation;
 

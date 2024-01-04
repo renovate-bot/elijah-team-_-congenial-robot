@@ -11,7 +11,7 @@ import tripleo.elijah.lang.impl.OS_PackageImpl;
 
 import tripleo.elijah.util.Helpers;
 
-public class LangGlobals {
+public enum LangGlobals { ;
 
 	public final static IdentExpression emptyConstructorName = Helpers.string_to_ident("<>");
 

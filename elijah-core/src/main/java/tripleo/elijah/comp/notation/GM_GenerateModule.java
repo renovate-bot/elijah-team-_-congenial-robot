@@ -1,10 +1,10 @@
 package tripleo.elijah.comp.notation;
 
 import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.UnintendedUseException;
 import tripleo.elijah.comp.i.IPipelineAccess;
 import tripleo.elijah.lang.i.OS_Module;
 import tripleo.elijah.stages.deduce.DeducePhase;
-import tripleo.elijah.stages.gen_c.GenerateC;
 import tripleo.elijah.stages.gen_fn.EvaNode;
 import tripleo.elijah.stages.gen_generic.GenerateFiles;
 import tripleo.elijah.stages.gen_generic.GenerateResult;
@@ -12,7 +12,7 @@ import tripleo.elijah.stages.gen_generic.GenerateResultEnv;
 import tripleo.elijah.stages.gen_generic.Sub_GenerateResult;
 import tripleo.elijah.stages.gen_generic.pipeline_impl.GenerateResultSink;
 import tripleo.elijah.stages.gen_generic.pipeline_impl.ProcessedNode;
-import tripleo.elijah.stages.gen_generic.pipeline_impl.ProcessedNode1;
+import tripleo.elijah.stages.gen_generic.pipeline_impl.ProcessedNodeImpl;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 import tripleo.elijah.work.WorkList;
@@ -32,28 +32,26 @@ public class GM_GenerateModule {
 												   final @NotNull GenerateResultSink aResultSink) {
 		final OS_Module                         mod                   = gmr.params().getMod();
 		final @NotNull GN_GenerateNodesIntoSink generateNodesIntoSink = gmr.generateNodesIntoSink();
-
-		final GenerateResult              gr1 = new Sub_GenerateResult();
-		final Supplier<GenerateResultEnv> fgs = () ->new GenerateResultEnv(aResultSink, gr1, wm, new WorkList() /*tautology*/, this);
-
+		final GenerateResult                    gr1                   = new Sub_GenerateResult();
+		final Supplier<GenerateResultEnv>       fgs                   = () -> new GenerateResultEnv(aResultSink, gr1, wm, new WorkList() /*tautology*/, this);
 		final @NotNull GenerateFiles            ggc                   = gmr.getGenerateFiles(fgs);
 		final List<ProcessedNode>               lgc                   = generateNodesIntoSink._env().lgc();
-
-		final GenerateResultEnv fileGen = ((GenerateC)ggc).getFileGen();
+		final GenerateResultEnv                 fileGen               = ggc.getFileGen();
 
 		for (ProcessedNode processedNode : lgc) {
-			final EvaNode evaNode = ((ProcessedNode1) processedNode).getEvaNode();
+			final EvaNode evaNode = ((ProcessedNodeImpl) processedNode).getEvaNode();
 
-			if (!(processedNode.matchModule(mod))) continue; // README curious
-
-			if (processedNode.isContainerNode()) {
-				processedNode.processContainer(ggc, fileGen);
-
-				processedNode.processConstructors(ggc, fileGen);
-				processedNode.processFunctions(ggc, fileGen);
-				processedNode.processClassMap(ggc, fileGen);
-			} else {
-				SimplePrintLoggerToRemoveSoon.println_out_2("2009 " + evaNode.getClass().getName());
+			int res = processedNode.process(mod, ggc, fileGen);
+			switch (res) {
+			case ProcessedNode.MODULE_MISMATCH -> {
+			}
+			case ProcessedNode.OK -> {
+				// README 24/01/03 ??
+			}
+			case ProcessedNode.OTHER -> {
+				throw new UnintendedUseException("24/01/03 ??");
+			}
+			default -> SimplePrintLoggerToRemoveSoon.println_out_2("2009 " + evaNode.getClass().getName());
 			}
 		}
 

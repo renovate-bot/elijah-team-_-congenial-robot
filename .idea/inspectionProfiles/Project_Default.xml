@@ -159,7 +159,7 @@
       <option name="useParameterizedTypeForCollectionMethods" value="true" />
       <option name="doNotWeakenToJavaLangObject" value="true" />
       <option name="onlyWeakentoInterface" value="true" />
-      <stopClasses>org.jdeferred2.impl.DeferredObject,java.util.List</stopClasses>
+      <stopClasses>org.jdeferred2.impl.DeferredObject,java.util.List,tripleo.elijah.comp.notation.GN_PL_Run2_Env</stopClasses>
     </inspection_tool>
     <inspection_tool class="TypeParameterExtendsFinalClass" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="TypeParameterFindViewById" enabled="false" level="WEAK WARNING" enabled_by_default="false" />

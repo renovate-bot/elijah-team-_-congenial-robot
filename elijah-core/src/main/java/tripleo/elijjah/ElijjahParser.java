@@ -20,6 +20,7 @@ import tripleo.elijah.lang2.BuiltInTypes;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("DataFlowIssue")
 public class ElijjahParser extends antlr.LLkParser implements ElijjahTokenTypes {
 
 	public static final String[] _tokenNames  = {
@@ -4321,9 +4322,9 @@ public class ElijjahParser extends antlr.LLkParser implements ElijjahTokenTypes 
 			MatchConditional mc, OS_Element aParent
 									  ) throws RecognitionException, TokenStreamException {
 
-		MatchConditionalImpl.MatchArm_TypeMatch    mcp1 = null;
-		MatchConditionalImpl.MatchConditionalPart2 mcp2 = null;
-		MatchConditionalImpl.MatchConditionalPart3 mcp3 = null;
+		MatchConditional.MatchArm_TypeMatch   mcp1 = null;
+		MatchConditional.MatchConditionalPart2 mcp2 = null;
+		MatchConditional.MatchConditionalPart3 mcp3 = null;
 		TypeName                                   tn   = null;
 		IdentExpression                            i1   = null;
 		MatchContext                               ctx  = null;
@@ -6494,7 +6495,7 @@ public class ElijjahParser extends antlr.LLkParser implements ElijjahTokenTypes 
 					}
 					if (inputState.guessing == 0) {
 						ctx = new LoopContext(cur, loop);
-						loop.setContext((LoopContext) ctx);
+						loop.setContext(ctx);
 						cur = ctx;
 					}
 					sco = scope3(loop);
@@ -6510,7 +6511,7 @@ public class ElijjahParser extends antlr.LLkParser implements ElijjahTokenTypes 
 					}
 					if (inputState.guessing == 0) {
 						ctx = new LoopContext(cur, loop);
-						loop.setContext((LoopContext) ctx);
+						loop.setContext(ctx);
 						cur = ctx;
 					}
 					sco = scope3(loop);

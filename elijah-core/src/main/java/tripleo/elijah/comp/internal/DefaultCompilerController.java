@@ -18,7 +18,6 @@ public class DefaultCompilerController implements CompilerController {
 	private Compilation c;
 	CompilationBus      cb;
 	List<CompilerInput> inputs;
-	private Nov14Impl __nov14;
 
 	@Override
 	public void _setInputs(final Compilation aCompilation, final List<CompilerInput> aInputs) {
@@ -62,26 +61,11 @@ public class DefaultCompilerController implements CompilerController {
 		}
 	}
 
-	interface __Nov14 {
-
-	}
-
-	class Nov14Impl implements __Nov14 {
-
-		public Nov14Impl(CompilationEnclosure ce) {
-			// TODO Auto-generated constructor stub
-		}
-
-	}
-
 	@Override
 	public void runner() {
-
 		c.subscribeCI(c._cis()._cio);
 
 		final CompilationEnclosure ce = c.getCompilationEnclosure();
-
-		this.__nov14 = new Nov14Impl(ce);
 
 		final ICompilationAccess compilationAccess = ce.getCompilationAccess();
 		assert compilationAccess != null;

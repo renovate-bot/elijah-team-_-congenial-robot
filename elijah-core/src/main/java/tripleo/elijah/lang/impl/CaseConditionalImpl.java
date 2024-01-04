@@ -11,6 +11,7 @@ package tripleo.elijah.lang.impl;
 import antlr.Token;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tripleo.elijah.UnintendedUseException;
 import tripleo.elijah.contexts.CaseContext;
 import tripleo.elijah.contexts.SingleIdentContext;
 import tripleo.elijah.lang.i.*;
@@ -33,8 +34,8 @@ public class CaseConditionalImpl implements tripleo.elijah.lang.i.CaseConditiona
 	private @Nullable CaseContext                         __ctx              = null; // TODO look into removing this
 	private @Nullable SingleIdentContext                  _ctx               = null;
 	private @Nullable CaseConditional                     default_case_scope = null;
-	private           IExpression                         expr;
-	private @NotNull  HashMap<IExpression, CaseScopeImpl> scopes             = new LinkedHashMap<IExpression, CaseScopeImpl>();
+	private                IExpression                         expr;
+	private final @NotNull HashMap<IExpression, CaseScopeImpl> scopes = new LinkedHashMap<IExpression, CaseScopeImpl>();
 
 	public CaseConditionalImpl(final OS_Element parent, final Context parentContext) {
 		this.parent = parent;
@@ -103,8 +104,7 @@ public class CaseConditionalImpl implements tripleo.elijah.lang.i.CaseConditiona
 
 	}
 
-	public class CaseScopeImpl implements OS_Container, OS_Element, CaseConditional {
-
+	public class CaseScopeImpl implements OS_Container, OS_Element, CaseConditional, CaseScope {
 		private final Map<Scope3, IExpression> _scopes    = new HashMap<>();
 		private final Scope3                   cscope3;
 		private final IExpression              expr1;
@@ -116,22 +116,11 @@ public class CaseConditionalImpl implements tripleo.elijah.lang.i.CaseConditiona
 			this.cscope3 = aScope3;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 *
-		 * @see tripleo.elijah.lang.impl.CaseConditional#add(tripleo.elijah.lang.i.
-		 * OS_Element)
-		 */
 		@Override
 		public void addToContainer(final OS_Element anElement) {
 			cscope3.add(anElement);
 		}
 
-		/*
-		 * (non-Javadoc)
-		 *
-		 * @see tripleo.elijah.lang.impl.CaseConditional#addDocString(antlr.Token)
-		 */
 		@Override
 		public void addDocString(final Token s1) {
 			cscope3.addDocString(s1);
@@ -139,21 +128,14 @@ public class CaseConditionalImpl implements tripleo.elijah.lang.i.CaseConditiona
 
 		@Override
 		public void addScopeFor(IExpression expression, CaseConditional caseScope) {
-			// TODO Auto-generated method stub
-
+			throw new UnintendedUseException("24j3 not expected, but");
 		}
 
 		@Override
 		public void expr(IExpression expr) {
-			// TODO Auto-generated method stub
-
+			throw new UnintendedUseException("24j3 not expected, but");
 		}
 
-		/*
-		 * (non-Javadoc)
-		 *
-		 * @see tripleo.elijah.lang.impl.CaseConditional#getContext()
-		 */
 		@Override
 		public Context getContext() {
 			return getParent().getContext();
@@ -161,20 +143,14 @@ public class CaseConditionalImpl implements tripleo.elijah.lang.i.CaseConditiona
 
 		@Override
 		public @Nullable IExpression getExpr() {
-			// TODO Auto-generated method stub
-			return null;
+			throw new UnintendedUseException("24j3 not expected, but");
 		}
 
 		@Override
 		public @Nullable HashMap<IExpression, CaseScopeImpl> getScopes() {
-			return null;
+			throw new UnintendedUseException("24j3 not expected, but");
 		}
 
-		/*
-		 * (non-Javadoc)
-		 *
-		 * @see tripleo.elijah.lang.impl.CaseConditional#getParent()
-		 */
 		@Override
 		public @NotNull OS_Element getParent() {
 			return CaseConditionalImpl.this;
@@ -182,7 +158,6 @@ public class CaseConditionalImpl implements tripleo.elijah.lang.i.CaseConditiona
 
 		@Override
 		public void scope(Scope3 aSco, IExpression aExpr1) {
-			// TODO Auto-generated method stub
 			_scopes.put(aSco, aExpr1);
 		}
 
@@ -193,34 +168,18 @@ public class CaseConditionalImpl implements tripleo.elijah.lang.i.CaseConditiona
 
 		@Override
 		public void postConstruct() {
-			// TODO Auto-generated method stub
-
+			// REAME 24j3 no-op
 		}
 
-		/*
-		 * (non-Javadoc)
-		 *
-		 * @see tripleo.elijah.lang.impl.CaseConditional#getItems()
-		 */
 		public List<OS_Element> getItems() {
 			return cscope3.items();
 		}
 
-		/*
-		 * (non-Javadoc)
-		 *
-		 * @see tripleo.elijah.lang.impl.CaseConditional#items()
-		 */
 		@Override
 		public List<OS_NamedElement> items() {
 			throw new NotImplementedException();
 		}
 
-		/*
-		 * (non-Javadoc)
-		 *
-		 * @see tripleo.elijah.lang.impl.CaseConditional#setDefault()
-		 */
 		@Override
 		public void setDefault() {
 			_isDefault         = true;
@@ -235,13 +194,18 @@ public class CaseConditionalImpl implements tripleo.elijah.lang.i.CaseConditiona
 
 		@Override
 		public void serializeTo(final SmallWriter sw) {
-			throw new UnsupportedOperationException();
+			throw new UnintendedUseException("24j3 break for immplementation when reached, but");
+		}
+
+		@Override
+		public String asString() {
+			throw new UnintendedUseException("24j3 not expected, but");
 		}
 	}
 
 	@Override
 	public void serializeTo(final SmallWriter sw) {
-		throw new UnsupportedOperationException();
+		throw new UnintendedUseException("24j3 break for immplementation when reached, but");
 	}
 }
 

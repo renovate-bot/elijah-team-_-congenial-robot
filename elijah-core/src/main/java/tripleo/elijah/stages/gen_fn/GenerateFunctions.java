@@ -24,8 +24,6 @@ import tripleo.elijah.entrypoints.EntryPoint;
 
 import tripleo.elijah.lang.i.*;
 import tripleo.elijah.lang.impl.MatchConditionalImpl;
-import tripleo.elijah.lang.impl.MatchConditionalImpl.MatchArm_TypeMatch;
-import tripleo.elijah.lang.impl.MatchConditionalImpl.MatchConditionalPart2;
 import tripleo.elijah.lang.impl.NumericExpressionImpl;
 import tripleo.elijah.lang.types.OS_BuiltinType;
 import tripleo.elijah.lang.types.OS_FuncExprType;
@@ -34,6 +32,7 @@ import tripleo.elijah.lang.types.OS_UserType;
 import tripleo.elijah.lang2.BuiltInTypes;
 import tripleo.elijah.lang2.SpecialFunctions;
 
+import tripleo.elijah.nextgen.reactive.Reactive;
 import tripleo.elijah.nextgen.reactive.ReactiveDimension;
 
 import tripleo.elijah.stages.deduce.ClassInvocation;
@@ -70,8 +69,8 @@ public class GenerateFunctions implements ReactiveDimension, EventualRegister {
 	private static final   String          PHASE = "GenerateFunctions";
 	final                  OS_Module       module;
 	final          GeneratePhase   phase;
-	final @NotNull ElLog           LOG;
-	private       GenFnC          bc;
+	final @NotNull ElLog  LOG;
+	private final  GenFnC bc;
 
 	/**
 	 * Add a Constant Table Entry of type with Type Table Entry type {@link TypeTableEntry.Type#SPECIFIED}
@@ -343,53 +342,34 @@ public class GenerateFunctions implements ReactiveDimension, EventualRegister {
 
 	void generate_item_dot_expression(@org.jetbrains.annotations.Nullable final InstructionArgument backlink,
 									  final IExpression left,
-									  @NotNull final IExpression right,
+									  final @NotNull IExpression right,
 									  final @NotNull BaseEvaFunction gf,
 									  final Context cctx) {
-		final int y = 2;
-		final int x = gf.addIdentTableEntry((IdentExpression) left, cctx);
+		final int                      index   = gf.addIdentTableEntry((IdentExpression) left, cctx);
+		final @NotNull IdentIA         identIA = new IdentIA(index, gf);
+		final @NotNull IdentTableEntry entry   = identIA.getEntry();
 
-		final @NotNull IdentIA identIA = new IdentIA(x, gf);
-
-		var entry = identIA.getEntry();
-
-		entry.getReactiveEventual().then((IdentTableEntry._Reactive_IDTE xxx) ->{xxx.join(this);});
-
-
+		entry.getReactiveEventual().then((Reactive aReactive) -> aReactive.join(this));
 
 		if (backlink != null) {
 			identIA.setPrev(backlink);
 //			gf.getIdentTableEntry(x).addStatusListener(new DeduceTypes2.FoundParent());
 //			gf.getIdentTableEntry(x).backlink = backlink;
 		}
-		if (right.getLeft() == right)
-			return;
-		//
-		if (right instanceof IdentExpression)
-			generate_item_dot_expression(new IdentIA(x, gf), right.getLeft(), right, gf, cctx);
-		else
-			generate_item_dot_expression(new IdentIA(x, gf), right.getLeft(), ((BasicBinaryExpression) right).getRight(), gf, cctx);
-	}
-
-	public void generateAllTopLevelClasses(@NotNull List<EvaNode> lgc) {
-		for (final ModuleItem item : module.getItems()) {
-			if (item instanceof final @NotNull NamespaceStatement namespaceStatement) {
-				@NotNull EvaNamespace ns = generateNamespace(namespaceStatement);
-				lgc.add(ns);
-			} else if (item instanceof final @NotNull ClassStatement classStatement) {
-				@NotNull EvaClass kl = generateClass(classStatement);
-				lgc.add(kl);
+		if (right.getLeft() != right) {
+			final IExpression rightLeft = right.getLeft();
+			final IExpression rightRight;
+			if (right instanceof IdentExpression) {
+				rightRight = right;
+			} else {
+				rightRight = ((IBinaryExpression) right).getRight();
 			}
-			// TODO enums, datatypes, (type)aliases
+			generate_item_dot_expression(identIA, rightLeft, rightRight, gf, cctx);
 		}
 	}
 
 	/**
 	 * See {@link WlGenerateClass#run(WorkManager)}
-	 *
-	 * @param aClassStatement
-	 * @param aClassInvocation
-	 * @return
 	 */
 	public @NotNull EvaClass generateClass(@NotNull ClassStatement aClassStatement, ClassInvocation aClassInvocation) {
 		@NotNull EvaClass Result = generateClass(aClassStatement);
@@ -462,12 +442,16 @@ public class GenerateFunctions implements ReactiveDimension, EventualRegister {
 			gi.generate_alias_statement((AliasStatement) item);
 		} else if (item instanceof CaseConditional) {
 			gi.generate_case_conditional((CaseConditional) item);
-		} else if (item instanceof ClassStatement) {
+		} else if (item instanceof final ClassStatement klass) {
 			// TODO this still has no ClassInvocation
-			@NotNull EvaClass        gc        = generateClass((ClassStatement) item);
-			int                      ite_index = gf.addIdentTableEntry(((ClassStatement) item).getNameNode(), cctx);
+			@NotNull EvaClass        gc        = generateClass(klass);
+			int                      ite_index = gf.addIdentTableEntry((klass).getNameNode(), cctx);
 			@NotNull IdentTableEntry ite       = gf.getIdentTableEntry(ite_index);
 			ite.resolveTypeToClass(gc);
+			ite.onDeduceTypes2(dt2 -> {
+				var _ci = dt2._phase().registerClassInvocation(klass, dt2);
+				System.err.println("453 "+_ci.asString());
+			});
 		} else if (item instanceof final @NotNull StatementWrapper sw) {
 			final IExpression    x              = sw.getExpr();
 			final ExpressionKind expressionKind = x.getKind();
@@ -1625,7 +1609,7 @@ public class GenerateFunctions implements ReactiveDimension, EventualRegister {
 
 				{
 					for (final MatchConditional.MC1 part : mc.getParts()) {
-						if (part instanceof final @NotNull MatchArm_TypeMatch mc1) {
+						if (part instanceof final @NotNull MatchConditionalImpl.MatchArm_TypeMatch_ mc1) {
 							final TypeName        tn = mc1.getTypeName();
 							final IdentExpression id = mc1.getIdent();
 
@@ -1649,7 +1633,7 @@ public class GenerateFunctions implements ReactiveDimension, EventualRegister {
 							add_i(gf, InstructionName.XS, List_of(new IntegerIA(begin0, gf)), cctx);
 							gf.place(label_next);
 							label_next = gf.addLabel();
-						} else if (part instanceof final @NotNull MatchConditionalPart2 mc2) {
+						} else if (part instanceof final @NotNull MatchConditional.MatchConditionalPart2 mc2) {
 							final IExpression id = mc2.getMatchingExpression();
 
 							final int begin0 = add_i(gf, InstructionName.ES, null, cctx);
@@ -1667,7 +1651,7 @@ public class GenerateFunctions implements ReactiveDimension, EventualRegister {
 							add_i(gf, InstructionName.XS, List_of(new IntegerIA(begin0, gf)), cctx);
 							gf.place(label_next);
 //							label_next = gf.addLabel();
-						} else if (part instanceof MatchConditionalImpl.MatchConditionalPart3) {
+						} else if (part instanceof MatchConditional.MatchConditionalPart3) {
 							LOG.err("Don't know what this is");
 						}
 					}

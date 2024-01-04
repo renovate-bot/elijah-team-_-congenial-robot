@@ -9,10 +9,10 @@ import tripleo.elijah.comp.impl.CC_SetShowTree;
 import tripleo.elijah.comp.impl.CC_SetSilent;
 import tripleo.elijah.comp.impl.CC_SetStage;
 import tripleo.elijah.comp.internal.CompilationBus;
-import tripleo.vendor.org.apache.commons.cli.CommandLine;
-import tripleo.vendor.org.apache.commons.cli.CommandLineParser;
-import tripleo.vendor.org.apache.commons.cli.DefaultParser;
-import tripleo.vendor.org.apache.commons.cli.Options;
+import tripleo.vendor.org_apache_commons_cli.CommandLine;
+import tripleo.vendor.org_apache_commons_cli.CommandLineParser;
+import tripleo.vendor.org_apache_commons_cli.DefaultParser;
+import tripleo.vendor.org_apache_commons_cli.Options;
 
 import java.util.List;
 import java.util.stream.Collectors;

@@ -8,13 +8,14 @@
  */
 package tripleo.elijah.lang.i;
 
+import tripleo.elijah.g.GModuleItem;
+
 /**
  * Marker interface to represent elements that can be added to a OS_Module
  *
  * @see {@link OS_Module#add(OS_Element) }
  */
-public interface ModuleItem extends OS_Element, OS_NamedElement {
-
+public interface ModuleItem extends OS_Element, OS_NamedElement, GModuleItem {
 	@Override
 	default void serializeTo(SmallWriter sw) {
 

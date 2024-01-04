@@ -1,6 +1,8 @@
 package tripleo.elijah.comp.internal;
 
+import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.comp.i.Compilation;
+import tripleo.elijah.comp.i.CompilationEnclosure;
 import tripleo.elijah.comp.i.ICompilationAccess2;
 import tripleo.elijah.lang.i.OS_Module;
 import tripleo.elijah.nextgen.inputtree.EIT_Input;
@@ -9,8 +11,12 @@ import tripleo.elijah.nextgen.outputtree.EOT_OutputFile;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputTree;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputType;
 import tripleo.elijah.nextgen.outputtree.EOT_FileNameProvider;
+import tripleo.elijah.util.Ok;
+import tripleo.elijah.util.Operation;
 import tripleo.elijah.world.i.LivingRepo;
 import tripleo.elijah.world.i.WorldModule;
+import tripleo.vendor.mal.stepA_mal;
+import tripleo.vendor.mal.types;
 
 import java.util.List;
 
@@ -53,5 +59,20 @@ public class CompilationAccess2Impl implements ICompilationAccess2 {
 	@Override
 	public LivingRepo world() {
 		return this.c.world();
+	}
+
+	@Override
+	public @NotNull Operation<Ok> mal_ReadEval(String string) {
+		final CompilationEnclosure ce  = this.c.getCompilationEnclosure();
+		final stepA_mal.MalEnv2    env = ce.getMalBulge().getEnv();
+		/*final */
+		@NotNull Operation<Ok> result;
+		try {
+			env.re(string);
+			result = Operation.success(Ok.instance());
+		} catch (types.MalThrowable aE) {
+			result = Operation.failure(aE);
+		}
+		return result;
 	}
 }

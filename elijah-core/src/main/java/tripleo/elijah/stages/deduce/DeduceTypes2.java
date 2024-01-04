@@ -1082,7 +1082,7 @@ public class DeduceTypes2 {
 
 			phase.addDrs(generatedFunction, generatedFunction.drs);
 
-			phase.doneWait(this, generatedFunction);
+			phase.doneWait(this.rosetta);
 		}
 
 		//
@@ -2784,7 +2784,7 @@ public class DeduceTypes2 {
 			return new DTR_IdentExpression(aDeduceTypeResolve, aIdentExpression, aBte);
 		}
 
-		public DTR_VariableStatement new_DTR_VariableStatement(final DeduceTypeResolve aDeduceTypeResolve, final VariableStatementImpl aVariableStatement) {
+		public DTR_VariableStatement new_DTR_VariableStatement(final DeduceTypeResolve aDeduceTypeResolve, final VariableStatement aVariableStatement) {
 			return new DTR_VariableStatement(aDeduceTypeResolve, aVariableStatement);
 		}
 

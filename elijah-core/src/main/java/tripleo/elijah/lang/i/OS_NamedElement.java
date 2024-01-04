@@ -12,11 +12,13 @@ import tripleo.elijah.lang.nextgen.names.i.EN_Name;
  * Created Mar 23, 2020 at 12:40:27 AM
  */
 public interface OS_NamedElement {
-
 	/**
-	 * The name of the element TODO Should this be a {@link IdentExpression}?
+	 * <p>The name of the element</p>
+	 * <p>Returns an {@link OS_ElementName}, that has #asString()</p>
 	 *
-	 * @return a String
+	 * <p>TODO Should this be a {@link IdentExpression}?</p>
+	 *
+	 * @return an {@link OS_ElementName}
 	 */
 	@Contract(pure = true)
 	OS_ElementName name();

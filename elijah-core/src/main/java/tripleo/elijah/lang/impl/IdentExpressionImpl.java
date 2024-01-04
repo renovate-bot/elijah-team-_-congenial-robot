@@ -15,6 +15,7 @@ import antlr.Token;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.lang.i.*;
 import tripleo.elijah.lang.nextgen.names.i.EN_Name;
+import tripleo.elijah.lang2.ElElementVisitor;
 import tripleo.elijah.util.NotImplementedException;
 import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
@@ -30,8 +31,8 @@ public class IdentExpressionImpl implements tripleo.elijah.lang.i.IdentExpressio
 	public                 Attached   _a;
 	private                OS_Element _resolvedElement;
 	OS_Type _type;
-	private Token  text;
-	private String _fileName;
+	private final Token  text;
+	private final String _fileName;
 
 	public IdentExpressionImpl(final Token r1, String aFilename) {
 		this.text = r1;
@@ -136,7 +137,7 @@ public class IdentExpressionImpl implements tripleo.elijah.lang.i.IdentExpressio
 //			text = ((IdentExpression) iexpression).text;
 //		} else {
 //			// NOTE was tripleo.elijah.util.Stupidity.println_err_2
-		throw new IllegalArgumentException("Trying to set left-side of IdentExpression to " + iexpression.toString());
+		throw new IllegalArgumentException("Trying to set left-side of IdentExpression to " + iexpression);
 //		}
 	}
 
@@ -174,7 +175,7 @@ public class IdentExpressionImpl implements tripleo.elijah.lang.i.IdentExpressio
 	public void setKind(final @NotNull ExpressionKind aIncrement) {
 		// log and ignore
 		SimplePrintLoggerToRemoveSoon
-				.println_err_2("Trying to set ExpressionType of IdentExpression to " + aIncrement.toString());
+				.println_err_2("Trying to set ExpressionType of IdentExpression to " + aIncrement);
 	}
 
 	public Token token() {
@@ -182,7 +183,7 @@ public class IdentExpressionImpl implements tripleo.elijah.lang.i.IdentExpressio
 	}
 
 	@Override
-	public void visitGen(final tripleo.elijah.lang2.@NotNull ElElementVisitor visit) {
+	public void visitGen(final @NotNull ElElementVisitor visit) {
 		visit.visitIdentExpression(this);
 	}
 

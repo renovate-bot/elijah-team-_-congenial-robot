@@ -25,12 +25,12 @@ import java.util.stream.Stream;
 public class EIT_ModuleList {
 
 	// TODO use WorldModule here
+	// TODO 24/01/03 Use CM_Module here!
 	public List<OS_Module> getMods() {
 		return mods;
 	}
 
 	private final List<OS_Module> mods;
-//	private PipelineLogic __pl;
 
 	@Contract(pure = true)
 	public EIT_ModuleList(final List<OS_Module> aMods) {

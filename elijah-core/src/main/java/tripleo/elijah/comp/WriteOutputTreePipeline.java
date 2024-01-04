@@ -12,20 +12,11 @@ import tripleo.elijah.comp.nextgen.CP_Paths;
 import tripleo.elijah.comp.nextgen.i.CP_RootType;
 import tripleo.elijah.factory.comp.NextgenFactory;
 import tripleo.elijah.nextgen.ER_Node;
-import tripleo.elijah.nextgen.outputstatement.EG_Naming;
-import tripleo.elijah.nextgen.outputstatement.EG_SequenceStatement;
-import tripleo.elijah.nextgen.outputstatement.EG_SingleStatement;
 import tripleo.elijah.nextgen.outputstatement.EG_Statement;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputFile;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputTree;
-import tripleo.elijah.nextgen.outputtree.EOT_OutputType;
-import tripleo.elijah.stages.logging.ElLog;
-import tripleo.elijah.stages.logging.LogEntry;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import static tripleo.elijah.util.Helpers.List_of;
 
 public class WriteOutputTreePipeline implements PipelineMember {
 	private final IPipelineAccess pa;
@@ -83,24 +74,7 @@ public class WriteOutputTreePipeline implements PipelineMember {
 	}
 
 	private static void addLogs(final @NotNull List<EOT_OutputFile> l, final @NotNull IPipelineAccess aPa) {
-		final List<ElLog> logs = aPa.getCompilationEnclosure().getPipelineLogic().elLogs;
-		final String      s1   = logs.get(0).getFileName();
-
-		for (final ElLog log : logs) {
-			final List<EG_Statement> stmts = new ArrayList<>();
-
-			if (log.getEntries().isEmpty()) continue; // FIXME 24j1 Prelude.elijjah "fails" here
-
-			for (final LogEntry entry : log.getEntries()) {
-				final String logentry = String.format("[%s] [%tD %tT] %s %s", s1, entry.time, entry.time, entry.level, entry.message);
-				stmts.add(new EG_SingleStatement(logentry + "\n"));
-			}
-
-			final EG_SequenceStatement seq      = new EG_SequenceStatement(new EG_Naming("wot.log.seq"), stmts); // <- ??
-			final String               fileName = log.getFileName().replace("/", "~~");
-			final EOT_OutputFile       off      = new EOT_OutputFile(List_of(), fileName, EOT_OutputType.LOGS, seq);
-			l.add(off);
-		}
+		final CompilationEnclosure compilationEnclosure = aPa.getCompilationEnclosure();
+		compilationEnclosure.__addLogs(l);
 	}
-
 }

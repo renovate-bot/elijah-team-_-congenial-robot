@@ -31,7 +31,7 @@ import tripleo.elijah.stages.gen_fn.*;
 import tripleo.elijah.stages.gen_generic.DoubleLatch;
 import tripleo.elijah.stages.gen_generic.pipeline_impl.DefaultGenerateResultSink;
 import tripleo.elijah.stages.gen_generic.pipeline_impl.ProcessedNode;
-import tripleo.elijah.stages.gen_generic.pipeline_impl.ProcessedNode1;
+import tripleo.elijah.stages.gen_generic.pipeline_impl.ProcessedNodeImpl;
 import tripleo.elijah.stages.instructions.Instruction;
 
 import java.util.ArrayList;
@@ -309,7 +309,7 @@ public class EvaPipeline implements PipelineMember, AccessBus.AB_LgcListener {
 		final List<ProcessedNode> l = new ArrayList<>();
 
 		for (EvaNode evaNode : aLgc) {
-			l.add(new ProcessedNode1(evaNode));
+			l.add(new ProcessedNodeImpl(evaNode));
 		}
 
 		return l;

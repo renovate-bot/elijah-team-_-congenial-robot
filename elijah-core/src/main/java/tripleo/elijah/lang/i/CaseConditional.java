@@ -36,4 +36,7 @@ public interface CaseConditional extends OS_Element, StatementItem, FunctionItem
 	default void serializeTo(SmallWriter sw) {
 
 	}
+
+	interface CaseScope extends OS_Element {
+	}
 }

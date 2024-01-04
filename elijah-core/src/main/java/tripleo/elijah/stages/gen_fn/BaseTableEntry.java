@@ -14,6 +14,7 @@ import org.jdeferred2.Promise;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.Eventual;
+import tripleo.elijah.UnintendedUseException;
 import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.lang.i.OS_Element;
 import tripleo.elijah.stages.deduce.*;
@@ -27,20 +28,24 @@ import java.util.function.Function;
  * Created 2/4/21 10:11 PM
  */
 public abstract class BaseTableEntry {
-	protected final DeferredObject2<OS_Element, Diagnostic, Void> _p_elementPromise  = new DeferredObject2<OS_Element, Diagnostic, Void>() {
+	protected final DeferredObject2<OS_Element, Diagnostic, Void> _p_elementPromise = new DeferredObject2<OS_Element, Diagnostic, Void>() {
 		@Override
 		public Deferred<OS_Element, Diagnostic, Void> resolve(final @Nullable OS_Element resolve) {
 			return __elementPromise_resolve(resolve, (@Nullable OS_Element r) -> super.resolve(r), this);
 		}
 	};
+	private final   Eventual<DeduceTypes2>                        _p_DeduceTypes2   = new Eventual<>();
 
 	protected Deferred<OS_Element, Diagnostic, Void> __elementPromise_resolve(final OS_Element resolve,
 																			  final Function<@Nullable OS_Element, Deferred<OS_Element, Diagnostic, Void>> c,
 																			  final Deferred<OS_Element, Diagnostic, Void> identity) {
 		if (resolve == null) {
+/*
 			NotImplementedException.raise();
 			return null; // README 12/24 kinda never reached
 			//return identity;
+*/
+			throw new UnintendedUseException("24j3 ProgramIsLikelyWrong");
 		}
 		return c.apply(resolve);
 	}
@@ -53,7 +58,7 @@ public abstract class BaseTableEntry {
 
 	public void _fix_table(final DeduceTypes2 aDeduceTypes2, final @NotNull BaseEvaFunction aEvaFunction) {
 		provide(aDeduceTypes2);
-		__gf  = aEvaFunction;
+		__gf = aEvaFunction;
 
 		//aEvaFunction._informGF((GenerateFunctions gf11)->{});
 	}
@@ -123,6 +128,10 @@ public abstract class BaseTableEntry {
 
 	public void typeResolve(final GenType aGt) {
 		typeResolve.typeResolve(aGt);
+	}
+
+	public void onDeduceTypes2(final DoneCallback<DeduceTypes2> cb) {
+		_p_DeduceTypes2.then(cb);
 	}
 
 	public enum Status {

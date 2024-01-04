@@ -17,9 +17,7 @@ import tripleo.elijah.PromiseReadySupplier;
 import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.lang.i.*;
 import tripleo.elijah.lang.impl.AbstractCodeGen;
-import tripleo.elijah.lang.impl.AliasStatementImpl;
-import tripleo.elijah.lang.impl.MatchConditionalImpl;
-import tripleo.elijah.lang.impl.VariableStatementImpl;
+import tripleo.elijah.lang.i.MatchConditional;
 import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_IdentTableEntry;
 import tripleo.elijah.stages.gen_fn.*;
 import tripleo.elijah.stages.instructions.IdentIA;
@@ -27,19 +25,26 @@ import tripleo.elijah.stages.instructions.InstructionArgument;
 import tripleo.elijah.stages.instructions.IntegerIA;
 import tripleo.elijah.stages.instructions.ProcIA;
 import tripleo.elijah.util.NotImplementedException;
-import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 
 import java.util.function.Supplier;
+
+import static tripleo.elijah.util.SimplePrintLoggerToRemoveSoon.*;
 
 /**
  * Created 11/18/21 12:02 PM
  */
 public class DeduceTypeResolve {
-	private final BaseTableEntry                               bte;
-	@Nullable     BaseTableEntry                               backlink;
-	private final Eventual<GenType> typeResolution = new Eventual<>();
-	//private final DeduceTypes2                                 _dt2;
-	private Supplier<DeduceTypes2>                       _dt2s;
+	public static final int DEDUCE_TYPE_RESOLVE__visitDefFunction            = 138;
+	public static final int DEDUCE_TYPE_RESOLVE__visitAliasStatement         = 127;
+	public static final int DEDUCE_TYPE_RESOLVE__unknown                     = 158;
+	public static final int DEDUCE_TYPE_RESOLVE____visitFormalArgListItem__1 = 155;
+	public static final int DEDUCE_TYPE_RESOLVE____visitFormalArgListItem__2 = 159;
+	public static final int DEDUCE_TYPE_RESOLVE___203_backlink_isIDTE        = 999;
+
+	private final BaseTableEntry         bte;
+	@Nullable     BaseTableEntry         backlink;
+	private final Eventual<GenType>      typeResolution = new Eventual<>();
+	private final Supplier<DeduceTypes2> _dt2s;
 
 	public DeduceTypeResolve(BaseTableEntry aBte, final Supplier<DeduceTypes2> aDt2) {
 		bte   = aBte;
@@ -76,9 +81,7 @@ public class DeduceTypeResolve {
 					bte.typeResolve(gt);
 				}
 			});
-			_inj_then(inj -> {
-				bte.addStatusListener(inj.new__StatusListener__BTE_86(this));
-			});
+			_inj_then(inj -> bte.addStatusListener(inj.new__StatusListener__BTE_86(this)));
 		}
 
 		if (bte instanceof ProcTableEntry bte_pte) {
@@ -112,103 +115,20 @@ public class DeduceTypeResolve {
 		return typeResolution;
 	}
 
-	class _StatusListener__BTE_86 implements BaseTableEntry.StatusListener {
-		@NotNull GenType genType = _inj().new_GenTypeImpl();
+	class _StatusListener__BTE_86 extends AbstractCodeGen implements BaseTableEntry.StatusListener {
+		private @NotNull IElementHolder    eh;
+		private          DeduceTypeResolve x;
+		private          GenType           genType;
 
 		@Override
-		public void onChange(final @NotNull IElementHolder eh, final BaseTableEntry.Status newStatus) {
+		public void onChange(final @NotNull IElementHolder _eh, final BaseTableEntry.Status newStatus) {
 			if (newStatus != BaseTableEntry.Status.KNOWN) return;
 
-			eh.getElement().visitGen(new AbstractCodeGen() {
-				@Override
-				public void addClass(final @NotNull ClassStatement klass) {
-					genType.setResolved(klass.getOS_Type());
+			this.eh      = _eh;
+			this.x       = DeduceTypeResolve.this;
+			this.genType = _inj().new_GenTypeImpl();
 
-					if (eh instanceof DeduceElement3_IdentTableEntry.DE3_ITE_Holder) {
-						DeduceElement3_IdentTableEntry.DE3_ITE_Holder de3_ite_holder = (DeduceElement3_IdentTableEntry.DE3_ITE_Holder) eh;
-						de3_ite_holder.genTypeAction(_inj().new_SGTA_SetResolvedClass(klass));
-					}
-				}
-
-				@Override
-				public void defaultAction(final OS_Element anElement) {
-					logProgress(158, "158 " + anElement);
-					throw new IllegalStateException();
-				}
-
-				@Override
-				public void visitAliasStatement(final @NotNull AliasStatementImpl aAliasStatement) {
-					logProgress(127, String.format("** AliasStatementImpl %s points to %s", aAliasStatement.name(), aAliasStatement.getExpression()));
-				}
-
-				@Override
-				public void visitConstructorDef(final ConstructorDef aConstructorDef) {
-					int y = 2;
-				}
-
-				@Override
-				public void visitDefFunction(final @NotNull DefFunctionDef aDefFunctionDef) {
-					logProgress(138, String.format("** DefFunctionDef %s is %s", aDefFunctionDef.name(), ((StatementWrapper) aDefFunctionDef.getItems().iterator().next()).getExpr()));
-				}
-
-				@Override
-				public void visitFormalArgListItem(final @NotNull FormalArgListItem aFormalArgListItem) {
-					final OS_Type attached;
-					if (bte instanceof VariableTableEntry)
-						attached = ((VariableTableEntry) bte).getType().getAttached();
-					else if (bte instanceof IdentTableEntry) {
-						final IdentTableEntry identTableEntry = (IdentTableEntry) DeduceTypeResolve.this.bte;
-						if (identTableEntry.type == null)
-							return;
-						attached = identTableEntry.type.getAttached();
-					} else
-						throw new IllegalStateException("invalid entry (bte) " + bte);
-
-					if (attached != null)
-						logProgress(155,
-
-									String.format("** FormalArgListItem %s attached is not null. Type is %s. Points to %s",
-												  aFormalArgListItem.name(), aFormalArgListItem.typeName(), attached));
-					else
-						logProgress(159,
-									String.format("** FormalArgListItem %s attached is null. Type is %s.",
-												  aFormalArgListItem.name(), aFormalArgListItem.typeName()));
-				}
-
-				@Override
-				public void visitFunctionDef(final @NotNull FunctionDef aFunctionDef) {
-					genType.setResolved(aFunctionDef.getOS_Type());
-				}
-
-				@Override
-				public void visitIdentExpression(final IdentExpression aIdentExpression) {
-					_inj().new_DTR_IdentExpression(DeduceTypeResolve.this, aIdentExpression, bte).run(eh, genType);
-				}
-
-				@Override
-				public void visitMC1(final MatchConditional.MC1 aMC1) {
-					if (aMC1 instanceof final MatchConditionalImpl.@NotNull MatchArm_TypeMatch typeMatch) {
-						NotImplementedException.raise();
-					}
-				}
-
-				@Override
-				public void visitPropertyStatement(final @NotNull PropertyStatement aPropertyStatement) {
-					genType.setTypeName(_inj().new_OS_UserType(aPropertyStatement.getTypeName()));
-					// TODO resolve??
-				}
-
-				@Override
-				public void visitVariableStatement(final VariableStatementImpl variableStatement) {
-					final DTR_VariableStatement dtr_v = _inj().new_DTR_VariableStatement(DeduceTypeResolve.this, variableStatement);
-
-					if (bte instanceof IdentTableEntry ite1) {
-						ite1._cheat_variableStatement = variableStatement;
-					}
-
-					dtr_v.run(_dt2s.get(), eh, genType);
-				}
-			});
+			eh.getElement().visitGen(this);
 
 			if (!typeResolution.isPending()) {
 				int y = 2;
@@ -218,8 +138,95 @@ public class DeduceTypeResolve {
 			}
 		}
 
-		public void logProgress(int ignoredCode, String message) {
-			SimplePrintLoggerToRemoveSoon.println_err_2(message);
+		@Override
+		public void addClass(final @NotNull ClassStatement klass) {
+			genType.setResolved(klass.getOS_Type());
+
+			if (eh instanceof final DeduceElement3_IdentTableEntry.DE3_ITE_Holder de3_ite_holder) {
+				de3_ite_holder.genTypeAction(x._inj().new_SGTA_SetResolvedClass(klass));
+			}
+		}
+
+		@Override
+		public void defaultAction(final OS_Element anElement) {
+			logProgress(DEDUCE_TYPE_RESOLVE__unknown, "" + anElement);
+			throw new IllegalStateException();
+		}
+
+		@Override
+		public void visitAliasStatement(final @NotNull AliasStatement aAliasStatement) {
+			logProgress(DEDUCE_TYPE_RESOLVE__visitAliasStatement, String.format("** AliasStatementImpl %s points to %s", aAliasStatement.name(), aAliasStatement.getExpression()));
+		}
+
+		@Override
+		public void visitConstructorDef(final ConstructorDef aConstructorDef) {
+			int y = 2;
+		}
+
+		@Override
+		public void visitDefFunction(final @NotNull DefFunctionDef aDefFunctionDef) {
+			logProgress(DEDUCE_TYPE_RESOLVE__visitDefFunction, String.format("** DefFunctionDef %s is %s", aDefFunctionDef.name(), ((StatementWrapper) aDefFunctionDef.getItems().iterator().next()).getExpr()));
+		}
+
+		@Override
+		public void visitFormalArgListItem(final @NotNull FormalArgListItem aFormalArgListItem) {
+			final OS_Type attached;
+			if (x.bte instanceof VariableTableEntry)
+				attached = ((VariableTableEntry) x.bte).getType().getAttached();
+			else if (x.bte instanceof final IdentTableEntry identTableEntry) {
+				if (identTableEntry.type == null)
+					return;
+				attached = identTableEntry.type.getAttached();
+			} else
+				throw new IllegalStateException("invalid entry (bte) " + x.bte);
+
+			if (attached != null)
+				logProgress(DEDUCE_TYPE_RESOLVE____visitFormalArgListItem__1,
+
+							String.format("** FormalArgListItem %s attached is not null. Type is %s. Points to %s",
+										  aFormalArgListItem.name(), aFormalArgListItem.typeName(), attached));
+			else
+				logProgress(DEDUCE_TYPE_RESOLVE____visitFormalArgListItem__2,
+							String.format("** FormalArgListItem %s attached is null. Type is %s.",
+										  aFormalArgListItem.name(), aFormalArgListItem.typeName()));
+		}
+
+		@Override
+		public void visitFunctionDef(final @NotNull FunctionDef aFunctionDef) {
+			genType.setResolved(aFunctionDef.getOS_Type());
+		}
+
+		@Override
+		public void visitIdentExpression(final IdentExpression aIdentExpression) {
+			x._inj().new_DTR_IdentExpression(this.x, aIdentExpression, x.bte).run(eh, genType);
+		}
+
+		@Override
+		public void visitMC1(final MatchConditional.MC1 aMC1) {
+			if (aMC1 instanceof final MatchConditional.@NotNull MatchArm_TypeMatch typeMatch) {
+				throw new NotImplementedException();
+			}
+		}
+
+		@Override
+		public void visitPropertyStatement(final @NotNull PropertyStatement aPropertyStatement) {
+			genType.setTypeName(x._inj().new_OS_UserType(aPropertyStatement.getTypeName()));
+			// TODO resolve??
+		}
+
+		@Override
+		public void visitVariableStatement(final VariableStatement variableStatement) {
+			final DTR_VariableStatement dtr_v = x._inj().new_DTR_VariableStatement(x, variableStatement);
+
+			if (x.bte instanceof IdentTableEntry ite1) {
+				ite1._cheat_variableStatement = variableStatement;
+			}
+
+			dtr_v.run(x._dt2s.get(), eh, genType);
+		}
+
+		private void logProgress(int code, String message) {
+			x.logProgress(code, message);
 		}
 	}
 
@@ -239,7 +246,7 @@ public class DeduceTypeResolve {
 
 		private void _203_backlink_isIDTE(final @NotNull GenType result, final @NotNull IdentTableEntry identTableEntry) {
 			if (identTableEntry.type == null) {
-				identTableEntry.type = _inj().new_TypeTableEntry(999, TypeTableEntry.Type.TRANSIENT, result.getTypeName(), identTableEntry.getIdent(), null); // FIXME 999
+				identTableEntry.type = _inj().new_TypeTableEntry(DEDUCE_TYPE_RESOLVE___203_backlink_isIDTE, TypeTableEntry.Type.TRANSIENT, result.getTypeName(), identTableEntry.getIdent(), null); // FIXME 999
 			}
 
 			identTableEntry.type.setAttached(result);
@@ -288,6 +295,13 @@ public class DeduceTypeResolve {
 
 	public void typeResolve(GenType type1) {
 		typeResolution.resolve(type1);
+	}
+
+	public void logProgress(int code, String message) {
+		switch (code) {
+		case DEDUCE_TYPE_RESOLVE____visitFormalArgListItem__1, DEDUCE_TYPE_RESOLVE____visitFormalArgListItem__2 -> println_err_2(message);
+		default -> println_err_2(code + " " + message);
+		}
 	}
 }
 

@@ -5,7 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.lang.i.OS_Module;
 import tripleo.elijah.stages.deduce.DeducePhase;
 import tripleo.elijah.stages.logging.ElLog;
-import tripleo.elijah.u.ElIntrinsics;
+import tripleo.elijah.sanaa.ElIntrinsics;
 
 public final class DeduceTypes2Request {
    @NotNull

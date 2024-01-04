@@ -18,9 +18,9 @@ import org.jdeferred2.DoneCallback;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tripleo.elijah.u.ElijahInternal;
 import tripleo.elijah.Eventual;
 import tripleo.elijah.EventualRegister;
+import tripleo.elijah.UnintendedUseException;
 import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.comp.i.CompilationEnclosure;
@@ -33,8 +33,10 @@ import tripleo.elijah.nextgen.ClassDefinition;
 import tripleo.elijah.nextgen.diagnostic.CouldntGenerateClass;
 import tripleo.elijah.nextgen.reactive.ReactiveDimension;
 import tripleo.elijah.nextgen.rosetta.DeducePhase.DeducePhase_deduceModule_Request;
+import tripleo.elijah.nextgen.rosetta.DeduceTypes2.DeduceTypes2Rosetta;
 import tripleo.elijah.nextgen.rosetta.DeduceTypes2.DeduceTypes2_deduceFunctions_Request;
 import tripleo.elijah.nextgen.rosetta.Rosetta;
+import tripleo.elijah.sanaa.ElijahInternal;
 import tripleo.elijah.stages.deduce.declarations.DeferredMember;
 import tripleo.elijah.stages.deduce.declarations.DeferredMemberFunction;
 import tripleo.elijah.stages.deduce.nextgen.DR_Ident;
@@ -361,17 +363,11 @@ public class DeducePhase extends _RegistrationTarget implements ReactiveDimensio
 	}
 
 	public void addDrs(final BaseEvaFunction aGeneratedFunction, final @NotNull List<DR_Item> aDrs) {
-		for (DR_Item dr : aDrs) {
-			addDr(Pair.of(aGeneratedFunction, dr));
-		}
+		aDrs.forEach(dr -> addDr(aGeneratedFunction, dr));
 	}
 
-	private void addDr(final Pair<BaseEvaFunction, DR_Item> drp) {
-		drs.add(drp);
-	}
-
-	public void doneWait(final DeduceTypes2 aDeduceTypes2, final BaseEvaFunction aGeneratedFunction) {
-		NotImplementedException.raise();
+	private void addDr(final BaseEvaFunction aGeneratedFunction, final DR_Item aDr) {
+		drs.add(aGeneratedFunction, aDr);
 	}
 
 	public void waitOn(final DeduceTypes2 aDeduceTypes2) {
@@ -795,8 +791,9 @@ public class DeducePhase extends _RegistrationTarget implements ReactiveDimensio
 		return R;
 	}
 
-	enum DeducePhaseProvenance {
-		DeduceTypes_create // 196
+	public void doneWait(final DeduceTypes2Rosetta aRosetta) {
+		//throw new UnintendedUseException("24j3 break for impl");
+		// README 24/01/03 Honesly, forgot what this was for...
 	}
 
 	public interface Country {
@@ -806,8 +803,8 @@ public class DeducePhase extends _RegistrationTarget implements ReactiveDimensio
 	static class DRS {
 		private final List<Pair<BaseEvaFunction, DR_Item>> drs = new ArrayList<>();
 
-		public void add(final Pair<BaseEvaFunction, DR_Item> aDrp) {
-			drs.add(aDrp);
+		public void add(final BaseEvaFunction bef, DR_Item aDri) {
+			drs.add(Pair.of(bef, aDri));
 		}
 
 		public Iterable<Pair<BaseEvaFunction, DR_Item>> iterator() {

@@ -13,8 +13,6 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import tripleo.elijah.UnintendedUseException;
 import tripleo.elijah.ci.LibraryStatementPart;
 import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.contexts.ModuleContext;
@@ -144,8 +142,7 @@ public class OS_ModuleImpl implements OS_Element, OS_Container, tripleo.elijah.l
 		// FIND ALL ENTRY POINTS (should only be one per module)
 		//
 		for (final ModuleItem item : items) {
-			if (item instanceof ClassStatement) {
-				ClassStatement classStatement = (ClassStatement) item;
+			if (item instanceof final ClassStatement classStatement) {
 				if (MainClassEntryPoint.isMainClass(classStatement)) {
 					Collection<ClassItem> x = classStatement.findFunction("main");
 					Collection<ClassItem> found = Collections2.filter(x, new Predicate<ClassItem>() {

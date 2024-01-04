@@ -3,7 +3,7 @@ package tripleo.elijah.nextgen.rosetta.DeduceTypes2;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.nextgen.rosetta.DeducePhase.DeducePhase_deduceModule_Request;
 import tripleo.elijah.stages.deduce.DeducePhase;
-import tripleo.elijah.u.ElIntrinsics;
+import tripleo.elijah.sanaa.ElIntrinsics;
 
 public final class DeduceTypes2_deduceFunctions_Request {
    @NotNull

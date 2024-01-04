@@ -182,10 +182,12 @@ public class DefaultLivingRepo implements LivingRepo {
 	public @Nullable LivingFunction getFunction(final BaseEvaFunction aBaseEvaFunction) {
 		var c = functionMap.get(aBaseEvaFunction);
 
-		if (c.size() > 0)
+		if (!c.isEmpty())
 			return c.iterator().next();
 
-		return null;
+		final DefaultLivingFunction nlf = new DefaultLivingFunction(aBaseEvaFunction);
+		functionMap.put(aBaseEvaFunction, nlf);
+		return nlf;
 	}
 
 	@Override

@@ -20,7 +20,7 @@ import tripleo.elijjah.ElijjahTokenTypes;
  * Created 9/22/20 1:39 AM
  */
 // TODO Does this need to be Element?
-public class AccessNotationImpl implements OS_Element, tripleo.elijah.lang.i.AccessNotation {
+public class AccessNotationImpl implements OS_Element, AccessNotation {
 	private Token        category;
 	private Token        shorthand;
 	private TypeNameList tnl;

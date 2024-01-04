@@ -143,6 +143,7 @@ public class EK_ExpertSystem {
 	public @NotNull Operation<EK_Reader> openfile_2() {
 		try {
 			final InputStream stream = getClass().getResourceAsStream("KB3.txt");
+			assert stream != null;
 			return Operation.success(new EK_Reader1(this, stream));
 		} catch (Exception ex) {
 			System.out.println("Error:the input file dose not exist");

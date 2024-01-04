@@ -1,6 +1,5 @@
 package tripleo.elijah.stages.deduce.post_bytecode;
 
-//import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.lang.i.ClassStatement;
 import tripleo.elijah.lang.i.OS_Element;
@@ -13,7 +12,6 @@ import tripleo.elijah.stages.gen_fn.*;
 // DeduceGrand
 public class DG_ClassStatement implements DG_Item {
 	private final ClassStatement       classStatement;
-	//@Getter
 	private       GenericElementHolder genericElementHolder;
 	private       EvaClass             _evaNode;
 	private       ClassInvocation      classInvocation;

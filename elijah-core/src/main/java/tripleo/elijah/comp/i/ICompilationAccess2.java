@@ -1,5 +1,6 @@
 package tripleo.elijah.comp.i;
 
+import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.lang.i.OS_Module;
 import tripleo.elijah.nextgen.inputtree.EIT_Input;
 import tripleo.elijah.nextgen.outputstatement.EG_Statement;
@@ -7,6 +8,8 @@ import tripleo.elijah.nextgen.outputtree.EOT_OutputFile;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputTree;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputType;
 import tripleo.elijah.nextgen.outputtree.EOT_FileNameProvider;
+import tripleo.elijah.util.Ok;
+import tripleo.elijah.util.Operation;
 import tripleo.elijah.world.i.LivingRepo;
 import tripleo.elijah.world.i.WorldModule;
 
@@ -27,4 +30,6 @@ public interface ICompilationAccess2 {
 	WorldModule createWorldModule(OS_Module aMod);
 
 	LivingRepo world();
+
+	@NotNull Operation<Ok> mal_ReadEval(String string);
 }

@@ -10,8 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ModuleThing {
-	public record GeneralDescription(ES_Symbol aSymbol, @NotNull List<Object> aObjects) {
-	}
+	public record GeneralDescription(ES_Symbol aSymbol, @NotNull List<Object> aObjects) { }
 
 	private final @NotNull List<EntryPoint>  entryPoints;
 	private final @NotNull List<EvaFunction> evaFunctions = new ArrayList<>();

@@ -12,7 +12,6 @@ import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.lang.i.AccessNotation;
 import tripleo.elijah.lang.i.El_Category;
 import tripleo.elijah.lang.i.ImportStatement;
-import tripleo.elijah.lang.i.SmallWriter;
 import tripleo.elijah.lang.impl.AccessNotationImpl;
 import tripleo.elijah.lang.impl.EN_Name_;
 import tripleo.elijah.lang.nextgen.names.i.EN_Name;
