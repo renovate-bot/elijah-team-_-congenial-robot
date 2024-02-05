@@ -13,6 +13,14 @@ import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 import java.util.Map;
 
 public class DTR_VariableStatement {
+	private final DeduceTypeResolve deduceTypeResolve;
+	private final VariableStatement variableStatement;
+
+	public DTR_VariableStatement(final DeduceTypeResolve aDeduceTypeResolve, final VariableStatement aVariableStatement) {
+		deduceTypeResolve = aDeduceTypeResolve;
+		variableStatement = aVariableStatement;
+	}
+
 	public void run(DeduceTypes2 dt2, final IElementHolder eh, final GenType genType) {
 		final TypeName typeName1 = variableStatement.typeName();
 
@@ -39,65 +47,16 @@ public class DTR_VariableStatement {
 		default -> {
 			if (eh instanceof DeduceElement3_IdentTableEntry.DE3_EH_GroundedVariableStatement grounded) {
 				final DeduceElement3_IdentTableEntry ground = grounded.getGround();
+				final DTR_VariableStatement          _c     = this;
 
-				final InstructionArgument bl = ground.principal.getBacklink();
-				if (bl instanceof final @NotNull ProcIA procIA) {
-					@NotNull final ProcTableEntry pte_bl = procIA.getEntry();
-
-					assert pte_bl.getStatus() == BaseTableEntry.Status.KNOWN;
-
-					pte_bl.typeResolvePromise().then(gt -> {
-						// README when pte_bl has gets a type (GenType),
-						//   - it will only have resolved (OS_UserClassType
-						//     with ClassStatement).
-						//   - we then get the ci and node
-						//   - use the node (to an EvaClass) to look at varTableEntries
-						//   - pick the first one that matches variableStatement
-						//   - wait for it to get an OS_Type
-						//      * this actually never happens
-
-						assert (dt2 == ground.principal._deduceTypes2());
-						gt.genCIForGenType2(ground.principal._deduceTypes2()); // README any will do
-
-						assert gt.getCi() != null;
-						assert gt.getNode() != null;
-
-						for (EvaContainer.VarTableEntry entry : ((EvaContainerNC) gt.getNode()).varTable) {
-							if (entry.nameToken.getText().equals(variableStatement.getName())) {
-								entry.resolve_varType_cb(result -> {
-									int y = 2;
-									System.err.println("7676 DTR_VariableStatement >> " + result);
-								});
-								break;
-							}
-						}
-					});
-
-					final OS_Element re1 = pte_bl.getResolvedElement();
-
-					final LookupResultList     lrl = re1.getContext().lookup(variableStatement.getName());
-					@Nullable final OS_Element e2  = lrl.chooseBest(null);
-
-					if (e2 == null) {
-						int y = 2;
-					} else {
-						int y = 2;
-					}
-				}
+				ground.principal.backlinkSet().then((final InstructionArgument bl) -> {
+					__ground_principal_backlinkSet(dt2, bl, ground, _c);
+				});
 			} else {
 				SimplePrintLoggerToRemoveSoon.println_err("Unexpected value: " + state + "for " + variableStatement.getName());
 			}
 		}
 		}
-	}
-
-	private final DeduceTypeResolve deduceTypeResolve;
-
-	private final VariableStatement variableStatement;
-
-	public DTR_VariableStatement(final DeduceTypeResolve aDeduceTypeResolve, final VariableStatement aVariableStatement) {
-		deduceTypeResolve = aDeduceTypeResolve;
-		variableStatement = aVariableStatement;
 	}
 
 	private void normalTypeName_notGeneric(final @NotNull DTR_VS_Ctx ctx) {
@@ -110,10 +69,6 @@ public class DTR_VariableStatement {
 			normalTypeName_notGeneric_typeProvided(ctx);
 		} else
 			normalTypeName_notGeneric_typeNotProvided(ctx);
-	}
-
-	private /*static*/ void normalTypeName_generic_butNotNull_resolveToNonGeneric(final @NotNull GenType genType, final @NotNull GenType resolved) {
-		genType.setResolved(resolved.getResolved());
 	}
 
 	private void normalTypeName_generic_butNotNull(final @NotNull DTR_VS_Ctx ctx) {
@@ -176,10 +131,9 @@ public class DTR_VariableStatement {
 		genType.setNonGenericTypeName(normalTypeName);
 	}
 
-	record DTR_VS_Ctx(IElementHolder eh, GenType genType, NormalTypeName normalTypeName) {
-	}
-
-	private /*static*/ void normalTypeName_generic_butNotNull_resolveToGeneric(final @NotNull GenType genType, final @NotNull GenType resolved, final @NotNull BaseTableEntry backlink) {
+	private /*static*/ void normalTypeName_generic_butNotNull_resolveToGeneric(final @NotNull GenType genType,
+																			   final @NotNull GenType resolved,
+																			   final @NotNull BaseTableEntry backlink) {
 		backlink.typeResolvePromise().then(result_gt -> ((Constructable) backlink).constructablePromise().then((final @NotNull ProcTableEntry result_pte) -> {
 			final ClassInvocation ci = result_pte.getClassInvocation();
 			assert ci != null;
@@ -196,5 +150,81 @@ public class DTR_VariableStatement {
 				}
 			}
 		}));
+	}
+
+	private /*static*/ void normalTypeName_generic_butNotNull_resolveToNonGeneric(final @NotNull GenType genType,
+																				  final @NotNull GenType resolved) {
+		genType.setResolved(resolved.getResolved());
+	}
+
+	record DTR_VS_Ctx(IElementHolder eh, GenType genType, NormalTypeName normalTypeName) {
+	}
+
+	private static void __ground_principal_backlinkSet(final DeduceTypes2 dt2,
+													   final InstructionArgument bl,
+													   final DeduceElement3_IdentTableEntry ground,
+													   final DTR_VariableStatement _c) {
+		if (bl instanceof final @NotNull ProcIA procIA) {
+			__ground_principal_backlinkSet__ProcIA(dt2, ground, _c, procIA);
+		}
+	}
+
+	private static void __ground_principal_backlinkSet__ProcIA(final DeduceTypes2 dt2,
+															   final DeduceElement3_IdentTableEntry ground,
+															   final DTR_VariableStatement _c,
+															   final @NotNull ProcIA procIA) {
+		@NotNull final ProcTableEntry pte_bl = procIA.getEntry();
+
+		assert pte_bl.getStatus() == BaseTableEntry.Status.KNOWN;
+
+		pte_bl.typeResolvePromise().then(gt -> {
+			pte_bl.typeDeferred().then(td->{assert td==gt;});
+
+			// README when pte_bl has gets a type (GenType),
+			//   - it will only have resolved (OS_UserClassType
+			//     with ClassStatement).
+			//   - we then get the ci and node
+			//   - use the node (to an EvaClass) to look at varTableEntries
+			//   - pick the first one that matches variableStatement
+			//   - wait for it to get an OS_Type
+			//      * this actually never happens
+
+			assert (dt2 == ground.principal._deduceTypes2());
+
+			// README any (dt2) will do
+			// TODO 24/01/28 it would be nice to see if this is actually true.
+			//  tooling(fater compilers) vs debugging...
+			//   in the bigger picture though...
+			gt.genCIForGenType2(ground.principal._deduceTypes2());
+
+			assert gt.getCi() != null;
+			assert gt.getNode() != null;
+
+			for (EvaContainer.VarTableEntry entry : ((EvaContainerNC) gt.getNode()).varTable) {
+				if (entry.nameToken.getText().equals(_c.variableStatement.getName())) {
+					entry.resolve_varType_cb(result -> {
+						int y = 2;
+						System.err.println("7676 DTR_VariableStatement >> " + result);
+					});
+					break;
+				}
+			}
+		});
+
+		final OS_Element re1 = pte_bl.getResolvedElement();
+
+		assert re1 != null;
+		final LookupResultList     lrl = re1.getContext().lookup(_c.getVariableStatementName());
+		@Nullable final OS_Element e2  = lrl.chooseBest(null);
+
+		if (e2 == null) {
+			int y = 2;
+		} else {
+			int y = 2;
+		}
+	}
+
+	private String getVariableStatementName() {
+		return this.variableStatement.getName();
 	}
 }

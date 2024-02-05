@@ -8,6 +8,7 @@
  */
 package tripleo.elijah.stages.deduce;
 
+import org.jdeferred2.DoneCallback;
 import org.jdeferred2.Promise;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
@@ -32,10 +33,11 @@ import static tripleo.elijah.util.Helpers.List_of;
  */
 public class FunctionInvocation implements IInvocation {
 	public final      ProcTableEntry                              pte;
-	public            CI_Hint                                     hint;
-	private @Nullable BaseEvaFunction                             _generated       = null;
 	final             FunctionDef                                 fd;
 	private final     DeferredObject<BaseEvaFunction, Void, Void> generateDeferred = new DeferredObject<BaseEvaFunction, Void, Void>();
+	private final     Eventual<BaseEvaFunction>                   _p_generated     = new Eventual<>();
+	public            CI_Hint                                     hint;
+	private @Nullable BaseEvaFunction                             _generated       = null;
 	private           NamespaceInvocation                         namespaceInvocation;
 	private           ClassInvocation                             classInvocation;
 
@@ -99,12 +101,16 @@ public class FunctionInvocation implements IInvocation {
 		return _generated;
 	}
 
-	public NamespaceInvocation getNamespaceInvocation() {
-		return namespaceInvocation;
-	}
-
 	public void setGenerated(BaseEvaFunction aGeneratedFunction) {
 		_generated = aGeneratedFunction;
+		_p_generated.resolve(aGeneratedFunction);
+	}
+	public void onGenerated(DoneCallback<BaseEvaFunction> cb) {
+		_p_generated.then(cb);
+	}
+
+	public NamespaceInvocation getNamespaceInvocation() {
+		return namespaceInvocation;
 	}
 
 	public void setNamespaceInvocation(NamespaceInvocation aNamespaceInvocation) {
@@ -117,7 +123,7 @@ public class FunctionInvocation implements IInvocation {
 	}
 
 	public Eventual<BaseEvaFunction> makeGenerated__Eventual(final @NotNull Deduce_CreationClosure cl, final EventualRegister register) {
-		final DeduceTypes2          deduceTypes2  = cl.deduceTypes2();
+		final DeduceTypes2 deduceTypes2 = cl.deduceTypes2();
 
 		final Eventual<BaseEvaFunction> eef = new Eventual<>();
 
@@ -178,7 +184,7 @@ public class FunctionInvocation implements IInvocation {
 											 final @NotNull OS_Module module) {
 
 		final GeneratePhase generatePhase = cl.generatePhase();
-		final DeducePhase deducePhase = cl.deducePhase();
+		final DeducePhase   deducePhase   = cl.deducePhase();
 
 		@NotNull WlGenerateFunction wlgf = injector.new_WlGenerateFunction(module, this, cl);
 

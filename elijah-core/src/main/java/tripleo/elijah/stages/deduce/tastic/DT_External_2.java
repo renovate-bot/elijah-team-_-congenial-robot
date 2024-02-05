@@ -136,71 +136,75 @@ public class DT_External_2 implements DT_External {
 
 		//assert ite._p_resolvedElementPromise.isResolved();
 
-		ite1._p_resolvedElementPromise.then((final @NotNull OS_Element orig_e) -> {
-			OS_Element e = orig_e;
+		ite1.elementPromise((final @NotNull OS_Element orig_e) -> {
+			__actualize_elementPromise(aDt2, orig_e, ite1);
+		}, null);
 
-			final Compilation compilation = aDt2.module.getCompilation();
-			final Finally     REPORTS     = compilation.reports();
-
-			if (REPORTS.outputOn(Finally.Outs.Out_600142)) {
-				Object xx = null;
-				LOG.info(String.format("600 %s %s", xx, e));
-				LOG.info("601 "+identIA.getEntry().getStatus());
-			}
-
-			final OS_Element pre_resolved_element = ite1.getResolvedElement();
-
-			if (pre_resolved_element == null) {
-				dc.found_element_for_ite(generatedFunction, ite1, e, ctx);
-			}
-
-			final OS_Element resolved_element1 = ite1.getResolvedElement();
-
-			boolean set_alias = false;
-
-			if (orig_e instanceof AliasStatement) {
-				set_alias = true;
-
-				while (e instanceof AliasStatement al) {
-					e = dc._resolveAlias(al);
-				}
-			}
-
-			if (REPORTS.outputOn(Finally.Outs.Out_600142)) {
-				LOG.info(String.format("602 %s %s", e, resolved_element1));
-			}
-
-			assert e == resolved_element1
-					|| /*HACK*/ resolved_element1 instanceof AliasStatement
-					|| resolved_element1 == null
-					;
-
-			if (e instanceof OS_NamedElement el2) {
-				final EN_Name name = el2.getEnName();
-				if (set_alias)
-					name.addUnderstanding(_inj().new_ENU_AliasedFrom((AliasStatement) orig_e));
-			}
-
-			if (pte.getStatus() != BaseTableEntry.Status.KNOWN) {
-				pte.setStatus(BaseTableEntry.Status.KNOWN, _inj().new_ConstructableElementHolder(e, identIA));
-			}
-
-			pte.onFunctionInvocation((@NotNull FunctionInvocation functionInvocation) -> {
-				functionInvocation.generateDeferred().done((@NotNull BaseEvaFunction bgf) -> {
-					@NotNull DeduceTypes2.PromiseExpectation<GenType> pe = dc.promiseExpectation(bgf, "Function Result type");
-					bgf.typePromise().then((@NotNull GenType result) -> {
-						pe.satisfy(result);
-						@NotNull TypeTableEntry tte = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, result.getResolved()); // TODO there has to be a better way
-						tte.genType.copy(result);
-						vte.addPotentialType(instructionIndex, tte);
-					});
-				});
-			});
-		});
-
-		ite1._p_resolvedElementPromise.onFail(aResolveError -> {
+		ite1.elementPromise(null, (aResolveError) -> {
 			// TODO create Diagnostic and quit
 			LOG.info("1005 Can't find element for " + aResolveError);
+		});
+	}
+
+	private void __actualize_elementPromise(final @NotNull DeduceTypes2 aDt2, final @NotNull OS_Element orig_e, final IdentTableEntry ite1) {
+		OS_Element e = orig_e;
+
+		final Compilation compilation = aDt2.module.getCompilation();
+		final Finally     REPORTS     = compilation.reports();
+
+		if (REPORTS.outputOn(Finally.Outs.Out_600142)) {
+			Object xx = null;
+			LOG.info(String.format("600 %s %s", xx, e));
+			LOG.info("601 "+identIA.getEntry().getStatus());
+		}
+
+		final OS_Element pre_resolved_element = ite1.getResolvedElement();
+
+		if (pre_resolved_element == null) {
+			dc.found_element_for_ite(generatedFunction, ite1, e, ctx);
+		}
+
+		final OS_Element resolved_element1 = ite1.getResolvedElement();
+
+		boolean set_alias = false;
+
+		if (orig_e instanceof AliasStatement) {
+			set_alias = true;
+
+			while (e instanceof AliasStatement al) {
+				e = dc._resolveAlias(al);
+			}
+		}
+
+		if (REPORTS.outputOn(Finally.Outs.Out_600142)) {
+			LOG.info(String.format("602 %s %s", e, resolved_element1));
+		}
+
+		assert e == resolved_element1
+				|| /*HACK*/ resolved_element1 instanceof AliasStatement
+				|| resolved_element1 == null
+				;
+
+		if (e instanceof OS_NamedElement el2) {
+			final EN_Name name = el2.getEnName();
+			if (set_alias)
+				name.addUnderstanding(_inj().new_ENU_AliasedFrom((AliasStatement) orig_e));
+		}
+
+		if (pte.getStatus() != BaseTableEntry.Status.KNOWN) {
+			pte.setStatus(BaseTableEntry.Status.KNOWN, _inj().new_ConstructableElementHolder(e, identIA));
+		}
+
+		pte.onFunctionInvocation((@NotNull FunctionInvocation functionInvocation) -> {
+			functionInvocation.generateDeferred().done((@NotNull BaseEvaFunction bgf) -> {
+				@NotNull DeduceTypes2.PromiseExpectation<GenType> pe = dc.promiseExpectation(bgf, "Function Result type");
+				bgf.typePromise().then((@NotNull GenType result) -> {
+					pe.satisfy(result);
+					@NotNull TypeTableEntry tte = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, result.getResolved()); // TODO there has to be a better way
+					tte.genType.copy(result);
+					vte.addPotentialType(instructionIndex, tte);
+				});
+			});
 		});
 	}
 
@@ -249,7 +253,7 @@ public class DT_External_2 implements DT_External {
 			final ProcTableEntry bl_pte = procIA.getEntry();
 
 			if (bl_pte.expression.getEntry() instanceof IdentTableEntry ite1) {
-				ite1._p_resolvedElementPromise.then(el -> {
+				ite1.elementPromise(el -> {
 					final Context ctx2 = el.getContext();
 
 					final LookupResultList lrl = ctx2.lookup(ite.getIdent().getText());
@@ -258,7 +262,7 @@ public class DT_External_2 implements DT_External {
 					if (e != null) {
 						_p_resolvedElementPromise.resolve(e);
 					}
-				});
+				}, null);
 			}
 		}
 	}

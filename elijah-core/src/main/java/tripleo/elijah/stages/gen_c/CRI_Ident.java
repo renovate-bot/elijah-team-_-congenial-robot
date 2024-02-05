@@ -80,6 +80,8 @@ class CRI_Ident {
 					@Nullable final ProcTableEntry pte = ite.getCallablePTE();
 					resolved2 = ((GI_FunctionDef) repo_element)._re_is_FunctionDef(pte, _cheat, ite);
 
+					assert resolved2 != null;
+
 					repo_element.setEvaNode(resolved2);
 				} else if (resolved_element instanceof PropertyStatement) {
 					resolved2 = _re_is_PropertyStatement(addRef, aog, sSize, i, aValue, (x) -> skip[0] = true, (x) -> text[0] = x);

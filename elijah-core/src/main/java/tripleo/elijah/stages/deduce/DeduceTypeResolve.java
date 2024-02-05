@@ -282,7 +282,7 @@ public class DeduceTypeResolve {
 				final DeduceElement3_IdentTableEntry de3_ite = identTableEntry_bte.getDeduceElement3();
 
 				// Just testing
-				final DeduceElement3_IdentTableEntry de3_ite2 = identTableEntry_bte._deduceTypes2()._zero_getIdent(identTableEntry_bte, identTableEntry_bte.__gf, identTableEntry_bte._deduceTypes2());
+				final DeduceElement3_IdentTableEntry de3_ite2 = identTableEntry_bte._deduceTypes2()._zero_getIdent(identTableEntry_bte, identTableEntry_bte.get__gf(), identTableEntry_bte._deduceTypes2());
 				assert de3_ite2.principal == de3_ite.principal;
 
 				// Also testing, but not essential.

@@ -9,6 +9,8 @@ import tripleo.elijah.stages.gen_fn.EvaNode;
 import tripleo.elijah.stages.gen_fn.IdentTableEntry;
 import tripleo.elijah.stages.instructions.IdentIA;
 
+import java.util.function.Consumer;
+
 public class IdentIA_Ops {
 	public static @NotNull IdentIA_Ops get(final IdentIA aIdentIA) {
 		return new IdentIA_Ops(aIdentIA);
@@ -24,66 +26,77 @@ public class IdentIA_Ops {
 		final IdentTableEntry idte             = identIA.getEntry();
 		final OS_Element      resolved_element = idte.getResolvedElement();
 
-		if (idte.resolvedType() != null) {
-			final EvaNode _resolved = idte.resolvedType();
-			String        ctorName  = null;
+		final ConstructorPathOp[] cpo = {null};
+		idte.onResolvedType(_resolved -> cpo[0]=ConstructorPathOp__1(_resolved, resolved_element));
 
-			if (resolved_element != null) { // FIXME stop accepting null here
-				switch (DecideElObjectType.getElObjectType(resolved_element)) {
-				case CONSTRUCTOR -> {
-					ctorName = ((ConstructorDef) resolved_element).name().asString();
-				}
-				case CLASS -> {
-					int y = 2;
-					ctorName = ""; //((ClassStatement) resolved_element).name();
-				}
-				}
-			} else ctorName = "";
-
-			final String finalCtorName = ctorName;
-			return new ConstructorPathOp() {
+		if (cpo[0] == null) {
+			cpo[0] = new ConstructorPathOp() {
 				@Override
 				public @Nullable String getCtorName() {
-					return finalCtorName;
+					return null;
 				}
 
 				@Override
-				public EvaNode getResolved() {
-					return _resolved;
+				public @Nullable EvaNode getResolved() {
+					return null;
 				}
 			};
-		} /*else if (resolved_element != null) {
-					assert false;
-					if (resolved_element instanceof VariableStatementImpl) {
-						addRef(((VariableStatementImpl) resolved_element).getName(), CReference.Ref.MEMBER);
-					} else if (resolved_element instanceof ConstructorDef) {
-						assert i == sSize - 1; // Make sure we are ending with a constructor call
-						int code = ((ClassStatement) resolved_element.getParent())._a.getCode();
-						if (code == 0) {
-							tripleo.elijah.util.Stupidity.println_err_2("** 31161 ClassStatement with 0 code " + resolved_element.getParent());
-						}
-						// README Assuming this is for named constructors
-						String text = ((ConstructorDef) resolved_element).name();
-						String text2 = String.format("ZC%d%s", code, text);
+		}
 
-						ctorName = text;
+		return cpo[0];
+	}
+	public void onConstructorPath(Consumer<ConstructorPathOp> cpo0) {
+		final IdentTableEntry idte             = identIA.getEntry();
+		final OS_Element      resolved_element = idte.getResolvedElement();
 
-//						addRef(text2, CReference.Ref.CONSTRUCTOR);
+		final ConstructorPathOp[] cpo = {null};
+		idte.onResolvedType(_resolved -> {
+			var xxx = ConstructorPathOp__1(_resolved, resolved_element);
+			cpo0.accept(xxx);
+		});
+		idte.failingResolvedType((f)->{
+			cpo0.accept(new ConstructorPathOp() {
+				@Override
+				public @Nullable String getCtorName() {
+					return null;
+				}
 
-//						addRef(((ConstructorDef) resolved_element).name(), CReference.Ref.CONSTRUCTOR);
-					}
-				}*/
+				@Override
+				public @Nullable EvaNode getResolved() {
+					return null;
+				}
+			});
+		});
+	}
 
-		return new ConstructorPathOp() {
+	private static ConstructorPathOp ConstructorPathOp__1(final EvaNode _resolved, final OS_Element resolved_element) {
+		ConstructorPathOp cpo=null;
+		String        ctorName  = null;
+
+		if (resolved_element != null) { // FIXME stop accepting null here
+			switch (DecideElObjectType.getElObjectType(resolved_element)) {
+			case CONSTRUCTOR -> {
+				ctorName = ((ConstructorDef) resolved_element).name().asString();
+			}
+			case CLASS -> {
+				int y = 2;
+				ctorName = ""; //((ClassStatement) resolved_element).name();
+			}
+			}
+		} else ctorName = "";
+
+		final String finalCtorName = ctorName;
+		cpo = new ConstructorPathOp() {
 			@Override
 			public @Nullable String getCtorName() {
-				return null;
+				return finalCtorName;
 			}
 
 			@Override
-			public @Nullable EvaNode getResolved() {
-				return null;
+			public EvaNode getResolved() {
+				return _resolved;
 			}
 		};
+		return cpo;
 	}
 }

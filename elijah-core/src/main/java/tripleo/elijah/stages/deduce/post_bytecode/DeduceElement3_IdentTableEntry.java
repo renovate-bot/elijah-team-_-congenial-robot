@@ -1,6 +1,5 @@
 package tripleo.elijah.stages.deduce.post_bytecode;
 
-import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -25,6 +24,7 @@ import tripleo.elijah.stateful.StateRegistrationToken;
 import tripleo.elijah.stateful._RegistrationTarget;
 import tripleo.elijah.util.NotImplementedException;
 import tripleo.elijah.util.Operation2;
+import tripleo.elijah_congenial.progress.X;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -146,7 +146,7 @@ public class DeduceElement3_IdentTableEntry extends DefaultStateful implements I
 		}
 
 		if (principal.getStatus() == BaseTableEntry.Status.KNOWN) {
-			principal.__gf.getIdent(principal).resolve();
+			principal.get__gf().getIdent(principal).resolve();
 		}
 	}
 
@@ -256,7 +256,7 @@ public class DeduceElement3_IdentTableEntry extends DefaultStateful implements I
 	}
 
 	public void setDeduceTypes(final DeduceTypes2 aDeduceTypes2, final BaseEvaFunction aGeneratedFunction) {
-		assert principal.__gf != null;
+		assert principal.get__gf() != null;
 		assert principal._deduceTypes2() != null;
 
 		deduceTypes2      = aDeduceTypes2;
@@ -326,7 +326,7 @@ public class DeduceElement3_IdentTableEntry extends DefaultStateful implements I
 			@NotNull final ProcTableEntry callable = principal.getCallablePTE();
 
 			DeduceTypes2    dt2 = callable._deduceTypes2();
-			BaseEvaFunction gf  = callable.__gf;
+			BaseEvaFunction gf  = callable.get__gf();
 
 			if (dt2 == null) dt2 = principal._deduceTypes2();
 			if (gf == null) gf = principal._generatedFunction();
@@ -390,8 +390,8 @@ public class DeduceElement3_IdentTableEntry extends DefaultStateful implements I
 							var ci = pte.getClassInvocation();
 							var fi = pte.getFunctionInvocation();
 
-							System.err.println("322 " + ci);
-							System.err.println("323 " + fi);
+							X.xl_323("322 " + ci);
+							X.xl_323("323 " + fi);
 
 
 							var pt = dt2._inj().new_DR_PossibleTypeCI(ci, fi);

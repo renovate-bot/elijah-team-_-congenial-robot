@@ -30,6 +30,7 @@ class GI_ClassStatement implements GenerateC_Item {
 	public void setITE(final @NotNull IdentTableEntry ite) {
 		EvaNode resolved = null;
 
+		// hacky...
 		if (ite.type != null)
 			resolved = ite.type.resolved();
 		if (resolved == null)

@@ -78,7 +78,7 @@ public class DT_Resolvabley {
 				if (ite._callable_pte() != null) {
 					var cpte = ite._callable_pte();
 
-					assert cpte.status != BaseTableEntry.Status.KNOWN;
+					assert cpte.getStatus() != BaseTableEntry.Status.KNOWN;
 
 					rr.add("%s".formatted(ite.getIdent().getText()));
 					continue;

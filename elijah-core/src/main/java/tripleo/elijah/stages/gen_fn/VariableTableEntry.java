@@ -110,7 +110,7 @@ public class VariableTableEntry extends BaseTableEntry1 implements Constructable
 			public void onChange(final IElementHolder eh, final Status newStatus) {
 				if (newStatus != Status.KNOWN) return;
 
-				__gf.getIdent(VariableTableEntry.this).resolve();
+				get__gf().getIdent(VariableTableEntry.this).resolve();
 			}
 		});
 
@@ -307,7 +307,7 @@ public class VariableTableEntry extends BaseTableEntry1 implements Constructable
 			_resolveTypeCalled = aGenType;
 			typeDeferred.resolve(aGenType);
 
-			var x = typeResolve;
+			var x = getTypeResolve();
 
 //			var vte_ident = __gf.getIdent(this);
 		} finally {
@@ -321,7 +321,7 @@ public class VariableTableEntry extends BaseTableEntry1 implements Constructable
 		return "VariableTableEntry{" +
 				"index=" + index +
 				", name='" + name + '\'' +
-				", status=" + status +
+				", status=" + getStatus() +
 				", type=" + type.index +
 				", vtt=" + getVtt() +
 				", potentialTypes=" + getPotentialTypes() +
@@ -345,7 +345,7 @@ public class VariableTableEntry extends BaseTableEntry1 implements Constructable
 	}
 
 	public DeduceTypeResolve typeResolve() {
-		return typeResolve;
+		return getTypeResolve();
 	}
 
 	public @NotNull PostBC_Processor getPostBC_Processor(Context aFd_ctx, DeduceTypes2.DeduceClient1 aDeduceClient1) {

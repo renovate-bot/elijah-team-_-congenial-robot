@@ -60,10 +60,7 @@ class ResolvedNodes {
 				}
 				for (EvaFunction generatedFunction : evaClass.functionMap.values()) {
 					for (IdentTableEntry identTableEntry : generatedFunction.idte_list) {
-						if (identTableEntry.isResolved()) {
-							EvaNode node = identTableEntry.resolvedType();
-							resolved_nodes.add(node);
-						}
+						identTableEntry.onResolvedType(resolved_nodes::add);
 					}
 				}
 			}
@@ -81,10 +78,7 @@ class ResolvedNodes {
 				}
 				for (EvaFunction generatedFunction : evaNamespace.functionMap.values()) {
 					for (IdentTableEntry identTableEntry : generatedFunction.idte_list) {
-						if (identTableEntry.isResolved()) {
-							EvaNode node = identTableEntry.resolvedType();
-							resolved_nodes.add(node);
-						}
+						identTableEntry.onResolvedType(resolved_nodes::add);
 					}
 				}
 			}

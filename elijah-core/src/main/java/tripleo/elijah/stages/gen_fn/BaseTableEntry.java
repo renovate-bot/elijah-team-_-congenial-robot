@@ -10,14 +10,16 @@ package tripleo.elijah.stages.gen_fn;
 import org.jdeferred2.Deferred;
 import org.jdeferred2.DoneCallback;
 import org.jdeferred2.FailCallback;
-import org.jdeferred2.Promise;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.Eventual;
 import tripleo.elijah.UnintendedUseException;
 import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.lang.i.OS_Element;
-import tripleo.elijah.stages.deduce.*;
+import tripleo.elijah.stages.deduce.DeduceTypeResolve;
+import tripleo.elijah.stages.deduce.DeduceTypes2;
+import tripleo.elijah.stages.deduce.NULL_DeduceTypes2;
+import tripleo.elijah.stages.deduce.ResolveUnknown;
 import tripleo.elijah.util.NotImplementedException;
 
 import java.util.ArrayList;
@@ -28,13 +30,21 @@ import java.util.function.Function;
  * Created 2/4/21 10:11 PM
  */
 public abstract class BaseTableEntry {
-	protected final DeferredObject2<OS_Element, Diagnostic, Void> _p_elementPromise = new DeferredObject2<OS_Element, Diagnostic, Void>() {
+	private final DeferredObject2<OS_Element, Diagnostic, Void> _p_elementPromise = new DeferredObject2<OS_Element, Diagnostic, Void>() {
 		@Override
 		public Deferred<OS_Element, Diagnostic, Void> resolve(final @Nullable OS_Element resolve) {
-			return __elementPromise_resolve(resolve, (@Nullable OS_Element r) -> super.resolve(r), this);
+			return __elementPromise_resolve(resolve, (@Nullable OS_Element r) -> {
+				if (isResolved()) return this;
+				return super.resolve(r);
+			}, this);
 		}
 	};
-	private final   Eventual<DeduceTypes2>                        _p_DeduceTypes2   = new Eventual<>();
+	private final Eventual<DeduceTypes2>                        _p_DeduceTypes2   = new Eventual<>();
+	private final List<StatusListener> statusListenerList = new ArrayList<StatusListener>();
+	private       BaseEvaFunction      __gf;
+	private       DeduceTypes2         __dt2;
+	private       Status               status             = Status.UNCHECKED;
+	private       DeduceTypeResolve    typeResolve;
 
 	protected Deferred<OS_Element, Diagnostic, Void> __elementPromise_resolve(final OS_Element resolve,
 																			  final Function<@Nullable OS_Element, Deferred<OS_Element, Diagnostic, Void>> c,
@@ -50,12 +60,6 @@ public abstract class BaseTableEntry {
 		return c.apply(resolve);
 	}
 
-	private final List<StatusListener> statusListenerList = new ArrayList<StatusListener>();
-	public        BaseEvaFunction      __gf;
-	protected     DeduceTypes2         __dt2;
-	protected     Status               status             = Status.UNCHECKED;
-	DeduceTypeResolve typeResolve;
-
 	public void _fix_table(final DeduceTypes2 aDeduceTypes2, final @NotNull BaseEvaFunction aEvaFunction) {
 		provide(aDeduceTypes2);
 		__gf = aEvaFunction;
@@ -69,6 +73,10 @@ public abstract class BaseTableEntry {
 
 	public Status getStatus() {
 		return status;
+	}
+
+	public void setStatus(Status aStatus) {
+		status = aStatus;
 	}
 
 	public void setStatus(Status newStatus, /*@NotNull*/ IElementHolder eh) {
@@ -134,12 +142,40 @@ public abstract class BaseTableEntry {
 		_p_DeduceTypes2.then(cb);
 	}
 
-	public enum Status {
-		KNOWN, UNCHECKED, UNKNOWN
+	public DeferredObject2<OS_Element, Diagnostic, Void> get_p_elementPromise() {
+		return _p_elementPromise;
+	}
+
+	public BaseEvaFunction get__gf() {
+		return __gf;
+	}
+
+	public void set__gf(BaseEvaFunction a__gf) {
+		__gf = a__gf;
+	}
+
+	public DeduceTypes2 get__dt2() {
+		return __dt2;
+	}
+
+	public void set__dt2(DeduceTypes2 a__dt2) {
+		__dt2 = a__dt2;
+	}
+
+	public DeduceTypeResolve getTypeResolve() {
+		return typeResolve;
+	}
+
+	public void setTypeResolve(DeduceTypeResolve aTypeResolve) {
+		typeResolve = aTypeResolve;
 	}
 
 	protected void setupResolve() {
 		typeResolve = new DeduceTypeResolve(this, new NULL_DeduceTypes2());
+	}
+
+	public enum Status {
+		KNOWN, UNCHECKED, UNKNOWN
 	}
 
 	@FunctionalInterface

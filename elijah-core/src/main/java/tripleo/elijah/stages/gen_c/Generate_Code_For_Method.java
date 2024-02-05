@@ -437,7 +437,7 @@ public class Generate_Code_For_Method {
 			if (x.size() > 0) {
 				if (x.get(0) instanceof DR_Ident ident) {
 					dt2 = ident.identTableEntry()._deduceTypes2();
-					gf1 = ident.identTableEntry().__gf;
+					gf1 = ident.identTableEntry().get__gf();
 
 					qqq = true;
 				}

@@ -160,7 +160,7 @@ public class DeducePath {
 		var dt2 = procTableEntry._deduceTypes2();
 
 		if (procTableEntry.expression_num instanceof IdentIA identIA) {
-			final DR_Ident drid = procTableEntry.__gf.getIdent(identIA.getEntry());
+			final DR_Ident drid = procTableEntry.get__gf().getIdent(identIA.getEntry());
 
 			if (el != null) {
 				final DR_Ident.ElementUnderstanding understanding = dt2._inj().new_DR_Ident_ElementUnderstanding(el);

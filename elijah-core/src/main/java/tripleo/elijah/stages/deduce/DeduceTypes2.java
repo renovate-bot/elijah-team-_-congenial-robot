@@ -873,7 +873,7 @@ public class DeduceTypes2 {
 			aIdentTableEntry.makeType(generatedFunction, TypeTableEntry.Type.TRANSIENT, (OS_Type) null);
 		}
 
-		final DR_Ident ident = aIdentTableEntry.__gf.getIdent(aIdentTableEntry);
+		final DR_Ident ident = aIdentTableEntry.get__gf().getIdent(aIdentTableEntry);
 		ident.try_resolve_normal(aContext);
 		ident.addResolveObserver(new do_assign_normal_ident_deferred__DT_ResolveObserver(aIdentTableEntry, generatedFunction));
 	}

@@ -34,6 +34,7 @@ import tripleo.elijah.stages.instructions.IntegerIA;
 import tripleo.elijah.stages.instructions.ProcIA;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.util.*;
+import tripleo.elijah_congenial.progress.X;
 
 import java.util.List;
 
@@ -607,7 +608,11 @@ public class Resolve_Ident_IA2 extends DefaultEventualRegister {
 
 		@Override
 		public void accept(final FunctionDef afd) {
-			fd.resolve(afd);
+			if (!fd.isResolved()) {
+				fd.resolve(afd);
+			} else {
+				X.xl_324("already resolved in ria2::ds_function");
+			}
 		}
 
 		@Override
@@ -625,7 +630,7 @@ public class Resolve_Ident_IA2 extends DefaultEventualRegister {
 			//  Either you are going the right way
 			//  you changed the design
 			//  or you will have uncovered a flaw in the design as is
-			throw new UnintendedUseException();
+			//throw new UnintendedUseException();
 		}
 
 		@Override

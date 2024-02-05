@@ -16,7 +16,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.Eventual;
 import tripleo.elijah.EventualRegister;
-import tripleo.elijah.ci.CompilerInstructionsImpl;
 import tripleo.elijah.comp.i.ErrSink;
 import tripleo.elijah.lang.i.*;
 import tripleo.elijah.stages.deduce.*;
@@ -178,7 +177,7 @@ public class ProcTableEntry extends BaseTableEntry implements TableEntryIV {
 		//
 		//return getDeduceElement3(dpc._deduceTypes2(), dpc._generatedFunction());
 
-		return getDeduceElement3(_deduceTypes2(), __gf);
+		return getDeduceElement3(_deduceTypes2(), get__gf());
 	}
 
 	public @NotNull IDeduceElement3 getDeduceElement3(final @NotNull DeduceTypes2 aDeduceTypes2,
@@ -191,7 +190,7 @@ public class ProcTableEntry extends BaseTableEntry implements TableEntryIV {
 	}
 
 	public DeduceTypes2 _deduceTypes2() {
-		return __dt2;
+		return get__dt2();
 	}
 
 	public FunctionInvocation getFunctionInvocation() {
@@ -263,7 +262,7 @@ public class ProcTableEntry extends BaseTableEntry implements TableEntryIV {
 				"index=" + index +
 				", expression=" + __debug_expression +
 				", expression_num=" + expression_num +
-				", status=" + status +
+				", status=" + getStatus() +
 				", args=" + args +
 				'}';
 	}
@@ -277,7 +276,7 @@ public class ProcTableEntry extends BaseTableEntry implements TableEntryIV {
 	}
 
 	public Eventual<GenType> typeDeferred() {
-		return typeResolve.typeResolution();
+		return getTypeResolve().typeResolution();
 	}
 
 	public EvaExpression<IExpression> getEvaExpression() {
@@ -297,7 +296,7 @@ public class ProcTableEntry extends BaseTableEntry implements TableEntryIV {
 	}
 
 	public void resolveWith(final DS_FunctionDef aDSFunctionDef, final DS_Rider aDSRider) {
-		_p_elementPromise.then(element -> {
+		get_p_elementPromise().then(element -> {
 			if (element instanceof FunctionDef fd2) {
 				aDSFunctionDef.accept(fd2);
 			}

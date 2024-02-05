@@ -125,7 +125,7 @@ class DE3_ActivePTE implements DE3_Active {
 														  new Old_GenerateResult(),
 														  pa,
 														  pa.getCompilationEnclosure());
-				var mod = pte.__gf.getFD().getContext().module();
+				var mod = pte.get__gf().getFD().getContext().module();
 				var tt  = new GM_GenerateModuleRequest(new GN_GenerateNodesIntoSink(env), mod, env);
 				var t   = new GM_GenerateModule(tt);
 				fg0[0] = new GenerateResultEnv(resultSink, new Old_GenerateResult(), new WorkManager(), new WorkList(), t);

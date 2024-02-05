@@ -31,7 +31,7 @@ public abstract class BaseTableEntry1 extends BaseTableEntry {
 	}
 
 	public DeduceTypes2 _deduceTypes2() {
-		return __dt2;
+		return get__dt2();
 	}
 }
 

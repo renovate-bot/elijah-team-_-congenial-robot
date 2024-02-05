@@ -44,7 +44,7 @@ class Unnamed_ITE_Resolver1 implements ITE_Resolver {
 	@Override
 	public void check() {
 		resolve_ident_table_entry2();
-		ite.getIdent().getName().addUsage(_inj().new_EN_DeduceUsage(ite.getBacklink(), ite.__gf, ite));
+		ite.getIdent().getName().addUsage(_inj().new_EN_DeduceUsage(ite.getBacklink(), ite.get__gf(), ite));
 	}
 
 	@Override
@@ -99,16 +99,16 @@ class Unnamed_ITE_Resolver1 implements ITE_Resolver {
 
 			var re = ite.getResolvedElement();
 
-			var de3_ite = ite.getDeduceElement3(ite._deduceTypes2(), ite.__gf);
+			var de3_ite = ite.getDeduceElement3(ite._deduceTypes2(), ite.get__gf());
 
 			if (re instanceof VariableStatement vs) {
 				var vs_name = vs.getNameToken().getName();
 				vs_name.addUsage(_inj().new_EN_NameUsage(ite.getIdent().getName(), de3_ite));
-				vs_name.addUsage(_inj().new_EN_DeduceUsage(ite.getBacklink(), ite.__gf, ite));
+				vs_name.addUsage(_inj().new_EN_DeduceUsage(ite.getBacklink(), ite.get__gf(), ite));
 			} else if (re instanceof FunctionDef fd) {
 				var fd_name = fd.getNameNode().getName();
 				fd_name.addUsage(_inj().new_EN_NameUsage(ite.getIdent().getName(), de3_ite));
-				fd_name.addUsage(_inj().new_EN_DeduceUsage(ite.getBacklink(), ite.__gf, ite));
+				fd_name.addUsage(_inj().new_EN_DeduceUsage(ite.getBacklink(), ite.get__gf(), ite));
 			} else {
 				assert false;
 			}

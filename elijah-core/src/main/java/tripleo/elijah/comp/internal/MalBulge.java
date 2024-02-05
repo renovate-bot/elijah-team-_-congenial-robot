@@ -1,17 +1,15 @@
 package tripleo.elijah.comp.internal;
 
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
-//import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.jetbrains.annotations.NotNull;
 
 import com.google.common.base.Preconditions;
 
 import tripleo.elijah.comp.AccessBus;
-import tripleo.elijah.comp.PipelineMember;
 import tripleo.elijah.comp.i.CompilationEnclosure;
 import tripleo.elijah.comp.internal.CR_State.PipelinePlugin;
+import tripleo.elijah.sanaa.ElIntrinsics;
 import tripleo.vendor.mal.stepA_mal;
 import tripleo.vendor.mal.types;
 import tripleo.vendor.mal.stepA_mal.MalEnv2;
@@ -39,22 +37,21 @@ public class MalBulge {
 				}
 			};
 			
-			env.set(new types.MalSymbol("add-pipeline"), new _AddPipeline__MAL(ppl));
+			env.set(new types.MalSymbol("add-pipeline"), new _AddPipeline__MAL(ppl, ab));
 		});
 	}
 	
 	
 	private static class _AddPipeline__MAL extends types.MalFunction {
-		private final AccessBus ab;
-		private Consumer<PipelinePlugin> ppii;
+		private final AccessBus                ab;
+		private final Consumer<PipelinePlugin> pipelinePluginConsumer;
 
-//		public _AddPipeline__MAL(final Consumer<PipelineMember> appii) {
-//			ppii = appii;
-//		}
+		public _AddPipeline__MAL(Consumer<PipelinePlugin> ppl, final AccessBus aAccessBus) {
+			ElIntrinsics.checkNotNull(ppl);
+			ElIntrinsics.checkNotNull(aAccessBus);
 
-		public _AddPipeline__MAL(Consumer<PipelinePlugin> ppl) {
-			ppii = ppl;
-			ab=null;
+			pipelinePluginConsumer = ppl;
+			ab                     = aAccessBus;
 		}
 
 		@Override
@@ -73,7 +70,7 @@ public class MalBulge {
 				// 2. produce effect
 				//pipelinePlugin::instance
 				assert ab != null;
-				ppii.accept(pipelinePlugin);
+				pipelinePluginConsumer.accept(pipelinePlugin);
 				return types.True;
 			} else {
 				// TODO exception? errSink??

@@ -661,7 +661,12 @@ public class Resolve_Ident_IA {
 					resolveElement(eh.getElement());
 				}
 			});
-			_p_resolvedElementPromise = identTableEntry._p_resolvedElementPromise;
+			_p_resolvedElementPromise = new Eventual<>();
+			identTableEntry.elementPromise(p -> {
+				if (!_p_resolvedElementPromise.isResolved()) {
+					_p_resolvedElementPromise.resolve(p);
+				}
+			}, _p_resolvedElementPromise::fail);
 		}
 
 		public void resolveElement(final OS_Element aElement) {

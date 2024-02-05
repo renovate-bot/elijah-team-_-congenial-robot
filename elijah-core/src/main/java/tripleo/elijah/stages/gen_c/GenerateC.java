@@ -19,7 +19,6 @@ import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
 
 import tripleo.elijah.UnintendedUseException;
@@ -411,20 +410,18 @@ public class GenerateC
 
     final @NotNull var fileGen = _fileGen;
 
-    final @NotNull EvaNode x = identTableEntry.resolvedType();
+    identTableEntry.onResolvedType(x -> {
+      final WorkList wl = fileGen.wl();
 
-    final GenerateResult gr = fileGen.gr();
-    final GenerateResultSink resultSink1 = fileGen.resultSink();
-    final WorkList wl = fileGen.wl();
-
-    if (x instanceof final EvaClass evaClass) {
-      generate_class(fileGen, evaClass);
-    } else if (x instanceof final EvaFunction evaFunction) {
-      wl.addJob(new WlGenerateFunctionC(fileGen, evaFunction, this));
-    } else {
-      LOG.err(x.toString());
-      throw new NotImplementedException();
-    }
+      if (x instanceof final EvaClass evaClass) {
+        generate_class(fileGen, evaClass);
+      } else if (x instanceof final EvaFunction evaFunction) {
+        wl.addJob(new WlGenerateFunctionC(fileGen, evaFunction, this));
+      } else {
+        LOG.err(x.toString());
+        throw new NotImplementedException();
+      }
+    });
   }
 
   @Override
@@ -534,19 +531,17 @@ public class GenerateC
       final @NotNull WorkList wl,
       final @NotNull GenerateResultEnv fileGen) {
     for (IdentTableEntry identTableEntry : aEvaFunction.idte_list) {
-      if (identTableEntry.isResolved()) {
-        EvaNode x = identTableEntry.resolvedType();
-
-        if (x instanceof EvaClass) {
-          generate_class(fileGen, (EvaClass) x);
-        } else if (x instanceof EvaFunction) {
-          wl.addJob(new WlGenerateFunctionC(fileGen, (EvaFunction) x, this));
-        } else {
-          LOG.err(x.toString());
-          throw new NotImplementedException();
-        }
-      }
-    }
+		identTableEntry.onResolvedType(x->{
+		  if (x instanceof EvaClass) {
+			generate_class(fileGen, (EvaClass) x);
+		  } else if (x instanceof EvaFunction) {
+			wl.addJob(new WlGenerateFunctionC(fileGen, (EvaFunction) x, this));
+		  } else {
+			LOG.err(x.toString());
+			throw new NotImplementedException();
+		  }
+		});
+	}
     for (ProcTableEntry pte : aEvaFunction.prte_list) {
       FunctionInvocation fi = pte.getFunctionInvocation();
       if (fi == null) {
@@ -864,7 +859,7 @@ public class GenerateC
 
               final DeduceElement3_ProcTableEntry pte_de3 =
                   (DeduceElement3_ProcTableEntry)
-                      pte.getDeduceElement3(pte._deduceTypes2(), pte.__gf);
+                      pte.getDeduceElement3(pte._deduceTypes2(), pte.get__gf());
               var s = pte_de3.toString();
 
               // final DR_Ident id = pte.__gf.getIdent((IdentExpression) pte.expression);

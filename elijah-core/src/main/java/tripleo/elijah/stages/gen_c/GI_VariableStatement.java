@@ -95,7 +95,7 @@ public class GI_VariableStatement implements GenerateC_Item {
 					assert mod.getFileName().equals("lib_elijjah/lib-c/Prelude.elijjah");
 				}
 
-				var gf  = ((IdentTableEntry) item.getTableEntry()).__gf;
+				var gf  = ((IdentTableEntry) item.getTableEntry()).get__gf();
 				var dt2 = ((IdentTableEntry) item.getTableEntry())._deduceTypes2();
 
 //				dt2._phase()._functionMap().asMap().entrySet().stream()
