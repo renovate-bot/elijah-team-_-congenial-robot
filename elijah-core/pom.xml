@@ -56,7 +56,7 @@
 		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
-			<version>1.16.0</version> <!-- Use 1.6 for java 1.5 -->
+			<version>1.16.1</version> <!-- Use 1.6 for java 1.5 -->
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/antlr/antlr -->
