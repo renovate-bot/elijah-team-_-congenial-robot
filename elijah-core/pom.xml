@@ -13,7 +13,7 @@
 	<description>elijah-core</description>
 	<properties>
 		<org.eclipse.xtend.lib.version>2.33.0</org.eclipse.xtend.lib.version>
-		<xtend-maven-plugin.version>2.33.0</xtend-maven-plugin.version>
+		<xtend-maven-plugin.version>2.34.0</xtend-maven-plugin.version>
 		<kotlin.version>1.9.22</kotlin.version>
 	</properties>
 	<packaging>jar</packaging>
