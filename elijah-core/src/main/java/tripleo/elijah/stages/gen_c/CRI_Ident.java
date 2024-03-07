@@ -17,7 +17,7 @@ import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 import java.util.List;
 import java.util.function.Consumer;
 
-class CRI_Ident {
+public class CRI_Ident {
 	private final BaseEvaFunction generatedFunction;
 
 	@Contract(value = "_, _ -> new", pure = true)
@@ -77,12 +77,12 @@ class CRI_Ident {
 				if (resolved_element instanceof ClassStatement) {
 					((GI_ClassStatement) repo_element).setITE(ite);
 				} else if (resolved_element instanceof FunctionDef) {
-					@Nullable final ProcTableEntry pte = ite.getCallablePTE();
-					resolved2 = ((GI_FunctionDef) repo_element)._re_is_FunctionDef(pte, _cheat, ite);
-
-					assert resolved2 != null;
-
-					repo_element.setEvaNode(resolved2);
+					GR_re_is_FunctionDef grrif = new GR_re_is_FunctionDef(ite.getCallablePTE(),
+																		  _cheat,
+																		  ite,
+																		  this,
+																		  (GI_FunctionDef) repo_element);
+					repo_element.setEvaNode_by(grrif);
 				} else if (resolved_element instanceof PropertyStatement) {
 					resolved2 = _re_is_PropertyStatement(addRef, aog, sSize, i, aValue, (x) -> skip[0] = true, (x) -> text[0] = x);
 

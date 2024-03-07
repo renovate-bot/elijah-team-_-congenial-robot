@@ -466,7 +466,7 @@ public class DeduceElement3_IdentTableEntry extends DefaultStateful implements I
 		InstructionArgument ret = (gf.vte_lookup("Result"));
 		if (ret instanceof IntegerIA aIntegerIA) {
 			var retvte = aIntegerIA.getEntry();
-			retvte.typeResolvePromise().then(gt -> {
+			retvte.onTypeResolve(gt -> {
 				printString(__makeGenerated_fi__Eventual__TYPERESOLVE_VAR, "" + gt);
 
 				System.exit(__makeGenerated_fi__Eventual__TYPERESOLVE_VAR);
@@ -651,7 +651,7 @@ public class DeduceElement3_IdentTableEntry extends DefaultStateful implements I
 			identTableEntry.backlinkSet().then((InstructionArgument backlink0) -> {
 				final Consumer<BaseTableEntry> setBacklinkCallback2 = (BaseTableEntry backlink) -> {
 					if (backlink instanceof final ProcTableEntry procTableEntry) {
-						procTableEntry.typeResolvePromise().then((final @NotNull GenType result) -> {
+						procTableEntry.onTypeResolve((final @NotNull GenType result) -> {
 							final DeduceElement3_IdentTableEntry de3_ite = identTableEntry.getDeduceElement3();
 
 

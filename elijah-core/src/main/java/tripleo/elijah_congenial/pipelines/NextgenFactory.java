@@ -1,4 +1,4 @@
-package tripleo.elijah.factory.comp;
+package tripleo.elijah_congenial.pipelines;
 
 import tripleo.elijah.comp.nextgen.CP_Path;
 import tripleo.elijah.nextgen.ER_Node;

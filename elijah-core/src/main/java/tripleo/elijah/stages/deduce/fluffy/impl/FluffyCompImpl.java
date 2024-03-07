@@ -3,6 +3,8 @@ package tripleo.elijah.stages.deduce.fluffy.impl;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.EventualRegister;
+import tripleo.elijah.comp.DefaultEventualRegister;
 import tripleo.elijah.comp.internal.CompilationImpl;
 import tripleo.elijah.entrypoints.MainClassEntryPoint;
 import tripleo.elijah.lang.i.*;
@@ -12,20 +14,19 @@ import tripleo.elijah.stages.deduce.fluffy.i.FluffyModule;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class FluffyCompImpl implements FluffyComp {
+public class FluffyCompImpl extends DefaultEventualRegister implements FluffyComp, EventualRegister {
+	private final FluffyCompImplInjector       __inj           = new FluffyCompImplInjector();
+	private final Map<OS_Module, FluffyModule> fluffyModuleMap = new HashMap<>();
+	private final CompilationImpl              _comp;
 
-	private final CompilationImpl _comp;
+	public FluffyCompImpl(final CompilationImpl aComp) {
+		_comp = aComp;
+	}
 
 	public static boolean isMainClassEntryPoint(@NotNull final ClassItem input) {
 		// TODO 08/27 Use understanding/~ processor for this
 		final FunctionDef fd = (FunctionDef) input;
 		return MainClassEntryPoint.is_main_function_with_no_args(fd);
-	}
-
-	private final Map<OS_Module, FluffyModule> fluffyModuleMap = new HashMap<>();
-
-	public FluffyCompImpl(final CompilationImpl aComp) {
-		_comp = aComp;
 	}
 
 	@Override
@@ -95,8 +96,6 @@ public class FluffyCompImpl implements FluffyComp {
 	private FluffyCompImplInjector _inj() {
 		return __inj;
 	}
-
-	FluffyCompImplInjector __inj = new FluffyCompImplInjector();
 
 	static class FluffyCompImplInjector {
 		public FluffyModuleImpl new_FluffyModuleImpl(final OS_Module aModule, final CompilationImpl aComp) {

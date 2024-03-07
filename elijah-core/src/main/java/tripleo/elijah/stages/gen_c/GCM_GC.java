@@ -21,7 +21,7 @@ class GCM_GC implements GCM_D {
 	}
 
 	@Override
-	public String find_return_type(final Generate_Method_Header aGenerate_method_header__) {
+	public String find_return_type(final Generate_Method_Header ignored__aGenerate_method_header) {
 		final OS_Type        type;
 		final TypeTableEntry tte;
 		String               returnType = null;

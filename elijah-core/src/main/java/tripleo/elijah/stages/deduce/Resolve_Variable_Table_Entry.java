@@ -208,9 +208,9 @@ class Resolve_Variable_Table_Entry {
 
 		aGenType.setCi(invocation);
 		if (invocation instanceof final @NotNull NamespaceInvocation namespaceInvocation) {
-			namespaceInvocation.resolveDeferred().then(aGenType::setNode);
+			namespaceInvocation. onResolve(aGenType::setNode);
 		} else if (invocation instanceof final @NotNull ClassInvocation classInvocation) {
-			classInvocation.resolvePromise().then(aGenType::setNode);
+			classInvocation. onResolve(aGenType::setNode );
 		} else
 			throw new IllegalStateException("invalid invocation");
 	}
@@ -240,9 +240,9 @@ class Resolve_Variable_Table_Entry {
 		aGenType.genCI(aGenType.getNonGenericTypeName(), deduceTypes2, deduceTypes2._errSink(), deduceTypes2.phase);
 		final IInvocation invocation = aGenType.getCi();
 		if (invocation instanceof final @NotNull NamespaceInvocation namespaceInvocation) {
-			namespaceInvocation.resolveDeferred().then(result -> aGenType.setNode(result));
+			namespaceInvocation. onResolve(result -> aGenType.setNode(result));
 		} else if (invocation instanceof final @NotNull ClassInvocation classInvocation) {
-			classInvocation.resolvePromise().then(result -> aGenType.setNode(result));
+			classInvocation. onResolve(result -> aGenType.setNode(result) );
 		} else
 			throw new IllegalStateException("invalid invocation");
 	}
@@ -259,9 +259,9 @@ class Resolve_Variable_Table_Entry {
 		aGenType.genCI(aGenType.getNonGenericTypeName(), deduceTypes2, deduceTypes2._errSink(), deduceTypes2.phase);
 		final IInvocation invocation = aGenType.getCi();
 		if (invocation instanceof final @NotNull NamespaceInvocation namespaceInvocation) {
-			namespaceInvocation.resolveDeferred().then(result -> aGenType.setNode(result));
+			namespaceInvocation. onResolve(result -> aGenType.setNode(result));
 		} else if (invocation instanceof final @NotNull ClassInvocation classInvocation) {
-			classInvocation.resolvePromise().then(result -> aGenType.setNode(result));
+			classInvocation. onResolve(result -> aGenType.setNode(result) );
 		} else
 			throw new IllegalStateException("invalid invocation");
 

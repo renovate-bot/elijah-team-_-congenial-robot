@@ -17,7 +17,7 @@ public class GenerateFunctions2 {
 
 	@Contract(pure = true)
 	public GenerateFunctions2(GenerateFunctions gf1) {
-		// TODO 11/10 scared to register a new "stage" or whateva, should (have) be(en) easy
+		// TODO 23/11/10 scared to register a new "stage" or whateva, should (have) be(en) easy
 		this.module = gf1.module;
 		this.LOG = gf1.LOG;
 	}

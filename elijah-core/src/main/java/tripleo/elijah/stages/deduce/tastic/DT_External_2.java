@@ -5,10 +5,10 @@ import org.jdeferred2.DoneCallback;
 import org.jdeferred2.Promise;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.comp.i.Compilation;
+import tripleo.elijah.Eventual;
 import tripleo.elijah.comp.Finally;
+import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.lang.i.*;
-import tripleo.elijah.lang.impl.AliasStatementImpl;
 import tripleo.elijah.lang.nextgen.names.i.EN_Name;
 import tripleo.elijah.lang.nextgen.names.i.EN_Understanding;
 import tripleo.elijah.lang.nextgen.names.impl.ENU_ResolveToFunction;
@@ -197,22 +197,25 @@ public class DT_External_2 implements DT_External {
 
 		pte.onFunctionInvocation((@NotNull FunctionInvocation functionInvocation) -> {
 			functionInvocation.generateDeferred().done((@NotNull BaseEvaFunction bgf) -> {
-				@NotNull DeduceTypes2.PromiseExpectation<GenType> pe = dc.promiseExpectation(bgf, "Function Result type");
-				bgf.typePromise().then((@NotNull GenType result) -> {
-					pe.satisfy(result);
-					@NotNull TypeTableEntry tte = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, result.getResolved()); // TODO there has to be a better way
-					tte.genType.copy(result);
+				final Eventual<GenType> egt = new Eventual<>();
+				egt.register(aDt2._phase());
+				egt.then(aGenType -> {
+					@NotNull TypeTableEntry tte = generatedFunction.newTypeTableEntry(TypeTableEntry.Type.TRANSIENT, aGenType.getResolved()); // TODO there has to be a better way
+					tte.genType.copy(aGenType);
 					vte.addPotentialType(instructionIndex, tte);
 				});
+
+				@NotNull DeduceTypes2.PromiseExpectation<GenType> pe = dc.promiseExpectation(bgf, "Function Result type");
+				egt.then(pe::satisfy);
+
+				bgf.typePromise().then(egt::resolve);
 			});
 		});
 	}
 
 	private /*static*/ void __make2_1__hasFunctionInvocation(final @NotNull ProcTableEntry pte, final @NotNull FunctionInvocation fi) {
 		fi.generateDeferred().then((BaseEvaFunction ef) -> {
-			var result = _inj().new_GenTypeImpl();
-			result.setFunctionInvocation(fi);
-			result.setNode(ef);
+			var result = _inj().new_GenType_ofFunctionInvocation(fi, ef);
 
 			assert fi.pte != pte;
 
@@ -225,7 +228,7 @@ public class DT_External_2 implements DT_External {
 			}
 
 			if (fi.pte.typeResolvePromise().isResolved()) {
-				fi.pte.typeResolvePromise().then(gt -> {
+				fi.pte.onTypeResolve(gt -> {
 					result.setResolved(gt.getResolved());
 					gt.copy(result);
 				});

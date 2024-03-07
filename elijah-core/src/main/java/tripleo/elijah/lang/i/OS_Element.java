@@ -11,6 +11,7 @@ package tripleo.elijah.lang.i;
 import org.jetbrains.annotations.Nullable;
 import tripleo.elijah.UnintendedUseException;
 import tripleo.elijah.lang2.ElElementVisitor;
+import tripleo.elijah.stages.gen_fn.EvaFunction;
 
 public interface OS_Element {
 	Context getContext();

@@ -3,6 +3,7 @@ package tripleo.elijah.stages.gen_c;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tripleo.elijah.UnintendedUseException;
 import tripleo.elijah.comp.Finally;
 import tripleo.elijah.comp.diagnostic.ExceptionDiagnostic;
 import tripleo.elijah.diagnostic.Diagnostic;
@@ -160,6 +161,11 @@ public class GI_ProcIA implements GenerateC_Item {
 	@Override
 	public void setEvaNode(final EvaNode a_evaNaode) {
 		_evaNode = a_evaNaode;
+	}
+
+	@Override
+	public void setEvaNode_by(final GR_EvaNodeAble aKotlinEnvy) {
+		throw new UnintendedUseException("If you're here, you're API programming");
 	}
 }
 

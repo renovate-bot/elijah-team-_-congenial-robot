@@ -3,7 +3,6 @@ package tripleo.elijah.stages.gen_generic.pipeline_impl;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.UnintendedUseException;
-import tripleo.elijah.comp.i.IPipelineAccess;
 import tripleo.elijah.nextgen.output.NG_OutputClass;
 import tripleo.elijah.nextgen.output.NG_OutputFunction;
 import tripleo.elijah.nextgen.output.NG_OutputNamespace;
@@ -20,16 +19,17 @@ import tripleo.elijah.stages.pp.IPP_Function;
 import tripleo.elijah.stages.pp.PP_Constructor;
 import tripleo.elijah.world.i.LivingClass;
 import tripleo.elijah.world.i.LivingNamespace;
+import tripleo.elijah_congenial.pipelines.DGRS_Client;
 import tripleo.util.buffer.Buffer;
 
 import java.util.List;
 
 public class DefaultGenerateResultSink implements GenerateResultSink {
-	private final @NotNull IPipelineAccess pa;
+	private final @NotNull DGRS_Client client;
 
 	@Contract(pure = true)
-	public DefaultGenerateResultSink(final @NotNull IPipelineAccess pa0) {
-		pa = pa0;
+	public DefaultGenerateResultSink(final @NotNull DGRS_Client pa0) {
+		client = pa0;
 	}
 
 	@Override
@@ -48,14 +48,14 @@ public class DefaultGenerateResultSink implements GenerateResultSink {
 						   final @NotNull GenerateC aGenerateC) {
 		NG_OutputClass o = new NG_OutputClass();
 		o.setClass(aGarishClass, aGenerateC);
-		pa.addOutput(o);
+		client.addOutput(o);
 	}
 
 	@Override
 	public void addFunction(final IPP_Function aGf, final List<C2C_Result> aRs, final GenerateFiles aGenerateFiles) {
 		NG_OutputFunction o = new NG_OutputFunction();
 		o.setFunction(aGf, aGenerateFiles, aRs);
-		pa.addOutput(o);
+		client.addOutput(o);
 	}
 
 	@Override
@@ -74,17 +74,17 @@ public class DefaultGenerateResultSink implements GenerateResultSink {
 							   final @NotNull GenerateC aGenerateC) {
 		NG_OutputNamespace o = new NG_OutputNamespace();
 		o.setNamespace(aGarishNamespace, aGenerateC);
-		pa.addOutput(o);
+		client.addOutput(o);
 	}
 
 	@Override
 	public LivingClass getLivingClassForEva(final EvaClass aEvaClass) {
-		return pa.getCompilation().livingRepo().getClass(aEvaClass);
+		return client.getLivingClass(aEvaClass);
 	}
 
 	@Override
 	public LivingNamespace getLivingNamespaceForEva(final EvaNamespace aEvaNamespace) {
-		return pa.getCompilation().livingRepo().getNamespace(aEvaNamespace);
+		return client.getLivingNamespace(aEvaNamespace);
 	}
 
 	@Override

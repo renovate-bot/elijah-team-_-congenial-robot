@@ -8,7 +8,7 @@ import tripleo.elijah.comp.notation.GN_Notable;
 import java.util.ArrayList;
 import java.util.List;
 
-class NotableAction implements CB_Action {
+public class NotableAction implements CB_Action {
 	private final @NotNull GN_Notable            notable;
 	@NotNull
 	final                  List<CB_OutputString> o;

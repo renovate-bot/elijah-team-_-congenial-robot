@@ -270,7 +270,7 @@ public class ProcTableEntry extends BaseTableEntry implements TableEntryIV {
 	public void resolveType(final GenType aResult) {
 		if (typeDeferred().isResolved()) {
 			//typeDeferred().reset(); // !! 07/20
-			return; // README 11/10
+			return; // README 23/11/10
 		}
 		typeDeferred().resolve(aResult);
 	}

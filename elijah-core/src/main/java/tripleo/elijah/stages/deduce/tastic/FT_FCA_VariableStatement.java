@@ -18,10 +18,11 @@ public class FT_FCA_VariableStatement {
 		generatedFunction = aGeneratedFunction;
 	}
 
-	public void doLogic0(final @NotNull String e_text,
-						 final @NotNull Promise<GenType, Void, Void> p,
-						 final @NotNull VariableTableEntry vte1,
-						 final @NotNull VariableTableEntry vte) {
+	public void doLogic0(
+			 final @NotNull String e_text,
+			 final @NotNull Promise<GenType, Void, Void> p,
+			 final @NotNull VariableTableEntry vte1,
+			 final @NotNull VariableTableEntry vte) {
 		assert vs.getName().equals(e_text);
 
 		@Nullable InstructionArgument vte2_ia = generatedFunction.vte_lookup(vs.getName());
@@ -37,8 +38,8 @@ public class FT_FCA_VariableStatement {
 			vte1.resolveType(gt);
 		}
 
-//			vte.type = vte2.type;
-//			tte.attached = vte.type.attached;
+//		vte.type = vte2.type;
+//		tte.attached = vte.type.attached;
 
 		vte.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolder(vs));
 		vte2.setStatus(BaseTableEntry.Status.KNOWN, new GenericElementHolder(vs)); // TODO ??

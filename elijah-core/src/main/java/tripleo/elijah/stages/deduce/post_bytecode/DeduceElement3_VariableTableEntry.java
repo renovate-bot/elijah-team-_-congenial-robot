@@ -625,14 +625,14 @@ public class DeduceElement3_VariableTableEntry extends DefaultStateful implement
 			case CLASS:
 				aGt.setResolved(((ClassStatement) parent).getOS_Type());
 				inv = phase.registerClassInvocation((ClassStatement) parent, null, new ReadySupplier_1<>(deduceTypes2));
-				((ClassInvocation) inv).resolveDeferred().then((final @NotNull EvaClass result) -> {
+				((ClassInvocation) inv). onResolve((final @NotNull EvaClass result) -> {
 					result.functionMapDeferred(functionDef, aGt::setNode);
 				});
 				break;
 			case NAMESPACE:
 				aGt.setResolvedn((NamespaceStatement) parent);
 				inv = phase.registerNamespaceInvocation((NamespaceStatement) parent);
-				((NamespaceInvocation) inv).resolveDeferred().then((final @NotNull EvaNamespace result) -> {
+				((NamespaceInvocation) inv). onResolve((final @NotNull EvaNamespace result) -> {
 					result.functionMapDeferred(functionDef, aGt::setNode);
 				});
 				break;
@@ -667,21 +667,21 @@ public class DeduceElement3_VariableTableEntry extends DefaultStateful implement
 			principal.getGenType().setResolved(aType); // README assuming OS_Type cannot represent namespaces
 			principal.getGenType().setCi(ci);
 
-			ci.resolvePromise().then(principal::resolveTypeToClass);
+			ci. onResolve(principal::resolveTypeToClass );
 		} else {
-			// TODO 11/06
+			// TODO 23/11/06
 			@Nullable ClassInvocation ci = new ClassInvocation(classStatement, null, ()->deduceTypes2);
 			ci = phase.registerClassInvocation(ci);
 
 			principal.getGenType().setResolved(aType); // README assuming OS_Type cannot represent namespaces
 			principal.getGenType().setCi(ci);
 
-			ci.resolvePromise().then(principal::resolveTypeToClass);
+			ci. onResolve(principal::resolveTypeToClass );
 		}
 	}
 
 	public void __post_vte_list_001() {
-		principal.typeResolvePromise().then((GenType gt) -> {
+		principal.onTypeResolve((GenType gt) -> {
 			principal.resolvedTypePromise().then((EvaNode resolvedNode) -> {
 				if (resolvedNode instanceof EvaClass evaClass) {
 					if (gt.getCi() == null) {

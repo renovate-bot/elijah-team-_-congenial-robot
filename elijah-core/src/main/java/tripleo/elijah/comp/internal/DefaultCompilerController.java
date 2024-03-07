@@ -1,16 +1,12 @@
 package tripleo.elijah.comp.internal;
 
-import java.util.List;
-
 import tripleo.elijah.comp.ApacheOptionsProcessor;
 import tripleo.elijah.comp.CompilerInput;
 import tripleo.elijah.comp.CompilerInstructionsObserver;
-import tripleo.elijah.comp.i.Compilation;
-import tripleo.elijah.comp.i.CompilationEnclosure;
-import tripleo.elijah.comp.i.CompilerController;
-import tripleo.elijah.comp.i.ICompilationAccess;
-import tripleo.elijah.comp.i.OptionsProcessor;
+import tripleo.elijah.comp.i.*;
 import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
+
+import java.util.List;
 
 public class DefaultCompilerController implements CompilerController {
 	List<String> args;
@@ -89,5 +85,7 @@ public class DefaultCompilerController implements CompilerController {
 		cb.add(new CB_FindStdLibActionProcess(ce, crState));
 
 		cb.runProcesses();
+
+		c.getFluffy().checkFinishEventuals();
 	}
 }

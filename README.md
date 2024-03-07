@@ -13,7 +13,7 @@ Elijah is:
 
 [`congenial-robot`][1] is:
 
-- ... implemented in Java (17, for now; 8 is great and Graal is you paal)
+- ... implemented in Java (17, for now; 8 is great and Graal is your paal)
 - ... of the impression that build systems don't matter [2][2] [4][4] [5][5] (tldr maven for now)
 - ... mortal enemies of Scala
 - ... a friend of Eclipse and therefore not Lombok (but only when it's not trying that hard)

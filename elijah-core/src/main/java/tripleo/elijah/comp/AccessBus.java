@@ -1,5 +1,6 @@
 package tripleo.elijah.comp;
 
+import com.google.common.collect.ImmutableList;
 import org.jdeferred2.DoneCallback;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
@@ -71,7 +72,7 @@ public class AccessBus {
 	}
 
 	public void subscribe_lgc(@NotNull final AB_LgcListener aLgcListener) {
-		lgcPromise.then(aLgcListener::lgc_slot);
+		lgcPromise.then(lgc -> aLgcListener.lgc_slot(ImmutableList.copyOf(lgc)));
 	}
 
 	public void subscribePipelineLogic(final DoneCallback<PipelineLogic> aPipelineLogicDoneCallback) {

@@ -22,8 +22,8 @@ public class CompilerInput {
 		ty  = Ty.NULL;
 	}
 
-	public void accept_ci(final Maybe<ILazyCompilerInstructions> aM3) {
-		accept_ci = aM3;
+	public void accept_ci(final Maybe<ILazyCompilerInstructions> aMaybeCI) {
+		accept_ci = aMaybeCI;
 	}
 
 	public Maybe<ILazyCompilerInstructions> acceptance_ci() {

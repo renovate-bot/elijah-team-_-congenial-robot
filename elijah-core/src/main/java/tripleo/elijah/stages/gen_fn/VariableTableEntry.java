@@ -9,6 +9,7 @@
 package tripleo.elijah.stages.gen_fn;
 
 import org.jdeferred2.Deferred;
+import org.jdeferred2.DoneCallback;
 import org.jdeferred2.Promise;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
@@ -277,7 +278,7 @@ public class VariableTableEntry extends BaseTableEntry1 implements Constructable
 		((ForwardingGenType) bGenType).unsparkled();
 
 		// 2. set node when available
-		((ClassInvocation) bGenType.getCi()).resolvePromise().done(aGeneratedClass -> {
+		((ClassInvocation) bGenType.getCi()). onResolve(aGeneratedClass -> {
 			bGenType.setNode(aGeneratedClass);
 			resolveTypeToClass(aGeneratedClass);
 			setGenType(bGenType); // TODO who knows if this is necessary?
@@ -291,7 +292,7 @@ public class VariableTableEntry extends BaseTableEntry1 implements Constructable
 			if (_resolveTypeCalled != null) { // TODO what a hack
 				if (_resolveTypeCalled.getResolved() != null) {
 					if (!aGenType.equals(_resolveTypeCalled)) {
-						SimplePrintLoggerToRemoveSoon.println_err_2(String.format("** 130 Attempting to replace %s with %s in %s", _resolveTypeCalled.asString(), aGenType.asString(), this));
+						SimplePrintLoggerToRemoveSoon.println_err_2(String.format("** 130 Attempting to replace %s with %s in %s", _resolveTypeCalled.asString(), this));
 						//					throw new AssertionError();
 					}
 				} else {
@@ -396,6 +397,10 @@ public class VariableTableEntry extends BaseTableEntry1 implements Constructable
 	public Eventual<EvaNode> resolvedTypePromise() {
 		return _p_resolvedTypePromise;
 	}
+
+	//public void onTypeResolve(final DoneCallback<GenType> aDoneCallback) {
+//		typePromise().then(aDoneCallback);
+//	}
 }
 
 //

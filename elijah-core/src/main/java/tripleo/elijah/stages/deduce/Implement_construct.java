@@ -101,13 +101,13 @@ public class Implement_construct {
 	private void genTypeCI_and_ResolveTypeToClass(@NotNull final Constructable co, final @NotNull ClassInvocation aClsinv) {
 		if (co instanceof final @Nullable IdentTableEntry idte3) {
 			idte3.type.genTypeCI(aClsinv);
-			aClsinv.resolvePromise().then(
-					idte3::resolveTypeToClass);
+			aClsinv. onResolve(
+					idte3::resolveTypeToClass );
 		} else if (co instanceof final @NotNull VariableTableEntry vte) {
 			vte.getType().genTypeCI(aClsinv);
-			aClsinv.resolvePromise().then(
-					vte::resolveTypeToClass
-										 );
+			aClsinv. onResolve(
+					vte::resolveTypeToClass 
+			);
 		}
 	}
 
@@ -367,7 +367,7 @@ public class Implement_construct {
 		if (co != null) {
 			co.setConstructable(pte);
 			assert classInvocation != null;
-			classInvocation.resolvePromise().done(co::resolveTypeToClass);
+			classInvocation. onResolve(co::resolveTypeToClass);
 		}
 
 		if (classInvocation != null) {
@@ -387,7 +387,7 @@ public class Implement_construct {
 				WlGenerateCtor gen = _inj().new_WlGenerateCtor(generateFunctions, pte.getFunctionInvocation(), cc.getNameNode(), deduceTypes2._phase().codeRegistrar);
 				gen.run(null);
 				final EvaConstructor gc = gen.getResult();
-				classInvocation.resolveDeferred().then(result -> {
+				classInvocation. onResolve(result -> {
 					result.addConstructor(gc.cd, gc);
 
 					final WorkList              wl   = _inj().new_WorkList();

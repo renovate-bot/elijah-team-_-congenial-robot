@@ -52,7 +52,7 @@ public class EG_CompoundStatement implements EG_Statement {
 		stringBuilder.append(beginning.getText());
 
 		if (indent) {
-			// TODO 11/16 write a test for this
+			// TODO 23/11/16 write a test for this
 			final String middleText = middle.getText();
 
 			for (String s : middleText.split("\n")) {

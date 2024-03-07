@@ -28,7 +28,7 @@ public class ResolvedVariables {
 		final @NotNull Maybe<EvaContainer.VarTableEntry> variable_m = evaContainer.getVariable(varName);
 
 		if (!variable_m.isException()) {
-			// TODO 11/10 curiously this is required to remove squigglies
+			// TODO 23/11/10 curiously this is required to remove squigglies
 			//  when if above (maybe irt idea, but should be always by dfa)
 			//  and @NotNull below specify it
 			assert variable_m.o != null;

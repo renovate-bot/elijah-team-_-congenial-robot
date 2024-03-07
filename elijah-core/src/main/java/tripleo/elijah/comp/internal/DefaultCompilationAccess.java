@@ -2,18 +2,20 @@ package tripleo.elijah.comp.internal;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.comp.*;
+import tripleo.elijah.comp.Pipeline;
+import tripleo.elijah.comp.PipelineLogic;
+import tripleo.elijah.comp.PipelineMember;
+import tripleo.elijah.comp.Stages;
 import tripleo.elijah.comp.i.Compilation;
 import tripleo.elijah.comp.i.CompilationEnclosure;
 import tripleo.elijah.comp.i.ICompilationAccess;
-import tripleo.elijah.comp.i.IPipelineAccess;
-import tripleo.elijah.comp.notation.GN_WriteLogs;
 import tripleo.elijah.stages.deduce.IFunctionMapHook;
 import tripleo.elijah.stages.logging.ElLog;
+import tripleo.elijah.util.__Extensionable;
 
 import java.util.List;
 
-public class DefaultCompilationAccess implements ICompilationAccess {
+public class DefaultCompilationAccess extends __Extensionable implements ICompilationAccess {
 	protected final Compilation compilation;
 	private final   Pipeline    pipelines = new Pipeline();
 

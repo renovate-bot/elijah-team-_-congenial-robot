@@ -8,7 +8,6 @@
  */
 package tripleo.elijah.stages.deduce;
 
-import org.jdeferred2.Deferred;
 import org.jdeferred2.DoneCallback;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -472,12 +471,12 @@ public class Resolve_Ident_IA {
 			if (fi.getFunction() instanceof ConstructorDef) {
 				@NotNull GenType genType = dt2._inj().new_GenTypeImpl(ci.getKlass());
 				genType.setCi(ci);
-				ci.resolvePromise().then(new DoneCallback<EvaClass>() {
+				ci. onResolve(new DoneCallback<EvaClass>() {
 					@Override
 					public void onDone(EvaClass result) {
 						genType.setNode(result);
 					}
-				});
+				} );
 				final @NotNull WorkList          wl                = dt2._inj().new_WorkList();
 				final @NotNull OS_Module         module            = ci.getKlass().getContext().module();
 				final @NotNull GenerateFunctions generateFunctions = dc.getGenerateFunctions(module);
@@ -606,12 +605,12 @@ public class Resolve_Ident_IA {
 		if (fi.getFunction() instanceof ConstructorDef) {
 			@NotNull GenType genType = dt2._inj().new_GenTypeImpl(ci.getKlass());
 			genType.setCi(ci);
-			ci.resolvePromise().then(new DoneCallback<EvaClass>() {
+			ci. onResolve(new DoneCallback<EvaClass>() {
 				@Override
 				public void onDone(EvaClass result) {
 					genType.setNode(result);
 				}
-			});
+			} );
 			generatedFunction.addDependentType(genType);
 			generatedFunction.addDependentFunction(fi);
 		} else

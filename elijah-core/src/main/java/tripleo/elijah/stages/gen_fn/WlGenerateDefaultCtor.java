@@ -20,7 +20,6 @@ import tripleo.elijah.stages.deduce.Deduce_CreationClosure;
 import tripleo.elijah.stages.deduce.FunctionInvocation;
 import tripleo.elijah.stages.deduce.nextgen.DeduceCreationContext;
 import tripleo.elijah.stages.gen_generic.ICodeRegistrar;
-import tripleo.elijah.util.Holder;
 import tripleo.elijah.work.WorkJob;
 import tripleo.elijah.work.WorkManager;
 
@@ -64,14 +63,14 @@ public class WlGenerateDefaultCtor implements WorkJob {
 	public void run(WorkManager aWorkManager) {
 		if (functionInvocation.generateDeferred().isPending()) {
 			final ClassStatement klass     = functionInvocation.getClassInvocation().getKlass();
-			functionInvocation.getClassInvocation().resolvePromise().then(new DoneCallback<EvaClass>() {
+			functionInvocation.getClassInvocation(). onResolve(new DoneCallback<EvaClass>() {
 				@Override
 				public void onDone(EvaClass genClass) {
 					assert Result == null;
 					Result = xx(klass, genClass);
 					_isDone = true;
 				}
-			});
+			} );
 		} else {
 			functionInvocation.generatePromise().then(new DoneCallback<BaseEvaFunction>() {
 				@Override
@@ -113,7 +112,7 @@ public class WlGenerateDefaultCtor implements WorkJob {
 //		lgf.add(gf);
 
 		final ClassInvocation ci = functionInvocation.getClassInvocation();
-		ci.resolvePromise().done(new DoneCallback<EvaClass>() {
+		ci. onResolve(new DoneCallback<EvaClass>() {
 			@Override
 			public void onDone(@NotNull EvaClass result) {
 				codeRegistrar.registerFunction1(gf);

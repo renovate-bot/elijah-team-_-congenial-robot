@@ -3,6 +3,7 @@ package tripleo.elijah.nextgen.rosetta;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import tripleo.elijah.nextgen.rosetta.DeducePhase.DeducePhase_deduceModule_Request;
 import tripleo.elijah.nextgen.rosetta.DeduceTypes2.DeduceTypes2Request;
 import tripleo.elijah.nextgen.rosetta.DeduceTypes2.DeduceTypes2Request_TWO;
 import tripleo.elijah.nextgen.rosetta.DeduceTypes2.DeduceTypes2_deduceFunctions_Request;
@@ -38,6 +39,13 @@ public class Rosetta {
 
 	public static RCIE create(final RegisterClassInvocation_env aEnv, final RegisterClassInvocation_resp aResp) {
 		return new RCIE(aEnv, aResp);
+	}
+
+	public static DeduceTypes2 create(final DeducePhase_deduceModule_Request aDmr) {
+		// README calls Rosetta.create_call(df);!!
+		//  among other things...
+		final DeduceTypes2                   d       = aDmr.getDeducePhase().deduceModule(aDmr);
+		return d;
 	}
 
 	@SuppressWarnings("FinalClass")

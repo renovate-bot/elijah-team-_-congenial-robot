@@ -142,8 +142,8 @@ public class DeduceElement3_ProcTableEntry implements IDeduceElement3 {
 								final ClassStatement cs = left_type.getResolved().getClassOf(); // TODO we want a DeduceClass here. EvaClass may suffice
 
 								final ClassInvocation ci = deduceTypes2._phase().registerClassInvocation(cs, deduceTypes2());
-								ci.resolvePromise().then(gc2 -> {
-									gc[0] = gc2;
+								ci.onResolve(aEvaClass -> {
+									gc[0] = aEvaClass;
 								});
 
 								final LookupResultList     lrl  = cs.getContext().lookup(rr.getText());

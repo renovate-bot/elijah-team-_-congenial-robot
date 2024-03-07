@@ -86,7 +86,7 @@ class GCM_GF implements GCM_D {
 			} else
 				returnType = String.format("/*267-1*/%s*", gc.getTypeName(type));
 		} else {
-			throw new IllegalStateException();
+			throw new IllegalStateException("656 Shouldn't be here (can't reason about type)");
 //					LOG.err("656 Shouldn't be here (can't reason about type)");
 //					returnType = "void/*656*/";
 		}

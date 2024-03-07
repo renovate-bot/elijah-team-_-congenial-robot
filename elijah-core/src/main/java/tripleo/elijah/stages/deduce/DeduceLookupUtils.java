@@ -125,7 +125,7 @@ public enum DeduceLookupUtils {
 				result = switch (DecideElObjectType.getElObjectType(best)) {
 					case VAR -> {
 						final @Nullable VariableStatementImpl vs = (VariableStatementImpl) best;
-						yield __deduceIdentExpression2__VAR(vs, dt2, ctx, result, R);
+						yield __deduceIdentExpression2__VAR(vs, dt2, ctx, R);
 					}
 					case FUNCTION -> {
 						final @NotNull FunctionDef functionDef = (FunctionDef) best;
@@ -169,7 +169,7 @@ public enum DeduceLookupUtils {
 				result = R;
 			case VAR:
 				final @Nullable VariableStatementImpl vs = (VariableStatementImpl) best;
-				result = __deduceIdentExpression2__VAR(vs, aDeduceTypes2, ctx, result, R);
+				result = __deduceIdentExpression2__VAR(vs, aDeduceTypes2, ctx, R);
 				break;
 			case FUNCTION:
 				final @NotNull FunctionDef functionDef = (FunctionDef) best;
@@ -186,6 +186,56 @@ public enum DeduceLookupUtils {
 		}
 		if (result == null) {
 			throw new ResolveError(ident, lrl);
+		}
+		return result;
+	}
+
+	private static @NotNull Eventual<GenType> deduceIdentExpression2
+			(
+			final @NotNull DeduceTypes2 aDeduceTypes2,
+			final @NotNull IdentExpression ident,
+			final @NotNull Context ctx
+			) throws ResolveError
+	{
+		final Eventual<GenType> result = new Eventual<>();
+		@Nullable GenType R       = aDeduceTypes2._inj().new_GenTypeImpl();
+		@Nullable GenType result1 = null;
+
+		// is this right?
+		LookupResultList     lrl  = ctx.lookup(ident.getText());
+		@Nullable OS_Element best = lrl.chooseBest(null);
+		while (best instanceof AliasStatementImpl) {
+			best = _resolveAlias2((AliasStatementImpl) best, aDeduceTypes2);
+		}
+
+		if (best != null) {
+			switch (DecideElObjectType.getElObjectType(best)) {
+			case CLASS: // hello, Scala ;)
+				final ClassStatement classStatement = (ClassStatement) best;
+				R.setResolved(classStatement.getOS_Type());
+				result1 = R;
+				result.resolve(R);
+			case VAR:
+				final @Nullable VariableStatementImpl vs = (VariableStatementImpl) best;
+				result1 = __deduceIdentExpression2__VAR(vs, aDeduceTypes2, ctx, R);
+				break;
+			case FUNCTION:
+				final @NotNull FunctionDef functionDef = (FunctionDef) best;
+				R.setResolved(functionDef.getOS_Type());
+				result.resolve(R);
+				break;
+			case FORMAL_ARG_LIST_ITEM:
+				final @NotNull FormalArgListItem fali = (FormalArgListItem) best;
+				result1 = __deduceIdentExpression2__FALI(fali, aDeduceTypes2, ctx, result1, R);
+				result.resolve(result1);
+				break;
+			default:
+				throw new IllegalStateException("Error");
+			}
+		}
+		if (result == null) {
+			final ResolveError rejection = new ResolveError(ident, lrl);
+			result.reject(rejection);
 		}
 		return result;
 	}
@@ -223,7 +273,11 @@ public enum DeduceLookupUtils {
 	}
 
 	@Nullable
-	private static GenType __deduceIdentExpression2__VAR(final @NotNull VariableStatementImpl vs, final DeduceTypes2 dt2, final Context ctx, @Nullable GenType result, @Nullable GenType R) throws ResolveError {
+	private static GenType __deduceIdentExpression2__VAR(final @NotNull VariableStatementImpl vs,
+														 final DeduceTypes2 dt2,
+														 final Context ctx,
+														 @Nullable GenType R) throws ResolveError {
+		@Nullable GenType result = null;
 		if (!vs.typeName().isNull()) {
 			try {
 				@Nullable OS_Module lets_hope_we_dont_need_this = null;

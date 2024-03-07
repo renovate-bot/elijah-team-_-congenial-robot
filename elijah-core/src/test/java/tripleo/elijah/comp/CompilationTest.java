@@ -55,7 +55,7 @@ public class CompilationTest {
 		}));
 
 
-		// README 11/12 module_count_from_compilation == c.modules().size()
+		// README 23/11/12 module_count_from_compilation == c.modules().size()
 		Assert.<Integer>assertThat(module_count_from_compilation[0], new IsEqual<Integer>(6));
 		assertTrue(module_count_from_compilation[0] > 2);
 	}

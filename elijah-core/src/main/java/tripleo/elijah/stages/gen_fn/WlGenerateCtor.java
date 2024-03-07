@@ -70,12 +70,12 @@ public class WlGenerateCtor implements WorkJob {
 		if (functionInvocation.generateDeferred().isPending()) {
 			final ClassStatement klass     = functionInvocation.getClassInvocation().getKlass();
 			Holder<EvaClass>     hGenClass = new Holder<>();
-			functionInvocation.getClassInvocation().resolvePromise().then(new DoneCallback<EvaClass>() {
+			functionInvocation.getClassInvocation(). onResolve(new DoneCallback<EvaClass>() {
 				@Override
 				public void onDone(EvaClass result) {
 					hGenClass.set(result);
 				}
-			});
+			} );
 			EvaClass genClass = hGenClass.get();
 			assert genClass != null;
 
@@ -167,7 +167,7 @@ public class WlGenerateCtor implements WorkJob {
 //		lgf.add(gf);
 
 			final ClassInvocation ci = functionInvocation.getClassInvocation();
-			ci.resolvePromise().done(new DoneCallback<EvaClass>() {
+			ci. onResolve(new DoneCallback<EvaClass>() {
 				@Override
 				public void onDone(@NotNull EvaClass result) {
 

@@ -174,7 +174,11 @@ public abstract class BaseTableEntry {
 		typeResolve = new DeduceTypeResolve(this, new NULL_DeduceTypes2());
 	}
 
-	public enum Status {
+	public void onTypeResolve(final DoneCallback<? super GenType> aGenType) {
+		typeResolvePromise().then(aGenType);
+	}
+
+    public enum Status {
 		KNOWN, UNCHECKED, UNKNOWN
 	}
 

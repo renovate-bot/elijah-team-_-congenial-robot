@@ -2,7 +2,6 @@ package tripleo.elijah.stages.deduce;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tripleo.elijah.ReadySupplier_1;
 import tripleo.elijah.lang.i.*;
 import tripleo.elijah.lang.impl.VariableStatementImpl;
 import tripleo.elijah.nextgen.rosetta.FakeRosetta;
@@ -138,7 +137,7 @@ public class DeduceElement3_Constructor implements IDeduceElement3 {
 					aVte.getGenType().setResolved(aOSType); // README assuming OS_Type cannot represent namespaces
 					aVte.getGenType().setCi(ci2);
 
-					ci2.resolvePromise().done(aVte::resolveTypeToClass);
+					ci2.onResolve(aVte::resolveTypeToClass);
 				})
 				.triggerOn(null);
 	}

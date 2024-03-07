@@ -1,7 +1,6 @@
 package tripleo.elijah.stages.gen_fn_c;
 
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.comp.EvaPipeline;
 import tripleo.elijah.comp.PipelineLogic;
 import tripleo.elijah.comp.i.IPipelineAccess;
 import tripleo.elijah.entrypoints.ArbitraryFunctionEntryPoint;
@@ -16,6 +15,7 @@ import tripleo.elijah.stages.gen_fn.GeneratePhase;
 import tripleo.elijah.stages.gen_fn.IClassGenerator;
 import tripleo.elijah.stages.inter.ModuleThing;
 import tripleo.elijah.stages.logging.ElLog;
+import tripleo.elijah_congenial.pipelines.eva.FunctionStatement;
 
 public class GenFnC {
 	private IPipelineAccess pa;
@@ -62,6 +62,6 @@ public class GenFnC {
 	}
 
 	public void addFunctionStatement(final EvaFunction aGf) {
-		pa.addFunctionStatement(new EvaPipeline.FunctionStatement(aGf));
+		pa.addFunctionStatement(new FunctionStatement(aGf));
 	}
 }

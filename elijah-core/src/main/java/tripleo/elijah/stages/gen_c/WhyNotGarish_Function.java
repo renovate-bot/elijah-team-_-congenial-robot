@@ -77,7 +77,7 @@ public class WhyNotGarish_Function extends WhyNotGarish_BaseFunction implements 
 		if (!fileGenPromise.isResolved()) {
 			fileGenPromise.resolve(aFileGen);
 		} else {
-			//assert false; // FIXME 11/11
+			//assert false; // FIXME 23/11/11
 			var c = generateC._ce().getCompilation();
 			if (true || c.reports().outputOn(Finally.Outs.Out_5757)) {
 				System.out.println("[WhyNotGarish_Function#resolveFileGenPromise] twice for " + generateC);

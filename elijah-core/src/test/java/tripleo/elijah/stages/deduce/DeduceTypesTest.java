@@ -22,8 +22,8 @@ import tripleo.elijah.lang.impl.*;
 import tripleo.elijah.lang.types.OS_BuiltinType;
 import tripleo.elijah.lang.types.OS_UserType;
 import tripleo.elijah.lang2.BuiltInTypes;
-import tripleo.elijah.util.Mode;
 import tripleo.elijah.nextgen.rosetta.DeducePhase.DeducePhase_deduceModule_Request;
+import tripleo.elijah.nextgen.rosetta.Rosetta;
 import tripleo.elijah.stages.deduce.Resolve_Ident_IA.DeduceElementIdent;
 import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_IdentTableEntry;
 import tripleo.elijah.stages.gen_fn.BaseEvaFunction;
@@ -32,6 +32,7 @@ import tripleo.elijah.stages.gen_fn.IdentTableEntry;
 import tripleo.elijah.stages.logging.ElLog;
 import tripleo.elijah.test_help.Boilerplate;
 import tripleo.elijah.util.Helpers;
+import tripleo.elijah.util.Mode;
 import tripleo.elijah.util.Operation2;
 import tripleo.elijah.util.SimplePrintLoggerToRemoveSoon;
 import tripleo.elijah.world.i.WorldModule;
@@ -81,27 +82,30 @@ public class DeduceTypesTest {
 		final IdentExpression x1 = Helpers.string_to_ident("x");
 		x1.setContext(fc);
 
-		final ElLog.Verbosity                verbosity = Compilation.gitlabCIVerbosity();
-		final DeducePhase                    dp        = boilerplate.getDeducePhase();
-		final DeduceTypes2                   d         = dp.deduceModule(new DeducePhase_deduceModule_Request(mod, dp.generatedClasses, verbosity, dp));
-		final BaseEvaFunction                bgf       = mock(BaseEvaFunction.class);
-		final IdentTableEntry                ite       = new IdentTableEntry(0, x1, x1.getContext(), bgf);
-		final DeduceElementIdent             dei       = new DeduceElementIdent(ite); // TODO 12/24 This is here to say why is this here?
-		final DeduceElement3_IdentTableEntry de3_ite   = ite.getDeduceElement3(d, bgf);
+		final ElLog.Verbosity verbosity = Compilation.gitlabCIVerbosity();
 
-		final Operation2<WorldModule> fpl0 = boilerplate.comp.findPrelude("c");
-		assert fpl0.mode() == Mode.SUCCESS;
-		//final Operation2<OS_Module>   fpl  = boilerplate.comp.findPrelude("c");
-		mod.setPrelude(fpl0.success().module());
+		boilerplate.onDeducePhase(dp -> {
+			final DeducePhase_deduceModule_Request dmr     = new DeducePhase_deduceModule_Request(mod, dp.generatedClasses, verbosity, dp);
+			final DeduceTypes2                     d       = Rosetta.create(dmr);
+			final BaseEvaFunction                  bgf     = mock(BaseEvaFunction.class);
+			final IdentTableEntry                  ite     = new IdentTableEntry(0, x1, x1.getContext(), bgf);
+			final DeduceElementIdent               dei     = new DeduceElementIdent(ite); // TODO 12/24 This is here to say why is this here?
+			final DeduceElement3_IdentTableEntry   de3_ite = ite.getDeduceElement3(d, bgf);
 
-		final Eventual<DeduceElement3_IdentTableEntry> entryEventual = DeduceLookupUtils.deduceExpression2(de3_ite, fc);
+			final Operation2<WorldModule> fpl0 = boilerplate.comp.findPrelude("c");
+			assert fpl0.mode() == Mode.SUCCESS;
+			//final Operation2<OS_Module>   fpl  = boilerplate.comp.findPrelude("c");
+			mod.setPrelude(fpl0.success().module());
 
-		entryEventual.then(xxx -> {
-			this.x = xxx.genType();
-			SimplePrintLoggerToRemoveSoon.println_out_2(String.valueOf(this.x));
-		});
-		entryEventual.onFail(fail -> {
-			// TODO 12/24 nop for now
+			final Eventual<DeduceElement3_IdentTableEntry> entryEventual = DeduceLookupUtils.deduceExpression2(de3_ite, fc);
+
+			entryEventual.then(xxx -> {
+				this.x = xxx.genType();
+				SimplePrintLoggerToRemoveSoon.println_out_2(String.valueOf(this.x));
+			});
+			entryEventual.onFail(fail -> {
+				// TODO 12/24 nop for now
+			});
 		});
 	}
 

@@ -7,4 +7,6 @@ interface GenerateC_Item {
 	EvaNode getEvaNode();
 
 	void setEvaNode(EvaNode aEvaNode);
+
+	void setEvaNode_by(GR_EvaNodeAble aKotlinEnvy);
 }

@@ -29,12 +29,13 @@ public class GetAssignmentValueArgsStatement implements EG_Statement {
 
 	@Override
 	public @Nullable String getText() {
+		final String gavass = "GetAssignmentValueArgsStatement";
+
 		final EG_SequenceStatement getAssignmentValueArgsStatement = new EG_SequenceStatement(
-				new EG_Naming("GetAssignmentValueArgsStatement"),
+				new EG_Naming(gavass),
 				sll.stream()
-						.map(x -> EG_Statement.of(x, null))
-						.collect(Collectors.toList()
-								)
+						.map(x -> EG_Statement.of(x, EX_Explanation.withMessage(gavass)))
+						.collect(Collectors.toList())
 		);
 		return getAssignmentValueArgsStatement.getText();
 	}

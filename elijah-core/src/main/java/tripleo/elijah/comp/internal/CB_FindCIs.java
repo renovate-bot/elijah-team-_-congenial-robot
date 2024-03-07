@@ -14,23 +14,27 @@ import static tripleo.elijah.util.Helpers.List_of;
 
 class CB_FindCIs implements CB_Action {
 	private final CompilationRunner   compilationRunner;
-	private final List<CompilerInput> _inputs;
+	//private final List<CompilerInput> _inputs;
 
 	@Contract(pure = true)
 	public CB_FindCIs(final CompilationRunner aCompilationRunner, final List<CompilerInput> aInputs) {
 		compilationRunner = aCompilationRunner;
-		_inputs           = aInputs;
-
-		o = compilationRunner._accessCompilation().getCompilationEnclosure().getCB_Output(); //new CB_Output();
+		//_inputs           = aInputs;
+		o                 = compilationRunner.getCompilationEnclosure().getCB_Output();
 	}
 
 	private final CB_Output o;
 
 	@Override
 	public void execute() {
-		final List<CR_Action> crActionList = List_of(compilationRunner.cr_find_cis(), new CR_AlmostComplete());
+		final List<CR_ActionSupplier> crActionList = List_of(
+				FindCIsSupplier.of(compilationRunner),
+				AlmostCompleteSupplier.of()
+															);
 
-		for (final CR_Action action : crActionList) {
+		for (final CR_ActionSupplier actionSupplier : crActionList) {
+			CR_Action action = actionSupplier.get();
+
 			action.attach(compilationRunner);
 			action.execute(compilationRunner.crState, o);
 		}

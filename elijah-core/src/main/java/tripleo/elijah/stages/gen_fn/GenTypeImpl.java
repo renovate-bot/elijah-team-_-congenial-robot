@@ -115,19 +115,19 @@ public class GenTypeImpl implements GenType {
 		genCI(nonGenericTypeName, deduceTypes2, deduceTypes2._errSink(), deduceTypes2.phase);
 		final IInvocation invocation = ci;
 		if (invocation instanceof final @NotNull NamespaceInvocation namespaceInvocation) {
-			namespaceInvocation.resolveDeferred().then(new DoneCallback<EvaNamespace>() {
+			namespaceInvocation. onResolve(new DoneCallback<EvaNamespace>() {
 				@Override
 				public void onDone(final EvaNamespace result) {
 					node = result;
 				}
 			});
 		} else if (invocation instanceof final @NotNull ClassInvocation classInvocation) {
-			classInvocation.resolvePromise().then(new DoneCallback<EvaClass>() {
+			classInvocation. onResolve(new DoneCallback<EvaClass>() {
 				@Override
 				public void onDone(final EvaClass result) {
 					node = result;
 				}
-			});
+			} );
 		} else {
 			if (resolved instanceof OS_BuiltinType bit) {
 				//
@@ -150,19 +150,19 @@ public class GenTypeImpl implements GenType {
 		genCI(nonGenericTypeName, aDeduceTypes2, aDeduceTypes2._errSink(), aDeduceTypes2.phase);
 		final IInvocation invocation = ci;
 		if (invocation instanceof final @NotNull NamespaceInvocation namespaceInvocation) {
-			namespaceInvocation.resolveDeferred().then(new DoneCallback<EvaNamespace>() {
+			namespaceInvocation. onResolve(new DoneCallback<EvaNamespace>() {
 				@Override
 				public void onDone(final EvaNamespace result) {
 					node = result;
 				}
 			});
 		} else if (invocation instanceof final @NotNull ClassInvocation classInvocation) {
-			classInvocation.resolvePromise().then(new DoneCallback<EvaClass>() {
+			classInvocation. onResolve(new DoneCallback<EvaClass>() {
 				@Override
 				public void onDone(final EvaClass result) {
 					node = result;
 				}
-			});
+			} );
 		} else {
 			if (resolved instanceof final @NotNull OS_FuncExprType funcExprType) {
 				final @NotNull GenerateFunctions genf = aDeduceTypes2.getGenerateFunctions(funcExprType.getElement().getContext().module());

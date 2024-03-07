@@ -20,7 +20,7 @@ public class HooliganPipelineImpl {
 		final Hooligan              hooligan = new Hooligan();
 		final List<OS_Module>       modules  = new ArrayList<>();
 
-		// FIXME 11/12 get rid of this...
+		// FIXME 23/11/12 get rid of this...
 		compilation.eachModule(modules::add);
 
 		final Hooligan.SmallWriter1 sw       = hooligan.__modules2(modules);

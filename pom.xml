@@ -12,6 +12,7 @@
 	<url>http://git.sr.ht/~tripleo/el-almost</url>
 
 	<properties>
+		<!-- README reproducable build, not reproducable credit -->
 		<project.build.outputTimestamp>1</project.build.outputTimestamp>
 
 		<java.version>17</java.version>
@@ -41,6 +42,12 @@
 	</modules>
 
 	<dependencies>
+
+		<dependency>
+			<groupId>org.jetbrains.kotlinx</groupId>
+			<artifactId>kotlinx-coroutines-reactor</artifactId>
+			<version>1.8.0</version>
+		</dependency>
 
 		<!-- https://smallrye.io/smallrye-mutiny/2.5.1/tutorials/getting-mutiny/ -->
 		<!--

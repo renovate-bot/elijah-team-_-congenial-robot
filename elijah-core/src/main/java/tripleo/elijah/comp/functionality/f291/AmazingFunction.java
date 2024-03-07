@@ -29,6 +29,7 @@ import tripleo.elijah.work.WorkList;
 import tripleo.elijah.work.WorkManager;
 import tripleo.elijah.world.i.LivingClass;
 import tripleo.elijah.world.i.LivingNamespace;
+import tripleo.elijah_congenial.pipelines.DGRS_Client;
 import tripleo.util.buffer.Buffer;
 
 import java.util.List;
@@ -63,7 +64,7 @@ class AmazingFunction implements Amazing {
 		pa.getAccessBus().subscribePipelineLogic((PipelineLogic pl0) -> {
 			// FIXME check arguments
 			var env = new GN_GenerateNodesIntoSinkEnv(List_of(),
-													  new DefaultGenerateResultSink(pa),
+													  new DefaultGenerateResultSink(DGRS_Client.of(pa)),
 													  pl0.mods(),
 													  ElLog.Verbosity.VERBOSE,
 													  new Old_GenerateResult(),

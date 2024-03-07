@@ -31,8 +31,10 @@ import tripleo.elijah.stages.logging.ElLog.Verbosity;
 import tripleo.elijah.util.CompletableProcess;
 import tripleo.elijah.util.NotImplementedException;
 import tripleo.elijah.world.i.WorldModule;
+import tripleo.elijah_congenial.moogly.MDeducePhaseCatcher;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Consumer;
 
 /**
@@ -58,6 +60,12 @@ public class PipelineLogic implements EventualRegister {
 		verbosity     = ca.testSilence();
 		generatePhase = new GeneratePhase(verbosity, pa, this);
 		dp            = new DeducePhase(ca, pa, this);
+
+		final Object dpc = ca.getExt(MDeducePhaseCatcher.class);
+		if (dpc != null) {
+			final MDeducePhaseCatcher dpc1 = ((MDeducePhaseCatcher)dpc);
+			dpc1.doCatch(dp);
+		}
 
 		pa.getCompilationEnclosure().addModuleListener(new _PipelineLogic__ModuleListener());
 	}

@@ -2,6 +2,7 @@ package tripleo.elijah;
 
 import org.jdeferred2.DoneCallback;
 import org.jdeferred2.FailCallback;
+import org.jdeferred2.Promise;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.diagnostic.Diagnostic;
@@ -71,5 +72,9 @@ public class Eventual<P> {
 			xx[0] = s.get();
 		});
 		return Optional.of((P) xx[0]);
+	}
+
+	public Promise.State state() {
+		return prom.state();
 	}
 }

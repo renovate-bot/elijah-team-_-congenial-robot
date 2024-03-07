@@ -1,6 +1,7 @@
 package tripleo.elijah.stages.gen_c;
 
 import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.UnintendedUseException;
 import tripleo.elijah.lang.i.ClassStatement;
 import tripleo.elijah.stages.deduce.post_bytecode.DeduceElement3_IdentTableEntry;
 import tripleo.elijah.stages.gen_fn.EvaNode;
@@ -25,6 +26,11 @@ class GI_ClassStatement implements GenerateC_Item {
 	@Override
 	public void setEvaNode(final EvaNode a_evaNode) {
 		_evaNaode = a_evaNode;
+	}
+
+	@Override
+	public void setEvaNode_by(final GR_EvaNodeAble aKotlinEnvy) {
+		throw new UnintendedUseException("If you're here, you're API programming");
 	}
 
 	public void setITE(final @NotNull IdentTableEntry ite) {

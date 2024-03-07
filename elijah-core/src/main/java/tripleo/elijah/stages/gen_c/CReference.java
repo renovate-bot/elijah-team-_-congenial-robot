@@ -315,7 +315,7 @@ public class CReference {
 			}
 			assert ((ClassInvocation) gt2.getCi()).resolvePromise().isResolved();
 
-			((ClassInvocation) gt2.getCi()).resolvePromise().then(gc -> { // wrong: should be ConstString
+			((ClassInvocation) gt2.getCi()). onResolve(gc -> { // wrong: should be ConstString
 				if (gc1.getCode() == 106) {
 					assert gc.getCode() == 102;
 					assert gc.getKlass().getName().equals("Arguments");

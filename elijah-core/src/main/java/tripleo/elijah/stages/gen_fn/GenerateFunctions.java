@@ -631,7 +631,7 @@ public class GenerateFunctions implements ReactiveDimension, EventualRegister {
 	}
 
 	private void __generateFunction__addExceptionsVars(final EvaFunction aGf) {
-		// TODO 11/10 implement me
+		// TODO 23/11/10 implement me
 	}
 
 	private static void __generateFunction__addArgumentVars(final @NotNull FunctionDef fd, final @NotNull FunctionInvocation aFunctionInvocation, final @NotNull EvaFunction gf) {
@@ -776,7 +776,7 @@ public class GenerateFunctions implements ReactiveDimension, EventualRegister {
 	}
 
 	InstructionArgument simplify_expression(@NotNull final IExpression expression, final @NotNull BaseEvaFunction gf, final @NotNull Context cctx) {
-		// TODO 11/10 this double resolves, ie cache the result??
+		// TODO 23/11/10 this double resolves, ie cache the result??
 		gf._informGF(this);
 
 		final ExpressionKind expressionKind = expression.getKind();

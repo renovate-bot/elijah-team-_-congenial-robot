@@ -134,7 +134,7 @@ public class DTR_VariableStatement {
 	private /*static*/ void normalTypeName_generic_butNotNull_resolveToGeneric(final @NotNull GenType genType,
 																			   final @NotNull GenType resolved,
 																			   final @NotNull BaseTableEntry backlink) {
-		backlink.typeResolvePromise().then(result_gt -> ((Constructable) backlink).constructablePromise().then((final @NotNull ProcTableEntry result_pte) -> {
+		backlink.onTypeResolve(result_gt -> ((Constructable) backlink).constructablePromise().then((final @NotNull ProcTableEntry result_pte) -> {
 			final ClassInvocation ci = result_pte.getClassInvocation();
 			assert ci != null;
 			final @Nullable Map<TypeName, OS_Type> gp  = ci.genericPart().getMap();
@@ -177,7 +177,7 @@ public class DTR_VariableStatement {
 
 		assert pte_bl.getStatus() == BaseTableEntry.Status.KNOWN;
 
-		pte_bl.typeResolvePromise().then(gt -> {
+		pte_bl.onTypeResolve(gt -> {
 			pte_bl.typeDeferred().then(td->{assert td==gt;});
 
 			// README when pte_bl has gets a type (GenType),

@@ -421,7 +421,7 @@ class Unnamed_ITE_Resolver1 implements ITE_Resolver {
 				final TypeName                  typeName = vte.getType().genType.getNonGenericTypeName();
 				final @Nullable ClassInvocation ci       = genType.genCI(typeName, dt2, dt2._errSink(), dt2.phase);
 //							resolve_vte_for_class(vte, klass);
-				ci.resolvePromise().done(new DoneCallback<EvaClass>() {
+				ci. onResolve(new DoneCallback<EvaClass>() {
 					@Override
 					public void onDone(@NotNull EvaClass result) {
 						vte.resolveTypeToClass(result);

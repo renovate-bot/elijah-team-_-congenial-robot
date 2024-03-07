@@ -227,19 +227,19 @@ class Found_Element_For_ITE {
 		dc.genCI(aGenType, aGenType.getNonGenericTypeName());
 		final IInvocation invocation = aGenType.getCi();
 		if (invocation instanceof final @NotNull NamespaceInvocation namespaceInvocation) {
-			namespaceInvocation.resolveDeferred().then(new DoneCallback<EvaNamespace>() {
+			namespaceInvocation. onResolve(new DoneCallback<EvaNamespace>() {
 				@Override
 				public void onDone(final EvaNamespace result) {
 					aGenType.setNode(result);
 				}
 			});
 		} else if (invocation instanceof final @NotNull ClassInvocation classInvocation) {
-			classInvocation.resolvePromise().then(new DoneCallback<EvaClass>() {
+			classInvocation. onResolve(new DoneCallback<EvaClass>() {
 				@Override
 				public void onDone(final EvaClass result) {
 					aGenType.setNode(result);
 				}
-			});
+			} );
 		} else
 			throw new IllegalStateException("invalid invocation");
 	}

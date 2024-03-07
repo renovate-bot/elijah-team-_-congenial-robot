@@ -17,6 +17,7 @@ import tripleo.elijah.stages.gen_fn.*;
 import tripleo.elijah.stages.gen_generic.Dependency;
 import tripleo.elijah.stages.gen_generic.GenerateResultEnv;
 import tripleo.elijah.stages.instructions.*;
+import tripleo.elijah.world.i.LF_CodeRegistration;
 import tripleo.util.range.Range;
 
 import java.util.List;
@@ -24,9 +25,21 @@ import java.util.Map;
 
 public class DefaultDeducedBaseEvaFunction implements DeducedBaseEvaFunction {
 	private final BaseEvaFunction carrier;
+	private final LF_CodeRegistration codeRegistration = new LF_CodeRegistration() {
+		@Override
+		public void accept(final EvaFunction aEvaFunction, final Eventual<Integer> aCodeCallback) {
+			assert aEvaFunction == carrier;
+			aCodeCallback.then(i -> {
+				assert i == carrier.getCode();
+			});
+		}
+	};
 
 	public DefaultDeducedBaseEvaFunction(final BaseEvaFunction aEvaFunction) {
 		carrier = aEvaFunction;
+
+		assert carrier._living != null; // forgot how to do this right
+		carrier._living.codeRegistration(codeRegistration);
 	}
 
 	public void addDependentFunction(@NotNull final FunctionInvocation aFunction) {
@@ -96,14 +109,6 @@ public class DefaultDeducedBaseEvaFunction implements DeducedBaseEvaFunction {
 		return carrier.addVariableTableEntry(name, vtt, type, el);
 	}
 
-	public @NotNull DR_Type buildDrTypeFromNonGenericTypeName(final TypeName aNonGenericTypeName) {
-		return carrier.buildDrTypeFromNonGenericTypeName(aNonGenericTypeName);
-	}
-
-	public Map<OS_Element, DeduceElement> elements() {
-		return carrier.elements();
-	}
-
 	@Override
 	public String expectationString() {
 		return carrier.expectationString();
@@ -140,6 +145,11 @@ public class DefaultDeducedBaseEvaFunction implements DeducedBaseEvaFunction {
 	}
 
 	@Override
+	public @NotNull FunctionDef getFD() {
+		return carrier.getFD();
+	}
+
+	@Override
 	public @NotNull String getFunctionName() {
 		return carrier.getFunctionName();
 	}
@@ -147,18 +157,6 @@ public class DefaultDeducedBaseEvaFunction implements DeducedBaseEvaFunction {
 	@Override
 	public EvaNode getGenClass() {
 		return carrier.getGenClass();
-	}
-
-	public @NotNull DR_Ident getIdent(final IdentExpression aIdent, final VariableTableEntry aVteBl1) {
-		return carrier.getIdent(aIdent, aVteBl1);
-	}
-
-	public @NotNull DR_Ident getIdent(final @NotNull IdentTableEntry aIdentTableEntry) {
-		return carrier.getIdent(aIdentTableEntry);
-	}
-
-	public @NotNull DR_Ident getIdent(final VariableTableEntry aVteBl1) {
-		return carrier.getIdent(aVteBl1);
 	}
 
 	@Override
@@ -186,22 +184,19 @@ public class DefaultDeducedBaseEvaFunction implements DeducedBaseEvaFunction {
 		return carrier.getParent();
 	}
 
-	public @NotNull DR_ProcCall getProcCall(final IExpression aZ, final ProcTableEntry aPte) {
-		return carrier.getProcCall(aZ, aPte);
-	}
-
 	@Override
 	public @NotNull ProcTableEntry getProcTableEntry(final int index) {
 		return carrier.getProcTableEntry(index);
 	}
 
 	@Override
-	public @NotNull TypeTableEntry getTypeTableEntry(final int index) {
-		return carrier.getTypeTableEntry(index);
+	public @Nullable VariableTableEntry getSelf() {
+		return carrier.getSelf();
 	}
 
-	public @NotNull DR_Variable getVar(final VariableStatement aElement) {
-		return carrier.getVar(aElement);
+	@Override
+	public @NotNull TypeTableEntry getTypeTableEntry(final int index) {
+		return carrier.getTypeTableEntry(index);
 	}
 
 	@Override
@@ -250,13 +245,74 @@ public class DefaultDeducedBaseEvaFunction implements DeducedBaseEvaFunction {
 	}
 
 	@Override
-	public void onGenClass(final @NotNull OnGenClass aOnGenClass) {
-		carrier.onGenClass(aOnGenClass);
+	public void place(final @NotNull Label label) {
+		carrier.place(label);
 	}
 
 	@Override
-	public void place(final @NotNull Label label) {
-		carrier.place(label);
+	public void resolveTypeDeferred(final @NotNull GenType aType) {
+		carrier.resolveTypeDeferred(aType);
+	}
+
+	@Override
+	public void setClass(@NotNull final EvaNode aNode) {
+		carrier.setClass(aNode);
+	}
+
+	@Override
+	public void setParent(final EvaContainerNC aGeneratedContainerNC) {
+		carrier.setParent(aGeneratedContainerNC);
+	}
+
+	@Override
+	public @Nullable InstructionArgument vte_lookup(final String text) {
+		return carrier.vte_lookup(text);
+	}
+
+	@Override
+	public void setCode(final int aCode) {
+		final EvaFunction       evafunction  = (EvaFunction) carrier;
+		final Eventual<Integer> codecallback = new Eventual<>();
+
+		codecallback.then(x -> {
+			System.err.println("9997-310 " + x);
+		});
+
+		codeRegistration.accept(evafunction, codecallback);
+		carrier.setCode(aCode);
+	}
+
+	public @NotNull DR_Type buildDrTypeFromNonGenericTypeName(final TypeName aNonGenericTypeName) {
+		return carrier.buildDrTypeFromNonGenericTypeName(aNonGenericTypeName);
+	}
+
+	public Map<OS_Element, DeduceElement> elements() {
+		return carrier.elements();
+	}
+
+	public @NotNull DR_Ident getIdent(final IdentExpression aIdent, final VariableTableEntry aVteBl1) {
+		return carrier.getIdent(aIdent, aVteBl1);
+	}
+
+	public @NotNull DR_Ident getIdent(final @NotNull IdentTableEntry aIdentTableEntry) {
+		return carrier.getIdent(aIdentTableEntry);
+	}
+
+	public @NotNull DR_Ident getIdent(final VariableTableEntry aVteBl1) {
+		return carrier.getIdent(aVteBl1);
+	}
+
+	public @NotNull DR_ProcCall getProcCall(final IExpression aZ, final ProcTableEntry aPte) {
+		return carrier.getProcCall(aZ, aPte);
+	}
+
+	public @NotNull DR_Variable getVar(final VariableStatement aElement) {
+		return carrier.getVar(aElement);
+	}
+
+	@Override
+	public void onGenClass(final @NotNull OnGenClass aOnGenClass) {
+		carrier.onGenClass(aOnGenClass);
 	}
 
 	@Override
@@ -277,26 +333,6 @@ public class DefaultDeducedBaseEvaFunction implements DeducedBaseEvaFunction {
 	@Override
 	public WhyNotGarish_Function getWhyNotGarishFunction(final @NotNull GenerateC aGc) {
 		return aGc.a_lookup(carrier);
-	}
-
-	@Override
-	public void resolveTypeDeferred(final @NotNull GenType aType) {
-		carrier.resolveTypeDeferred(aType);
-	}
-
-	@Override
-	public void setClass(@NotNull final EvaNode aNode) {
-		carrier.setClass(aNode);
-	}
-
-	@Override
-	public void setCode(final int aCode) {
-		carrier.setCode(aCode);
-	}
-
-	@Override
-	public void setParent(final EvaContainerNC aGeneratedContainerNC) {
-		carrier.setParent(aGeneratedContainerNC);
 	}
 
 	@Override
@@ -336,26 +372,11 @@ public class DefaultDeducedBaseEvaFunction implements DeducedBaseEvaFunction {
 		};
 	}
 
-	@Override
-	public @Nullable InstructionArgument vte_lookup(final String text) {
-		return carrier.vte_lookup(text);
-	}
-
 	public String identityString() {
 		return carrier.identityString();
 	}
 
 	public OS_Module module() {
 		return carrier.module();
-	}
-
-	@Override
-	public @NotNull FunctionDef getFD() {
-		return carrier.getFD();
-	}
-
-	@Override
-	public @Nullable VariableTableEntry getSelf() {
-		return carrier.getSelf();
 	}
 }

@@ -91,7 +91,7 @@ public class WlGenerateFunction implements WorkJob {
 				});
 			} else {
 				final ClassInvocation ci = functionInvocation.getClassInvocation();
-				ci.resolvePromise().done((EvaClass result) -> {
+				ci. onResolve((EvaClass  result) -> {
 					if (result.getFunction(functionDef) == null) {
 						cr.registerClass1(result);
 //							gf.setCode(generateFunctions.module.getCompilation().nextFunctionCode());

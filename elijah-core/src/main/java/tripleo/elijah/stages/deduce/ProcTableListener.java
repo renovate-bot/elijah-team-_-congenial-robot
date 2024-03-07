@@ -112,9 +112,9 @@ public class ProcTableListener implements BaseTableEntry.StatusListener {
 
 			if (co != null) {
 				co.setConstructable(pte);
-				ci2.resolvePromise().then((EvaClass evaClass) -> {
+				ci2. onResolve((EvaClass  evaClass) -> {
 					resolved_element_pte_ClassStatement_EvaClass(evaClass, e, co, dcs);
-				});
+				} );
 			}
 
 			//__setFi(fi2);

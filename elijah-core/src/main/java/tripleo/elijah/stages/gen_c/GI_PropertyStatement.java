@@ -1,5 +1,6 @@
 package tripleo.elijah.stages.gen_c;
 
+import tripleo.elijah.UnintendedUseException;
 import tripleo.elijah.lang.i.PropertyStatement;
 import tripleo.elijah.stages.gen_fn.EvaNode;
 
@@ -21,5 +22,10 @@ class GI_PropertyStatement implements GenerateC_Item {
 	@Override
 	public void setEvaNode(final EvaNode aEvaNode) {
 		_evaNaode = aEvaNode;
+	}
+
+	@Override
+	public void setEvaNode_by(final GR_EvaNodeAble aKotlinEnvy) {
+		throw new UnintendedUseException("If you're here, you're API programming");
 	}
 }

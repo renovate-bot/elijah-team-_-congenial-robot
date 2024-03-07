@@ -53,11 +53,9 @@ public enum WPIS_GenerateOutputsFinalizer {
 	}
 
 	public static void _finalizeItems(final List<NG_OutputItem> aItms,
-									  final WPIS_GenerateOutputsFinaliation aF) {
-
-		final ICompilationAccess2    compilationAccess2 = aF.aCompilationAccess2();
-		final OutputStrategyC        outputStrategyC    = aF.aOutputStrategyC();
-		final List<NG_OutputRequest> outputRequestList  = aF.aOutputRequestList();
+									  final WPIS_GenerateOutputsFinalization aF) {
+		final OutputStrategyC        outputStrategyC    = aF.outputStrategyC();
+		final List<NG_OutputRequest> outputRequestList  = aF.outputRequestList();
 
 		for (NG_OutputItem o : aItms) {
 			var oxs = o.getOutputs();
@@ -103,27 +101,19 @@ public enum WPIS_GenerateOutputsFinalizer {
 			if (filename.getFilename().endsWith(".h")) {
 				final String uuid = "elinc_%s".formatted(UUID.randomUUID().toString().replace('-', '_'));
 
-				final EG_SingleStatement b = new EG_SingleStatement("#ifndef %s\n#define %s 1\n\n".formatted(uuid, uuid), EX_Explanation.withMessage("Header file prefix"));
-				final EG_SingleStatement e = new EG_SingleStatement("\n#endif\n", EX_Explanation.withMessage("Header file postfix"));
+				final EG_SingleStatement   b   = new EG_SingleStatement("#ifndef %s\n#define %s 1\n\n".formatted(uuid, uuid), EX_Explanation.withMessage("Header file prefix"));
+				final EG_SingleStatement   e   = new EG_SingleStatement("\n#endif\n", EX_Explanation.withMessage("Header file postfix"));
+				final EG_SequenceStatement m   = new EG_SequenceStatement(new EG_Naming("relist2"), list2);
+				final EX_Explanation       msg = EX_Explanation.withMessage("djksaldnsajlkda");
 
-				if (false) {
-					//final List<EG_Statement> list3 = new ArrayList<>(list2.size() + 2);
-					//list3.add(b);
-					//list3.addAll(list2);
-					//list3.add(e);
-					//
-					//statement = new EG_SequenceStatement(new EG_Naming("relist3"), list3);
-				} else {
-					var m   = new EG_SequenceStatement(new EG_Naming("relist2"), list2);
-					var msg = EX_Explanation.withMessage("djksaldnsajlkda");
-					statement = new EG_CompoundStatement(b, e, m, false, msg);
-				}
+				statement = new EG_CompoundStatement(b, e, m, false, msg);
 			} else {
 				statement = statement0;
 			}
 
 			// eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
-			final EOT_OutputFile off = compilationAccess2.createOutputFile(writable.inputs(), filename, EOT_OutputType.SOURCES, statement);
+			final ICompilationAccess2 compilationAccess2 = aF.compilationAccess2();
+			final EOT_OutputFile      off                = compilationAccess2.createOutputFile(writable.inputs(), filename, EOT_OutputType.SOURCES, statement);
 			compilationAccess2.addCodeOutput(filename, off, true);
 		}
 	}

@@ -32,9 +32,9 @@ public class OutputItems {
 		++_addTally;
 
 		if (_addTally == _readyCount) {
-			final Compilation compilation = WPISGenerateOutputs.__st().c;
+			final Compilation                      compilation = WPISGenerateOutputs.__st().c;
+			final WPIS_GenerateOutputsFinalization f           = new WPIS_GenerateOutputsFinalization(ngOutputRequestList, outputStrategyC, compilation.getCompilationAccess2());
 
-			final WPIS_GenerateOutputsFinaliation f = new WPIS_GenerateOutputsFinaliation(ngOutputRequestList, outputStrategyC, compilation.getCompilationAccess2());
 			WPIS_GenerateOutputsFinalizer._finalizeItems(ngOutputItemList, f);
 		}
 	}

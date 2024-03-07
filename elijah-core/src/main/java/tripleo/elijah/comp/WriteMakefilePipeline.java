@@ -35,7 +35,7 @@ public class WriteMakefilePipeline implements PipelineMember, Consumer<Supplier<
 
 	@Override
 	public void run(@NotNull CR_State st, CB_Output aOutput) throws Exception {
-		final Compilation c   = st.ca().getCompilation();
+		final Compilation c   = st.ce().getCompilation();
 		var               cot = c.getOutputTree();
 
 		cot.recompute();

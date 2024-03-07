@@ -3,6 +3,7 @@ package tripleo.elijah.stages.gen_c;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tripleo.elijah.UnintendedUseException;
 import tripleo.elijah.lang.i.ClassStatement;
 import tripleo.elijah.lang.i.FunctionDef;
 import tripleo.elijah.lang.i.OS_Element;
@@ -77,6 +78,11 @@ public class GI_VariableStatement implements GenerateC_Item {
 	@Override
 	public void setEvaNode(final EvaNode a_evaNode) {
 		_evaNode = a_evaNode;
+	}
+
+	@Override
+	public void setEvaNode_by(final GR_EvaNodeAble aKotlinEnvy) {
+		throw new UnintendedUseException("If you're here, you're API programming");
 	}
 
 	public String getText() {

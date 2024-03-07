@@ -76,12 +76,12 @@ public class GetRealTargetNameTest {
 		ident_ia.setPrev(integerIA);
 
 		final Context ctx = new ContextMock();
-		// TODO 11/08 specify times can be called as well? (as was with Mockito)
+		// TODO 23/11/08 specify times can be called as well? (as was with Mockito)
 		ctx.expect(x_ident.getText(), x_var).andContributeResolve(null);
 
 		final OS_Module   mod   = boilerPlate.defaultMod();
 
-		//ident_ia.getEntry().setDeduceTypes2(deduceTypes2, foo_ctx, gf); // TODO 11/08 doesn't work??
+		//ident_ia.getEntry().setDeduceTypes2(deduceTypes2, foo_ctx, gf); // TODO 23/11/08 doesn't work??
 		ident_ia.getEntry()._fix_table(boilerPlate.defaultDeduceTypes2(mod), gf);
 
 		//final GenType genType = factory.makeGenType(tte);

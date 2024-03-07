@@ -5,48 +5,61 @@ import io.reactivex.rxjava3.core.Observer;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.subjects.ReplaySubject;
 import io.reactivex.rxjava3.subjects.Subject;
+
+import lombok.Setter;
+
 import org.jdeferred2.Promise;
 import org.jdeferred2.impl.DeferredObject;
+
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.comp.*;
+
+import tripleo.elijah.comp.AccessBus;
+import tripleo.elijah.comp.CompilerInput;
+import tripleo.elijah.comp.PipelineLogic;
+
 import tripleo.elijah.comp.internal.CB_Output;
 import tripleo.elijah.comp.internal.CompilationRunner;
 import tripleo.elijah.comp.internal.CompilerDriver;
 import tripleo.elijah.comp.internal.MalBulge;
 import tripleo.elijah.comp.internal.Provenance;
 import tripleo.elijah.comp.internal.__Plugins;
+
 import tripleo.elijah.comp.nextgen.CP_Path;
 import tripleo.elijah.comp.nextgen.i.CE_Path;
-import tripleo.elijah.comp.notation.GN_WriteLogs;
-import tripleo.elijah.factory.comp.NextgenFactory;
+
 import tripleo.elijah.lang.i.OS_Module;
 import tripleo.elijah.nextgen.ER_Node;
+
 import tripleo.elijah.nextgen.outputstatement.EG_Naming;
 import tripleo.elijah.nextgen.outputstatement.EG_SequenceStatement;
 import tripleo.elijah.nextgen.outputstatement.EG_SingleStatement;
 import tripleo.elijah.nextgen.outputstatement.EG_Statement;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputFile;
 import tripleo.elijah.nextgen.outputtree.EOT_OutputType;
+
 import tripleo.elijah.nextgen.reactive.Reactivable;
 import tripleo.elijah.nextgen.reactive.Reactive;
 import tripleo.elijah.nextgen.reactive.ReactiveDimension;
+
 import tripleo.elijah.nextgen.spi.SPI_Loggable;
 import tripleo.elijah.nextgen.spi.SPI_ReactiveDimension;
+
 import tripleo.elijah.pre_world.Mirror_EntryPoint;
+
 import tripleo.elijah.stages.gen_fn.IClassGenerator;
+import tripleo.elijah_congenial.pipelines.NextgenFactory;
+
 import tripleo.elijah.stages.inter.ModuleThing;
-import tripleo.elijah.stages.logging.ElLog;
-import tripleo.elijah.stages.logging.LogEntry;
-import tripleo.elijah.util.NotImplementedException;
 import tripleo.elijah.world.i.WorldModule;
 
+import tripleo.elijah.stages.logging.ElLog;
+import tripleo.elijah.stages.logging.LogEntry;
+import tripleo.elijah.comp.notation.GN_WriteLogs;
+
+
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static tripleo.elijah.util.Helpers.List_of;
 
@@ -108,20 +121,25 @@ public class CompilationEnclosure {
 		}
 	};
 	private AccessBus           ab;
-	private ICompilationAccess  ca;
-	private ICompilationBus     compilationBus;
+	private ICompilationAccess ca;
+	@Setter
+	private ICompilationBus   compilationBus;
+	@Setter
 	private CompilationRunner   compilationRunner;
+	@Setter
 	private CompilerDriver      compilerDriver;
 	private List<CompilerInput> inp;
 	private IPipelineAccess     pa;
-	private PipelineLogic       pipelineLogic;
-	private NextgenFactory      _nextgenFactory;
+	private PipelineLogic  pipelineLogic;
+	private NextgenFactory _nextgenFactory;
 
 
 	private MalBulge _mb;
 
 	public CompilationEnclosure(final Compilation aCompilation) {
 		compilation = aCompilation;
+
+		final CompilationEnclosure _ce = this;
 
 		getPipelineAccessPromise().then(pa -> {
 			ab = new AccessBus(getCompilation(), pa);
@@ -138,7 +156,7 @@ public class CompilationEnclosure {
 
 			pa._setAccessBus(ab);
 
-			this.pa = pa;
+			_ce.provide(pa);
 		});
 	}
 
@@ -267,27 +285,15 @@ public class CompilationEnclosure {
 		return compilationBus;
 	}
 
-	public void setCompilationBus(final ICompilationBus aCompilationBus) {
-		compilationBus = aCompilationBus;
-	}
-
 	@Contract(pure = true)
 	public CompilationRunner getCompilationRunner() {
 		return compilationRunner;
 	}
 
-	public void setCompilationRunner(final CompilationRunner aCompilationRunner) {
-		compilationRunner = aCompilationRunner;
-	}
-
-	@Contract(pure = true)
-	public CompilerDriver getCompilerDriver() {
-		return compilerDriver;
-	}
-
-	public void setCompilerDriver(final CompilerDriver aCompilerDriver) {
-		compilerDriver = aCompilerDriver;
-	}
+	//@Contract(pure = true)
+	//public CompilerDriver getCompilerDriver() {
+	//	return compilerDriver;
+	//}
 
 	@Contract(pure = true)
 	public List<CompilerInput> getCompilerInput() {
@@ -314,8 +320,8 @@ public class CompilationEnclosure {
 		getPipelineAccessPromise().then(pa -> pa.resolvePipelinePromise(aPipelineLogic));
 	}
 
-	private void _resolvePipelineAccess(final PipelineLogic aPipelineLogic) {
-	}
+	//private void _resolvePipelineAccess(final PipelineLogic aPipelineLogic) {
+	//}
 
 	public ModuleThing getModuleThing(final OS_Module aMod) {
 		if (moduleThings.containsKey(aMod)) {
@@ -333,8 +339,9 @@ public class CompilationEnclosure {
 	public void noteAccept(final @NotNull WorldModule aWorldModule) {
 		var mod = aWorldModule.module();
 		var aMt = aWorldModule.rq().mt();
-		// System.err.println(mod);
-		// System.err.println(aMt);
+
+		 System.err.println("9998-0323 "+mod);
+		 System.err.println("9998-0324 "+aMt);
 	}
 
 	public void reactiveJoin(final Reactive aReactive) {
@@ -368,9 +375,9 @@ public class CompilationEnclosure {
 		}
 	}
 
-	public void spi(final Object spiable, final Object cacheUnderKey) {
-		throw new NotImplementedException("12/31/23");
-	}
+	//public void spi(final Object spiable, final Object cacheUnderKey) {
+	//	throw new NotImplementedException("12/31/23");
+	//}
 
 	public void addLog(final ElLog aLOG) {
 		elLogs.add(aLOG);
@@ -430,6 +437,11 @@ public class CompilationEnclosure {
 			final EOT_OutputFile       off      = new EOT_OutputFile(List_of(), fileName, EOT_OutputType.LOGS, seq);
 			l.add(off);
 		}
+	}
+
+	public void provide(final IPipelineAccess aPipelineAccess) {
+		this.pa = aPipelineAccess;
+		getCompilation().set_pa(aPipelineAccess);
 	}
 
 	public interface ModuleListener {

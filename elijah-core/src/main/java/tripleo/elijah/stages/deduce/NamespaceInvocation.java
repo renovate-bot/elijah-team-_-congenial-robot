@@ -8,6 +8,7 @@
  */
 package tripleo.elijah.stages.deduce;
 
+import org.jdeferred2.DoneCallback;
 import org.jdeferred2.Promise;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
@@ -41,6 +42,10 @@ public class NamespaceInvocation implements IInvocation {
 	@Override
 	public void setForFunctionInvocation(@NotNull FunctionInvocation aFunctionInvocation) {
 		aFunctionInvocation.setNamespaceInvocation(this);
+	}
+
+	public void onResolve(final DoneCallback<EvaNamespace> aDoneCallback) {
+		resolveDeferred.then(aDoneCallback);
 	}
 }
 

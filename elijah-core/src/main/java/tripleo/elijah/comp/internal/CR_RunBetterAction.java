@@ -41,10 +41,8 @@ public class CR_RunBetterAction implements CR_Action {
 	@Override
 	public @NotNull Operation<Ok> execute(final @NotNull CR_State st, final CB_Output aO) {
 		try {
-			final ICompilationAccess ca = st.ca();
-
-			st.rt = StageToRuntime.get(ca.getCompilation().pa());
-			st.rt.run_better(st, aO);
+			final RuntimeProcesses rt = StageToRuntime.get(st.ce().getCompilation().pa());
+			rt.run_better(st, aO);
 
 			return Operation.success(Ok.instance());
 		} catch (final Exception aE) {

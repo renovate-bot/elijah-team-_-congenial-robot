@@ -247,7 +247,7 @@ public class TestBasic {
 
 		assertEquals(15, recordedwrites.size());
 
-		// TODO 11/04 Don't know if this is complete
+		// TODO 23/11/04 Don't know if this is complete
 		final Finally REPORTS = c.reports();
 
 		assertEquals(7, REPORTS.codeInputSize());
@@ -273,7 +273,7 @@ public class TestBasic {
 		testBasic_fact1 f = new testBasic_fact1();
 		f.start();
 
-		// TODO 11/05 find out what these errors are...
+		// TODO 23/11/05 find out what these errors are...
 		assertEquals(29, f.c.errorCount()); // TODO Error count obviously should be 0
 
 		var cot = f.c.getOutputTree();
@@ -327,7 +327,7 @@ public class TestBasic {
 		}
 
 
-		// TODO 11/04 Don't know if this is complete
+		// TODO 23/11/04 Don't know if this is complete
 		final Finally REPORTS = f.c.reports();
 
 		assertEquals(7, REPORTS.codeInputSize());
@@ -338,10 +338,10 @@ public class TestBasic {
 		assertTrue(REPORTS.containsCodeInput("test/basic/fact1/fact1.elijah"));
 		assertTrue(REPORTS.containsCodeInput("test/basic/fact1/main2/main2.elijah"));
 
-		// FIXME 11/05 what is this? (the initial?)
+		// FIXME 23/11/05 what is this? (the initial?)
 		assertTrue(REPORTS.containsCodeInput("test/basic/fact1/main2"));
 
-		// FIXME 11/05 .ezs are not inputs...
+		// FIXME 23/11/05 .ezs are not inputs...
 
 		//
 

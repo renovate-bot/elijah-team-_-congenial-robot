@@ -25,7 +25,6 @@ import tripleo.elijah.UnintendedUseException;
 import tripleo.elijah.comp.Finally;
 import tripleo.elijah.comp.i.CompilationEnclosure;
 import tripleo.elijah.comp.i.ErrSink;
-import tripleo.elijah.comp.i.IPipelineAccess;
 import tripleo.elijah.diagnostic.Diagnostic;
 import tripleo.elijah.lang.LangGlobals;
 import tripleo.elijah.lang.i.*;
@@ -56,8 +55,6 @@ import tripleo.elijah.stages.gdm.GDM_IdentExpression;
 import tripleo.elijah.stages.gdm.GDM_VariableTableEntry;
 import tripleo.elijah.stages.gen_fn.*;
 import tripleo.elijah.stages.gen_generic.ICodeRegistrar;
-import tripleo.elijah.stages.gen_generic.pipeline_impl.DefaultGenerateResultSink;
-import tripleo.elijah.stages.gen_generic.pipeline_impl.GenerateResultSink;
 import tripleo.elijah.stages.instructions.*;
 import tripleo.elijah.stages.inter.ModuleThing;
 import tripleo.elijah.stages.logging.ElLog;
@@ -545,7 +542,7 @@ public class DeduceTypes2 {
 
 	private static void __post_vte_list_001(final @NotNull BaseEvaFunction generatedFunction) {
 		for (final @NotNull VariableTableEntry vte : generatedFunction.vte_list) {
-			vte.typeResolvePromise().then(gt -> {
+			vte.onTypeResolve(gt -> {
 				var xx = vte.resolvedType();
 
 				if (xx instanceof EvaClass evaClass) {
@@ -586,7 +583,7 @@ public class DeduceTypes2 {
 				var                   x   = identTableEntry.getIdent().getName();
 
 				List<EN_Understanding> understandings = x.getUnderstandings();
-				// README 11/10 optimized, better than streams
+				// README 23/11/10 optimized, better than streams
 				for (int i = 0, understandingsSize = understandings.size(); i < understandingsSize; i++) {
 					final EN_Understanding understanding = understandings.get(i);
 					if (understanding instanceof ENU_ResolveToFunction rtf1) {
@@ -667,7 +664,7 @@ public class DeduceTypes2 {
 		aVte.getGenType().setResolved(aA); // README assuming OS_Type cannot represent namespaces
 		aVte.getGenType().setCi(ci);
 
-		ci.resolvePromise().done(new DoneCallback<EvaClass>() {
+		ci. onResolve(new DoneCallback<EvaClass>() {
 			@Override
 			public void onDone(@NotNull EvaClass result) {
 				aVte.resolveTypeToClass(result);
@@ -1390,7 +1387,7 @@ public class DeduceTypes2 {
 	public void register_and_resolve(@NotNull VariableTableEntry aVte, @NotNull ClassStatement aKlass) {
 		@Nullable ClassInvocation ci = _inj().new_ClassInvocation(aKlass, null, new ReadySupplier_1<>(this));
 		ci = phase.registerClassInvocation(ci);
-		ci.resolvePromise().done(aVte::resolveTypeToClass);
+		ci. onResolve(aVte::resolveTypeToClass);
 	}
 
 	public void removeResolvePending(final IdentTableEntry aResolvable) {
@@ -1526,7 +1523,7 @@ public class DeduceTypes2 {
 			return deduceTypes2.newFunctionInvocation(constructorDef, pte, ci, deduceTypes2.phase);
 		}
 
-		// TODO 11/10 begging for promiseification
+		// TODO 23/11/10 begging for promiseification
 		//public @Nullable ClassInvocation registerClassInvocation(@NotNull ClassInvocation ci) {
 		//	return deduceTypes2.phase.registerClassInvocation(new RegisterClassInvocation_env(ci, deduceTypes2, deduceTypes2.phase));
 		//}
@@ -1661,7 +1658,7 @@ public class DeduceTypes2 {
 									 final @Nullable List<InstructionArgument> ss,
 									 final @NotNull BaseEvaFunction aGeneratedFunction,
 									 final @NotNull FoundElement aFoundElement) {
-			// README 11/10 overcomplication, but nicer
+			// README 23/11/10 overcomplication, but nicer
 			MonitorRequest_IdentTableEntry mr = new MonitorRequest_IdentTableEntry(aIdentIA);
 			mr.trigger(aEctx, ss, aFoundElement, deduceTypes2);
 			aGeneratedFunction.monitorRequest_IdentTableEntry(mr);
@@ -2336,10 +2333,10 @@ public class DeduceTypes2 {
 					assert ni != null;
 					mod = ni.getNamespace().getContext().module();
 
-					ni.resolvePromise().then(result -> result.dependentFunctions().add(aDependentFunction));
+					ni. onResolve(result -> result.dependentFunctions().add(aDependentFunction));
 				} else {
 					mod = ci.getKlass().getContext().module();
-					ci.resolvePromise().then(result -> result.dependentFunctions().add(aDependentFunction));
+					ci. onResolve(result -> result.dependentFunctions().add(aDependentFunction) );
 				}
 				final @NotNull GenerateFunctions gf = getGenerateFunctions(mod);
 				gen = _inj().new_WlGenerateDefaultCtor(gf, aDependentFunction, creationContext(), phase.codeRegistrar);
@@ -2511,9 +2508,9 @@ public class DeduceTypes2 {
 			return new ArrayList<>();
 		}
 
-		public GenerateResultSink new_DefaultGenerateResultSink(final IPipelineAccess aPa) {
-			return new DefaultGenerateResultSink(aPa);
-		}
+		//public GenerateResultSink new_DefaultGenerateResultSink(final IPipelineAccess aPa) {
+		//	return new DefaultGenerateResultSink(aPa);
+		//}
 
 		public List<EvaClass> new_LinkedList__EvaClass() {
 			return new ArrayList<>();
@@ -3051,6 +3048,13 @@ public class DeduceTypes2 {
 		public WlGenerateFunction new_WlGenerateFunction(final OS_Module aModule, final FunctionInvocation aDependentFunction, final Deduce_CreationClosure aCl) {
 			return new WlGenerateFunction(aModule, aDependentFunction, aCl);
 		}
+
+		public GenType new_GenType_ofFunctionInvocation(final FunctionInvocation aFunctionInvocation, final BaseEvaFunction aEvaFunction) {
+            final GenType result = new_GenTypeImpl();
+			result.setFunctionInvocation(aFunctionInvocation);
+			result.setNode(aEvaFunction);
+			return result;
+		}
 	}
 
 	private class do_assign_normal_ident_deferred__DT_ResolveObserver implements DT_ResolveObserver {
@@ -3097,7 +3101,7 @@ public class DeduceTypes2 {
 
 			final @Nullable InstructionArgument vte_ia = generatedFunction.vte_lookup(fali_name);
 			assert vte_ia != null;
-			((IntegerIA) vte_ia).getEntry().typeResolvePromise().then(new DoneCallback<GenType>() {
+			((IntegerIA) vte_ia).getEntry().onTypeResolve(new DoneCallback<GenType>() {
 				@Override
 				public void onDone(final @NotNull GenType result) {
 					assert result.getResolved() != null;

@@ -24,12 +24,12 @@ public class DTR_IdentExpression {
 			final IntegerIA                   integerIA          = eh1.getIntegerIA();
 			final @NotNull VariableTableEntry variableTableEntry = integerIA.getEntry();
 			assert variableTableEntry == bte;
-			variableTableEntry.typeResolvePromise().then(this::q);
+			variableTableEntry.onTypeResolve(this::q);
 		} else {
 			//final DeduceLocalVariable dlv = ((VariableTableEntry) bte).dlv;
 			//dlv.setDeduceTypes2(deduceTypeResolve.backlink.__dt2, null, deduceTypeResolve.backlink.__gf);
 
-			bte.typeResolvePromise().then(this::q);
+			bte.onTypeResolve(this::q);
 		}
 	}
 

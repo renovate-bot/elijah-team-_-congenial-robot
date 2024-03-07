@@ -423,6 +423,10 @@ public class IdentTableEntry extends BaseTableEntry1 implements Constructable, T
 		typeFactory = aTypeFactory;
 	}
 
+	public DeduceElement3_IdentTableEntry _getZeroIdent() {
+		return _deduceTypes2()._zero_getIdent(this, this.get__gf(), this._deduceTypes2());
+	}
+
 	public record ITE_Resolver_Result(OS_Element element) {
 	}
 
