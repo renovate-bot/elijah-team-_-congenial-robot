@@ -63,7 +63,7 @@ services:
     logging: *default-logging
 
   woodpecker-agent:
-    image: woodpeckerci/woodpecker-agent:v0.15
+    image: woodpeckerci/woodpecker-agent:v2.0
     container_name: woodpecker-agent
     command: agent
     restart: unless-stopped
