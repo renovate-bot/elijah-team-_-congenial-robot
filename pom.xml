@@ -29,6 +29,8 @@
 		<range.version>0.0.3b</range.version>
 
 		<maven-compiler-plugin.version>3.12.1</maven-compiler-plugin.version>
+		<build-helper-maven-plugin-version>3.3.0</build-helper-maven-plugin-version>
+		<maven-surefire-version>3.0.0</maven-surefire-version>
 
 		<jdeferred.version>2.0.0</jdeferred.version>
 
@@ -138,27 +140,53 @@
 	<build>
 		<pluginManagement>
 			<plugins>
-			<plugin>
-				<groupId>org.owasp</groupId>
-				<artifactId>dependency-check-maven</artifactId>
-				<version>9.0.9</version>
-				<configuration>
-					<skipProvidedScope>true</skipProvidedScope>
-					<cveValidForHours>8</cveValidForHours>
-					<!-- Increasing from default 4000 because MacOS GitHub Action builds are failing to successfully download -->
-					<!-- Also note that NIST has a limit of 5 requests per 30 second window -->
-<!-- gah! macos!
-					<cveWaitTime>12000</cveWaitTime>
--->
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>versions-maven-plugin</artifactId>
-				<version>2.16.2</version>
-			</plugin>
+				<plugin>
+					<groupId>org.owasp</groupId>
+					<artifactId>dependency-check-maven</artifactId>
+					<version>9.0.9</version>
+					<configuration>
+						<skipProvidedScope>true</skipProvidedScope>
+						<cveValidForHours>8</cveValidForHours>
+						<!-- Increasing from default 4000 because MacOS GitHub Action builds are failing to successfully download -->
+						<!-- Also note that NIST has a limit of 5 requests per 30 second window -->
+						<!-- gah! macos! (~darwin - mach + "dps+" + gnustep, honestly... <=> android??)
+											<cveWaitTime>12000</cveWaitTime>
+						-->
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>versions-maven-plugin</artifactId>
+					<version>2.16.2</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
+		<plugins>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<failIfNoTests>true</failIfNoTests>
+				</configuration>
+				<dependencies>
+					<!-- force to run with JUnit4 -->
+					<dependency>
+						<groupId>org.apache.maven.surefire</groupId>
+						<artifactId>surefire-junit47</artifactId>
+						<version>${maven-surefire-version}</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+
+			<!-- To use the plugin goals in your POM or parent POM -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+				<version>3.2.5</version>
+			</plugin>
+
+		</plugins>
 	</build>
 
 	<reporting>
