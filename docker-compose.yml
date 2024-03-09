@@ -39,7 +39,7 @@ services:
     logging: *default-logging
   
   woodpecker-server:
-    image: woodpeckerci/woodpecker-server:v0.15
+    image: woodpeckerci/woodpecker-server:v2.0
     container_name: woodpecker-server
     restart: unless-stopped
     ports:
