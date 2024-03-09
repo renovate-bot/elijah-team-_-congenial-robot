@@ -30,7 +30,7 @@
 
 		<maven-compiler-plugin.version>3.12.1</maven-compiler-plugin.version>
 		<build-helper-maven-plugin-version>3.3.0</build-helper-maven-plugin-version>
-		<maven-surefire-version>3.0.0</maven-surefire-version>
+		<maven-surefire-version>3.2.5</maven-surefire-version>
 
 		<jdeferred.version>2.0.0</jdeferred.version>
 
