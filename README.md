@@ -5,16 +5,17 @@ The elijah-lang compiler/package manager.
 
 Elijah is:
 
-- ... a high-level language built to explore \[insert goal here\].
+- ... a high-level language built to explore code generation and other interesting techniques.
 - ... a historical curiosity.
 - ... meant to be easy to use standalone or with existing projects.
 - ... free software (LGPL) intended for use on all systems, aka Linux.
-- ... philosophically opposed to semicolons
+- ... philosophically opposed to semicolons.
+- ... obsessed with curly braces and brackets.
 
 [`congenial-robot`][1] is:
 
 - ... implemented in Java (17, for now; 8 is great and Graal is your paal)
-- ... of the impression that build systems don't matter [2][2] [4][4] [5][5] (tldr maven for now)
+- ... of the impression that build systems don't matter [2][2] (tldr maven for now)
 - ... mortal enemies of Scala
 - ... a friend of Eclipse and therefore not Lombok (but only when it's not trying that hard)
 - ... a friend of Xtend
@@ -24,7 +25,7 @@ Elijah is:
 Instructions
 -------------
 
-[https://github.com/elijah-team/elevated-potential](https://github.com/elijah-team/elevated-potential)
+https://github.com/elijah-team/congenial-robot
 
 ```shell
 git clone https://github.com/elijah-team/congenial-robot -b 2024-congenial
@@ -34,7 +35,6 @@ gradle test
 # or 
 nix-shell -p maven gradle jdk17 --pure --command "maven clean test"
 ```
-
 
 GOALS
 ------
@@ -63,7 +63,5 @@ TODO
 
 
 [1]: https://github.com/elijah-team/congenial-robot
-[2]: https://github.com/elijah-team/congenial-robot/tree/2023-99-robotics-sbt
-[3]: https://nope.org
-[4]: https://www.lihaoyi.com/post/SowhatswrongwithSBT.html
-[5]: https://silverhammermba.github.io/blog/2023/01/06/gradle
+[2]: https://gitlab.com/elijah-team/documentation/petal-to-the-medal/-/blob/main/ginitiatives/G8.md?ref_type=heads
+[3]: https://gitlab.com/elijah-team/documentation/petal-to-the-medal/-/blob/main/ginitiatives/G1.md?ref_type=heads 
