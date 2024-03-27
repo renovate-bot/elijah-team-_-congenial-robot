@@ -19,7 +19,7 @@ package tripleo.vendor.org_apache_commons_cli;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tripleo.elijah.comp.CompilerInput;
+import tripleo.elijah_durable_congenial.comp.CompilerInput;
 import tripleo.elijah.util.NotImplementedException;
 
 import java.util.ArrayList;
@@ -566,12 +566,8 @@ public class DefaultParser implements CommandLineParser {
 			// long or partial long options (--L, -L, --L=V, -L=V, --l, --l=V)
 			return true;
 		}
-		if (getLongPrefix(token) != null && !token.startsWith("--")) {
-			// -LV
-			return true;
-		}
-
-		return false;
+		// -LV
+		return getLongPrefix(token) != null && !token.startsWith("--");
 	}
 
 	/**

@@ -18,7 +18,7 @@
 package tripleo.vendor.org_apache_commons_cli;
 
 import org.jetbrains.annotations.NotNull;
-import tripleo.elijah.comp.CompilerInput;
+import tripleo.elijah_durable_congenial.comp.CompilerInput;
 import tripleo.elijah.util.NotImplementedException;
 
 import java.util.ArrayList;

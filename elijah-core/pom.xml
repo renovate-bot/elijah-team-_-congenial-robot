@@ -12,11 +12,9 @@
 	<name>tripleo.elijah.core</name>
 	<description>elijah-core</description>
 	<properties>
-		<maven.compiler.source>17</maven.compiler.source>
-		<maven.compiler.target>17</maven.compiler.target>
 		<org.eclipse.xtend.lib.version>2.34.0</org.eclipse.xtend.lib.version>
 		<xtend-maven-plugin.version>2.34.0</xtend-maven-plugin.version>
-		<kotlin.version>1.9.23</kotlin.version>
+		<kotlin.version>1.9.22</kotlin.version>
 	</properties>
 	<packaging>jar</packaging>
 
@@ -33,18 +31,18 @@
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/com.tngtech.archunit/archunit-junit4 -->
-		<dependency>
+<!--		<dependency>
 			<groupId>com.tngtech.archunit</groupId>
 			<artifactId>archunit-junit4</artifactId>
-			<version>1.2.1</version>
+			<version>1.2.0</version>
 			<scope>test</scope>
-		</dependency>
+		</dependency>-->
 
 		<!-- https://search.maven.org/artifact/io.reactivex.rxjava3/rxjava/3.1.0/jar -->
 		<dependency>
 			<groupId>io.reactivex.rxjava3</groupId>
 			<artifactId>rxjava</artifactId>
-			<version>3.1.8</version>
+			<version>3.1.6</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.reactivestreams/reactive-streams -->
@@ -58,7 +56,7 @@
 		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
-			<version>1.16.1</version> <!-- Use 1.6 for java 1.5 -->
+			<version>1.15</version> <!-- Use 1.6 for java 1.5 -->
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/antlr/antlr -->
@@ -82,7 +80,7 @@
 		<dependency>
 			<groupId>org.jetbrains</groupId>
 			<artifactId>annotations</artifactId>
-			<version>24.1.0</version>
+			<version>24.0.1</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
@@ -91,10 +89,49 @@
 			<version>${kotlin.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.jetbrains.kotlin</groupId>
-			<artifactId>kotlin-test-junit</artifactId>
-			<version>${kotlin.version}</version>
-			<scope>test</scope>
+			<groupId>com.squareup.moshi</groupId>
+			<artifactId>moshi</artifactId>
+			<version>1.15.0</version>
+		</dependency>
+		<dependency>
+			<groupId>dev.zacsweers.moshix</groupId>
+			<artifactId>moshi-gradle-plugin</artifactId>
+			<version>1.7.20-Beta-0.18.3</version>
+		</dependency>
+		<dependency>
+			<groupId>dev.zacsweers.moshix</groupId>
+			<artifactId>moshi-gradle-plugin</artifactId>
+			<version>1.7.20-Beta-0.18.3</version>
+		</dependency>
+		<dependency>
+			<groupId>com.squareup.moshi</groupId>
+			<artifactId>moshi</artifactId>
+			<version>1.15.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.squareup.moshi</groupId>
+			<artifactId>moshi</artifactId>
+			<version>1.15.0</version>
+		</dependency>
+		<dependency>
+			<groupId>app.cash.wisp</groupId>
+			<artifactId>wisp-moshi</artifactId>
+			<version>1.4.12</version>
+		</dependency>
+		<dependency>
+			<groupId>app.cash.wisp</groupId>
+			<artifactId>wisp-moshi</artifactId>
+			<version>1.4.12</version>
+		</dependency>
+		<dependency>
+			<groupId>com.squareup.moshi</groupId>
+			<artifactId>moshi-kotlin-codegen</artifactId>
+			<version>1.15.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.squareup.moshi</groupId>
+			<artifactId>moshi-kotlin-codegen</artifactId>
+			<version>1.15.0</version>
 		</dependency>
 	</dependencies>
 
@@ -139,7 +176,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
-				<version>3.5.0</version>
+				<version>3.0.0</version>
 				<executions>
 					<execution>
 						<phase>generate-sources</phase>
@@ -191,7 +228,11 @@
 								<sourceDir>src/main/lombok</sourceDir>
 								<sourceDir>target/generated-sources/delombok</sourceDir>
 
+<!--
 								<sourceDir>xtend-gen/src/main/java</sourceDir>
+-->
+								<sourceDir>target/xtend-gen/main/tripleo/elijah/stages/gen_c/internal_t/_GenerateC_T.java</sourceDir>
+
 								<sourceDir>target/generated-sources/annotations</sourceDir>
 								<sourceDir>target/generated-sources/kapt</sourceDir>
 								<sourceDir>target/generated-sources/kaptKotlin</sourceDir>
@@ -220,7 +261,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.12.1</version>
+				<version>3.11.0</version>
 				<executions>
 					<execution>
 						<id>default-compile</id>

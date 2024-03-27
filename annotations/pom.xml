@@ -8,26 +8,23 @@
 	<parent>
 		<groupId>tripleo.elijah</groupId>
 		<artifactId>congenial-robot</artifactId>
-		<version>2023.congenial.11.something-after-rosetta</version>
+		<version>congenial.2023-12</version>
+
 	</parent>
 
 	<artifactId>annotations</artifactId>
 	<name>annotations</name>
 	<description>annotations</description>
 	<packaging>jar</packaging>
-	<version>2023.congenial.11.something-after-rosetta</version>
+	<version>congenial.2023-12</version>
+
 
 	<dependencies>
 
 		<dependency>
 			<groupId>com.github.spullara.mustache.java</groupId>
 			<artifactId>compiler</artifactId>
-			<version>0.9.11</version>
-		</dependency>
-		<dependency>
-			<groupId>com.github.spullara.mustache.java</groupId>
-			<artifactId>compiler</artifactId>
-			<version>0.9.11</version>
+			<version>0.9.5</version>
 			<scope>compile</scope>
 		</dependency>
 
@@ -39,7 +36,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.12.1</version>
+				<version>3.5.1</version>
 				<configuration>
 					<compilerArgument>-proc:none</compilerArgument>
 				</configuration>

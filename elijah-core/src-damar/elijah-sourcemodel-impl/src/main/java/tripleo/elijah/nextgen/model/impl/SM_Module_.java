@@ -1,9 +1,9 @@
 package tripleo.elijah.nextgen.model.impl;
 
 import tripleo.elijah.g.GModuleItem;
-import tripleo.elijah.lang.i.ModuleItem;
-import tripleo.elijah.lang.i.OS_Module;
-import tripleo.elijah.nextgen.inputtree.EIT_ModuleInput;
+import tripleo.elijah_durable_congenial.lang.i.ModuleItem;
+import tripleo.elijah_durable_congenial.lang.i.OS_Module;
+import tripleo.elijah_durable_congenial.nextgen.inputtree.EIT_ModuleInput;
 import tripleo.elijah.nextgen.model.SM_Module;
 import tripleo.elijah.nextgen.model.SM_ModuleItem;
 

@@ -1,26 +1,33 @@
 package tripleo.elijah.world.impl;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.Eventual;
 import tripleo.elijah.UnintendedUseException;
-import tripleo.elijah.comp.i.CompilationEnclosure;
-import tripleo.elijah.comp.notation.GN_PL_Run2;
-import tripleo.elijah.comp.notation.GN_PL_Run2.GenerateFunctionsRequest;
-import tripleo.elijah.lang.i.OS_Module;
-import tripleo.elijah.nextgen.inputtree.EIT_ModuleInput;
-import tripleo.elijah.stages.deduce.DeducePhase;
-import tripleo.elijah.stages.inter.ModuleThing;
-import tripleo.elijah.world.i.WorldModule;
+import tripleo.elijah_congenial_durable.deduce2.GeneratedClasses;
+import tripleo.elijah_durable_congenial.comp.i.CompilationEnclosure;
+import tripleo.elijah_durable_congenial.comp.notation.GN_PL_Run2;
+import tripleo.elijah_durable_congenial.comp.notation.GN_PL_Run2.GenerateFunctionsRequest;
+import tripleo.elijah_durable_congenial.lang.i.OS_Module;
+import tripleo.elijah_durable_congenial.nextgen.inputtree.EIT_ModuleInput;
+import tripleo.elijah_durable_congenial.stages.inter.ModuleThing;
+import tripleo.elijah_durable_congenial.world.i.WorldModule;
 
 public class DefaultWorldModule implements WorldModule {
-	private final Eventual<DeducePhase.GeneratedClasses> _p_GeneratedClasses = new Eventual<>();
-	private final OS_Module   mod;
-	@Setter
-	private       ModuleThing thing;
-	@Setter @Getter
-	private GN_PL_Run2.GenerateFunctionsRequest rq;
+	private final Eventual<GeneratedClasses> _p_GeneratedClasses = new Eventual<>();
+	private final OS_Module                  mod;
+	private       ModuleThing                            thing;
+	private       GN_PL_Run2.GenerateFunctionsRequest    rq;
+
+	public DefaultWorldModule(final OS_Module aMod, final @NotNull CompilationEnclosure ce) {
+		mod = aMod;
+		final ModuleThing mt = ce.addModuleThing(mod);
+		setThing(mt);
+	}
+
+	private void setThing(ModuleThing mt) {
+		// antilombok
+		this.thing = mt;
+	}
 
 	@Override
 	public OS_Module module() {
@@ -38,19 +45,8 @@ public class DefaultWorldModule implements WorldModule {
 		return rq;
 	}
 
-	public DefaultWorldModule(final OS_Module aMod, final @NotNull CompilationEnclosure ce) {
-		mod = aMod;
-		final ModuleThing mt = ce.addModuleThing(mod);
-		setThing(mt);
-	}
-
-	private void setThing(ModuleThing mt) {
-		// antilombok
-		this.thing = mt;
-	}
-
 	@Override
-	public Eventual<DeducePhase.GeneratedClasses> getEventual() {
+	public Eventual<GeneratedClasses> getEventual() {
 		return _p_GeneratedClasses;
 	}
 

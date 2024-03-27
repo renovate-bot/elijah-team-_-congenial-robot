@@ -3,10 +3,10 @@ package tripleo.elijah.stages.gen_generic;
 import lombok.Getter;
 import org.jetbrains.annotations.Contract;
 import tripleo.elijah.comp.PipelineLogic;
-import tripleo.elijah.comp.i.CompilationEnclosure;
-import tripleo.elijah.comp.i.ErrSink;
-import tripleo.elijah.lang.i.OS_Module;
-import tripleo.elijah.stages.logging.ElLog;
+import tripleo.elijah_durable_congenial.comp.i.CompilationEnclosure;
+import tripleo.elijah_durable_congenial.comp.i.ErrSink;
+import tripleo.elijah_durable_congenial.lang.i.OS_Module;
+import tripleo.elijah_durable_congenial.stages.logging.ElLog;
 
 @Getter
 public class OutputFileFactoryParams {

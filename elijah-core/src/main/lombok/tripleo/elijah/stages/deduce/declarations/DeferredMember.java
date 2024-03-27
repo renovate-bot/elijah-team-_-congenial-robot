@@ -14,11 +14,11 @@ import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
 import tripleo.elijah.Eventual;
 import tripleo.elijah.diagnostic.Diagnostic;
-import tripleo.elijah.lang.i.VariableStatement;
-import tripleo.elijah.stages.deduce.DeduceElementWrapper;
-import tripleo.elijah.stages.deduce.IInvocation;
-import tripleo.elijah.stages.gen_fn.EvaNode;
-import tripleo.elijah.stages.gen_fn.GenType;
+import tripleo.elijah_durable_congenial.lang.i.VariableStatement;
+import tripleo.elijah_durable_congenial.stages.deduce.DeduceElementWrapper;
+import tripleo.elijah_durable_congenial.stages.deduce.IInvocation;
+import tripleo.elijah_durable_congenial.stages.gen_fn.EvaNode;
+import tripleo.elijah_durable_congenial.stages.gen_fn.GenType;
 
 /**
  * Created 6/27/21 1:41 AM

@@ -2,13 +2,14 @@ package tripleo.elijah.stages.gen_fn_r;
 
 import lombok.Getter;
 import tripleo.elijah.Eventual;
-import tripleo.elijah.stages.gen_fn.EvaClass;
+import tripleo.elijah_durable_congenial.stages.gen_fn.EvaClass;
 
+@Getter
 public class GenerateEvaClassResponse {
-	@Getter	private final Eventual<EvaClass> evaClassPromise = new Eventual<>();
+	private final Eventual<EvaClass> evaClassPromise = new Eventual<>();
 
-//	public Eventual<EvaClass> getEvaClassPromise() {
-//		// antilombok
-//		return evaClassPromise;
-//	}
+	public Eventual<EvaClass> getEvaClassPromise() {
+		// antilombok
+		return evaClassPromise;
+	}
 }

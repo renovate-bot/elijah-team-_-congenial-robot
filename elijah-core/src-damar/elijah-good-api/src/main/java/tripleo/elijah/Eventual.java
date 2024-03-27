@@ -16,7 +16,13 @@ public class Eventual<P> {
 	public void resolve(final P p) {
 		prom.resolve(p);
 	}
+	public void succeedWith(final P p) {
+		prom.resolve(p);
+	}
 
+	public void onSuccess(final DoneCallback<? super P> cb) {
+		prom.then(cb);
+	}
 	public void then(final DoneCallback<? super P> cb) {
 		prom.then(cb);
 	}
@@ -74,6 +80,18 @@ public class Eventual<P> {
 		return Optional.of((P) xx[0]);
 	}
 
+	@Override
+	public String toString() {
+		var s = new StringBuilder();
+		if (prom.isResolved()) {
+			s.append("RESOLVED ");
+			s.append(getOptional().get());
+			s.append('\n');
+		} else s.append(super.toString());
+		return s.toString();
+	}
+
+	@Deprecated
 	public Promise.State state() {
 		return prom.state();
 	}

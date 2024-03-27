@@ -33,7 +33,7 @@ public final class RegisterClassInvocation_env {
 		ElIntrinsics.checkNotNullParameter(deduceTypes2, "deduceTypes2");
 		ElIntrinsics.checkNotNullParameter(phase, "phase");
 
-		ClassInvocation var10001 = phase.registerClassInvocation(classStatement, deduceTypes2);
+		ClassInvocation var10001 = _phase().registerClassInvocation(classStatement, deduceTypes2);
 		ElIntrinsics.checkNotNullExpressionValue(var10001, "registerClassInvocation(...)");
 
 		this.ci = var10001;
@@ -88,7 +88,7 @@ public final class RegisterClassInvocation_env {
 	public int hashCode() {
 		int result = this.ci.hashCode();
 		result = result * 31 + (this.deduceTypes2 == null ? 0 : this.deduceTypes2.hashCode());
-		result = result * 31 + (this.phase == null ? 0 : this.phase.hashCode());
+		result = result * 31 + (this.phase == null ? 0 : this._phase().hashCode());
 		return result;
 	}
 
