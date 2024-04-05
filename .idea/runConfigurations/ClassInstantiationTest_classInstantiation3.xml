@@ -1,0 +1,18 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="ClassInstantiationTest.classInstantiation3" type="JUnit" factoryName="JUnit" nameIsGenerated="true">
+    <module name="tripleo.elijah.core" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="tripleo.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <option name="PACKAGE_NAME" value="tripleo.elijah" />
+    <option name="MAIN_CLASS_NAME" value="tripleo.elijah.ClassInstantiationTest" />
+    <option name="METHOD_NAME" value="classInstantiation3" />
+    <option name="TEST_OBJECT" value="method" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

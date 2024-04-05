@@ -57,6 +57,11 @@
       <option name="url" value="https://repo.maven.apache.org/maven2/" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="central" />
+      <option name="name" value="central" />
+      <option name="url" value="https://repo1.maven.org/maven2/" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="maven2" />
       <option name="name" value="maven2" />
       <option name="url" value="https://gitlab.com/api/v4/projects/21223510/packages/maven" />

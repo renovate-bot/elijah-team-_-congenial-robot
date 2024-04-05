@@ -1,0 +1,9 @@
+steps:
+  build:
+    image: maven:3.9.6-amazoncorretto-17
+    commands:
+      - echo "mvn clean compile"
+  a-test-step:
+    image: maven:3.9.6-amazoncorretto-17
+    commands:
+      - echo "mvn test"

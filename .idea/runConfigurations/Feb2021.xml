@@ -1,0 +1,19 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Feb2021" type="JUnit" factoryName="JUnit" activateToolWindowBeforeRun="false" singleton="false" nameIsGenerated="true">
+    <module name="test" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="tripleo.elijah.stages.deduce.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+    <option name="ALTERNATIVE_JRE_PATH" value="$USER_HOME$/.jdks/semeru-17.0.6" />
+    <option name="PACKAGE_NAME" value="tripleo.elijah.stages.deduce" />
+    <option name="MAIN_CLASS_NAME" value="tripleo.elijah.stages.deduce.Feb2021" />
+    <option name="METHOD_NAME" value="" />
+    <option name="TEST_OBJECT" value="class" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+    <method v="2" />
+  </configuration>
+</component>

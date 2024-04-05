@@ -1,7 +1,0 @@
-package tripleo.elijah.stages.gen_fn_r;
-
-import tripleo.elijah.Eventual;
-
-public class GenerateEvaClassResponse {
-   private final Eventual evaClassPromise = new Eventual();
-}

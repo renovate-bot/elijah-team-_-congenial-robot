@@ -1,0 +1,230 @@
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>tripleo.elijah</groupId>
+	<artifactId>congenial-robot</artifactId>
+	<packaging>pom</packaging>
+	<version>congenial.2024-04</version>
+
+	<!-- TODO 12/31 naming here -->
+	<name>eljc-almost-congenial-robot</name>
+	<url>http://git.sr.ht/~tripleo/el-almost</url>
+
+	<properties>
+		<project.build.outputTimestamp>1</project.build.outputTimestamp>
+
+		<java.version>17</java.version>
+		<maven.compiler.source>17</maven.compiler.source>
+		<maven.compiler.target>17</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+		<downloadSources>true</downloadSources>
+
+		<jacoco.version>0.8.9</jacoco.version>
+		<guava.version>33.0.0-jre</guava.version>
+
+		<buffers.version>0.0.3</buffers.version>
+		<range.version>0.0.3b</range.version>
+
+		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+
+		<jdeferred.version>2.0.0</jdeferred.version>
+
+		<!-- for edu 2022.2 -->
+		<!--		<kotlin.version>1.7.10</kotlin.version>-->
+		<kotlin.version>1.9.21</kotlin.version>
+	</properties>
+
+	<modules>
+		<!--
+				<module>annotation-processing</module>
+				<module>annotation-user</module>
+		-->
+		<module>elijah-core</module>
+		<module>elijah-core.test</module>
+	</modules>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>${guava.version}</version>
+		</dependency>
+		<!-- https://search.maven.org/artifact/fr.inria.gforge.spoon.labs/gumtree-spoon-ast-diff/1.69/jar-->
+		<dependency>
+			<groupId>fr.inria.gforge.spoon.labs</groupId>
+			<artifactId>gumtree-spoon-ast-diff</artifactId>
+			<version>1.69</version>
+		</dependency>
+
+		<!-- https://smallrye.io/smallrye-mutiny/2.5.1/tutorials/getting-mutiny/ -->
+		<!--
+				<dependency>
+					<groupId>io.smallrye.reactive</groupId>
+					<artifactId>mutiny</artifactId>
+					<version>2.5.1</version>
+				</dependency>
+		-->
+
+		<!-- https://mvnrepository.com/artifact/javax.annotation/javax.annotation-api -->
+		<dependency>
+			<groupId>javax.annotation</groupId>
+			<artifactId>javax.annotation-api</artifactId>
+			<version>1.3.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.12.0</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-simple -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>2.0.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>2.0.5</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>5.2.0</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!--
+				<dependency>
+					<groupId>com.github.spotbugs</groupId>
+					<artifactId>spotbugs-annotations</artifactId>
+					<version>4.7.3</version>
+				</dependency>
+		-->
+
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.28</version>
+			<scope>provided</scope>
+		</dependency>
+
+<!--
+		<dependency>
+			<groupId>com.github.elijah-team.lombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>master-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+-->
+
+		<dependency>
+			<groupId>com.github.JCTools.JCTools</groupId>
+			<artifactId>jctools-core</artifactId>
+			<version>v4.0.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.gitlab.tripleo1</groupId>
+			<artifactId>buffers</artifactId>
+			<version>3038ff102c</version>
+			<!--
+						<groupId>tripleo.buffers</groupId>
+						<artifactId>buffers-v1</artifactId>
+						<version>0.0.3</version>
+			-->
+		</dependency>
+
+		<dependency>
+			<!--
+						<groupId>tripleo.util.range</groupId>
+						<artifactId>range-v1</artifactId>
+						<version>${range.version}</version>
+			-->
+			<groupId>com.gitlab.Tripleo</groupId>
+			<artifactId>range</artifactId>
+			<version>v0.0.3b</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.auto.service</groupId>
+			<artifactId>auto-service</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.13.2</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.squareup.moshi</groupId>
+			<artifactId>moshi</artifactId>
+			<version>1.15.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.squareup.moshi</groupId>
+			<artifactId>moshi-adapters</artifactId>
+			<version>1.9.2</version>
+		</dependency>
+		<!--
+				<dependency>
+					<groupId>dev.zacsweers.moshix</groupId>
+					<artifactId>moshi-gradle-plugin</artifactId>
+					<version>1.7.20-Beta-0.18.3</version>
+				</dependency>
+		-->
+		<!--
+				<dependency>
+					<groupId>com.squareup.moshi</groupId>
+					<artifactId>moshi-kotlin-codegen</artifactId>
+					<version>1.15.0</version>
+				</dependency>
+		-->
+	</dependencies>
+
+	<repositories>
+		<repository>
+			<id>central</id>
+			<url>https://repo1.maven.org/maven2/</url>
+		</repository>
+		<repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
+		</repository>
+	</repositories>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.eclipse.sisu</groupId>
+					<artifactId>sisu-maven-plugin</artifactId>
+					<version>0.3.0.M1</version>
+					<executions>
+						<execution>
+							<id>generate-index</id>
+							<goals>
+								<goal>main-index</goal>
+								<goal>test-index</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>versions-maven-plugin</artifactId>
+					<version>2.15.0</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+</project>

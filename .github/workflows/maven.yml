@@ -3,7 +3,7 @@ name: Java CI with Maven
 on:
   push:
 #    branches: [ "2024-congenial-update" ]
-  pull_request:
+#  pull_request:  // this one or that one?
 #    branches: [ "2024-congenial-update" ]
 
 jobs:
