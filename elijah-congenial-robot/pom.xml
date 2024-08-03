@@ -27,8 +27,6 @@
 		<buffers.version>0.0.3</buffers.version>
 		<range.version>0.0.3b</range.version>
 
-		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
-
 		<jdeferred.version>2.0.0</jdeferred.version>
 
 		<!-- for edu 2022.2 -->
@@ -52,21 +50,13 @@
 			<artifactId>guava</artifactId>
 			<version>${guava.version}</version>
 		</dependency>
+
 		<!-- https://search.maven.org/artifact/fr.inria.gforge.spoon.labs/gumtree-spoon-ast-diff/1.69/jar-->
 		<dependency>
 			<groupId>fr.inria.gforge.spoon.labs</groupId>
 			<artifactId>gumtree-spoon-ast-diff</artifactId>
 			<version>1.69</version>
 		</dependency>
-
-		<!-- https://smallrye.io/smallrye-mutiny/2.5.1/tutorials/getting-mutiny/ -->
-		<!--
-				<dependency>
-					<groupId>io.smallrye.reactive</groupId>
-					<artifactId>mutiny</artifactId>
-					<version>2.5.1</version>
-				</dependency>
-		-->
 
 		<!-- https://mvnrepository.com/artifact/javax.annotation/javax.annotation-api -->
 		<dependency>
@@ -101,11 +91,11 @@
 		</dependency>
 
 		<!--
-				<dependency>
-					<groupId>com.github.spotbugs</groupId>
-					<artifactId>spotbugs-annotations</artifactId>
-					<version>4.7.3</version>
-				</dependency>
+		<dependency>
+			<groupId>com.github.spotbugs</groupId>
+			<artifactId>spotbugs-annotations</artifactId>
+			<version>4.7.3</version>
+		</dependency>
 		-->
 
 		<dependency>
@@ -134,28 +124,12 @@
 			<groupId>com.gitlab.tripleo1</groupId>
 			<artifactId>buffers</artifactId>
 			<version>3038ff102c</version>
-			<!--
-						<groupId>tripleo.buffers</groupId>
-						<artifactId>buffers-v1</artifactId>
-						<version>0.0.3</version>
-			-->
 		</dependency>
 
 		<dependency>
-			<!--
-						<groupId>tripleo.util.range</groupId>
-						<artifactId>range-v1</artifactId>
-						<version>${range.version}</version>
-			-->
 			<groupId>com.gitlab.Tripleo</groupId>
 			<artifactId>range</artifactId>
 			<version>v0.0.3b</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.google.auto.service</groupId>
-			<artifactId>auto-service</artifactId>
-			<version>1.1.1</version>
 		</dependency>
 
 		<dependency>
