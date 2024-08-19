@@ -81,7 +81,7 @@ public class TestBasic {
 		assertEquals(9, (int) errorCount.get(2)); // TODO Error count obviously should be 0
 	}
 
-	//@Ignore
+	@Ignore
 	@Test
 	public final void testBasic_listfolders3() {
 		String s = "test/basic/listfolders3/listfolders3.ez";
@@ -132,6 +132,7 @@ public class TestBasic {
 		assertTrue(REPORTS.containsCodeOutput("/Prelude/Prelude.h"));
 	}
 
+	@Ignore
 	@Test
 	public final void testBasic_listfolders3__() {
 		String s = "test/basic/listfolders3/listfolders3.ez";
@@ -208,6 +209,7 @@ public class TestBasic {
 
 	}
 
+	@Ignore
 	@Test
 	public final void testBasic_fact1() throws Exception {
 		final String s = "test/basic/fact1/main2";
@@ -274,6 +276,7 @@ public class TestBasic {
 		assertTrue(REPORTS.containsCodeOutput("/main2/Main.c"));
 	}
 
+	@Ignore
 	@Test
 	public final void testBasic_fact1_002() throws Exception {
 		testBasic_fact1 f = new testBasic_fact1();

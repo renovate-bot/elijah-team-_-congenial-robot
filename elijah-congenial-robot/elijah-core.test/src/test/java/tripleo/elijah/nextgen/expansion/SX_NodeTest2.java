@@ -27,7 +27,7 @@ import static tripleo.elijah_durable_congenial.util.Helpers.List_of;
 public class SX_NodeTest2 extends TestCase {
 
 	@Ignore
-	@Test
+//	@Test
 	public void testFullText() throws Exception {
 		final Compilation comp = CompilationFactory.mkCompilationSilent(new StdErrSink(), new IO());
 

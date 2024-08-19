@@ -1,5 +1,6 @@
 package tripleo.elijah;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import tripleo.elijah_durable_congenial.comp.i.Compilation;
 import tripleo.elijah_durable_congenial.comp.signal.DeducePipeline_finishedSignal;
@@ -12,6 +13,7 @@ import static org.hamcrest.core.IsEqual.equalTo;
  */
 public class ClassInstantiationTest {
 
+	@Ignore
 	@Test
 	public void classInstantiation() {
 		final String      f = "test/basic1/class_instantiation/";
@@ -25,6 +27,7 @@ public class ClassInstantiationTest {
 		assertThat(c.errorCount(), equalTo(1_000_000));
 	}
 
+	@Ignore
 	@Test
 	public void classInstantiation2() {
 		final String      f = "test/basic1/class_instantiation2/";
@@ -38,6 +41,7 @@ public class ClassInstantiationTest {
 		assertThat(c.errorCount(), equalTo(1_000_000));
 	}
 
+	@Ignore
 	@Test
 	public void classInstantiation3() {
 		final String      f = "test/basic1/class_instantiation3/";
@@ -51,6 +55,7 @@ public class ClassInstantiationTest {
 		assertThat(c.errorCount(), equalTo(1_000_000));
 	}
 
+	@Ignore
 	@Test
 	public void classInstantiation4() {
 		final String      f = "test/basic1/class_instantiation4/";

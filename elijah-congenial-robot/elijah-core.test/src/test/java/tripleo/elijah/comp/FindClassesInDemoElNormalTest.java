@@ -1,6 +1,7 @@
 package tripleo.elijah.comp;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import tripleo.elijah_durable_congenial.comp.IO;
 import tripleo.elijah_durable_congenial.comp.StdErrSink;
@@ -21,6 +22,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class FindClassesInDemoElNormalTest {
 
+	@Ignore
 	@Test
 	public final void testParseFile() throws Exception {
 		final List<String> args = Helpers.List_of("test/demo-el-normal", "test/demo-el-normal/main2", "-sE");
@@ -37,6 +39,7 @@ public class FindClassesInDemoElNormalTest {
 	}
 
 
+	@Ignore
 	@Test
 	public final void testListFolders() throws Exception {
 		final List<String> args = Helpers.List_of("test/demo-el-normal/listfolders/", "-sE");

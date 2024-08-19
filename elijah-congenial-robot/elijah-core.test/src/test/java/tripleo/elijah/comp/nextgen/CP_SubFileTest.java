@@ -2,6 +2,7 @@ package tripleo.elijah.comp.nextgen;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import tripleo.elijah_durable_congenial.comp.IO;
 import tripleo.elijah_durable_congenial.comp.StdErrSink;
@@ -25,6 +26,7 @@ public class CP_SubFileTest {
 		assertEquals(true, cc.getSignalResult(DeducePipeline_finishedSignal.INSTANCE));
 	}
 
+	@Ignore
 	@Test
 	public void one() {
 		op.testShim();

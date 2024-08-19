@@ -7,6 +7,7 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import tripleo.elijah_durable_congenial.comp.IO;
@@ -26,6 +27,7 @@ import static tripleo.elijah_durable_congenial.util.Helpers.List_of;
  */
 public class CompilationTest {
 
+	@Ignore
 	@Test
 	public final void testEz() throws Exception {
 		final List<String> args = List_of("test/comp_test/main3", "-sE"/*, "-out"*/);

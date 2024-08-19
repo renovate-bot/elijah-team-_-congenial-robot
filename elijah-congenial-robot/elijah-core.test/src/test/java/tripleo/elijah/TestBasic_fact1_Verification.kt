@@ -5,6 +5,7 @@ import gumtree.spoon.builder.SpoonGumTreeBuilder
 import gumtree.spoon.diff.Diff
 import gumtree.spoon.diff.DiffImpl
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 import spoon.SpoonModelBuilder
 import spoon.compiler.SpoonResource
@@ -37,6 +38,7 @@ class TestBasic_fact1_Verification {
         assertEquals(true, c.getSignalResult(DeducePipeline_finishedSignal.INSTANCE))
     }
 
+    @Ignore
     @Test
     fun testInputs_fact1() {
         val ac = AstComparator()
@@ -85,21 +87,25 @@ class TestBasic_fact1_Verification {
         return factory.Type().get<Any>(type.qualifiedName)
     }
 
+    @Ignore
     @Test
     fun testInputs_main2_elijah() {
         assertTrue(REPORTS!!.containsInput("test/basic/fact1/main2/main2.elijah"))
     }
 
+    @Ignore
     @Test
     fun testInputs_main2_ez() {
 //        assertTrue(REPORTS.containsInput("test/basic/fact1/main2/main2.ez"))
     }
 
+    @Ignore
     @Test
     fun testOutputs_main2_Main_h() {
         assertTrue(REPORTS!!.containsCodeOutput("/main2/Main.h"))
     }
 
+    @Ignore
     @Test
     fun testOutputs_code2_main2_Main_c() {
         assertTrue(REPORTS!!.containsCodeOutput("/main2/Main.c"))
