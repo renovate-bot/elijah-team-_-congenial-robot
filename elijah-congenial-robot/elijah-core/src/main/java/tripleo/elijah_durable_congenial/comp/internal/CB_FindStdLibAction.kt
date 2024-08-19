@@ -7,6 +7,7 @@ import tripleo.elijah.util.Operation
 import tripleo.elijah_durable_congenial.ci.i.CompilerInstructions
 import tripleo.elijah_durable_congenial.comp.i.*
 
+@Suppress("UNCHECKED_CAST", "EnumEntryName", "ClassName")
 internal class CB_FindStdLibAction(private val ce: CompilationEnclosure, private val crState: CR_State) :
 	CB_Action {
 	private var findStdLib: CD_FindStdLib? = null
@@ -80,6 +81,7 @@ internal class CB_FindStdLibAction(private val ce: CompilationEnclosure, private
 
 			Prov.get_push_item -> {
 				val op = o as Operation<CompilerInstructions>
+				@Suppress("UNUSED_EXPRESSION")
 				op
 			}
 

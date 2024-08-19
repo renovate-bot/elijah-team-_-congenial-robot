@@ -8,7 +8,6 @@
  */
 package tripleo.elijah.stages.deduce.declarations;
 
-import lombok.Getter;
 import org.jdeferred2.Promise;
 import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
@@ -24,9 +23,9 @@ import tripleo.elijah_durable_congenial.stages.gen_fn.GenType;
  * Created 6/27/21 1:41 AM
  */
 public class DeferredMember {
-	@Getter private final IInvocation                               invocation;
-	@Getter private final DeduceElementWrapper                      parent;
-	@Getter private final VariableStatement                     variableStatement;
+	private final IInvocation invocation;
+	private final DeduceElementWrapper parent;
+	private final VariableStatement variableStatement;
 	private final Eventual<EvaNode>                         externalRef = new Eventual<>();
 	private final DeferredObject<GenType, Diagnostic, Void> typePromise = new DeferredObject<>();
 
