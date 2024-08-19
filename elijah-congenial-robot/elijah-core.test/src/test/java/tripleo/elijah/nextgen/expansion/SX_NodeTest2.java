@@ -1,17 +1,16 @@
 package tripleo.elijah.nextgen.expansion;
 
-import junit.framework.TestCase;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Ignore;
 import org.junit.Test;
-import tripleo.elijah_durable_congenial.comp.i.Compilation;
+import tripleo.elijah.nextgen.outputstatement.*;
 import tripleo.elijah_durable_congenial.comp.CompilerInput;
 import tripleo.elijah_durable_congenial.comp.IO;
 import tripleo.elijah_durable_congenial.comp.StdErrSink;
+import tripleo.elijah_durable_congenial.comp.i.Compilation;
 import tripleo.elijah_durable_congenial.comp.internal.DefaultCompilerController;
 import tripleo.elijah_durable_congenial.comp.signal.DeducePipeline_finishedSignal;
 import tripleo.elijah_durable_congenial.factory.comp.CompilationFactory;
-import tripleo.elijah.nextgen.outputstatement.*;
 import tripleo.elijah_durable_congenial.nextgen.outputtree.EOT_OutputFile;
 import tripleo.elijah_durable_congenial.nextgen.outputtree.EOT_OutputTree;
 import tripleo.elijah_durable_congenial.nextgen.outputtree.EOT_OutputType;
@@ -24,10 +23,10 @@ import java.util.stream.Collectors;
 import static org.junit.Assert.assertEquals;
 import static tripleo.elijah_durable_congenial.util.Helpers.List_of;
 
-public class SX_NodeTest2 extends TestCase {
+public class SX_NodeTest2 {
 
 	@Ignore
-//	@Test
+	@Test
 	public void testFullText() throws Exception {
 		final Compilation comp = CompilationFactory.mkCompilationSilent(new StdErrSink(), new IO());
 

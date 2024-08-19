@@ -1,12 +1,11 @@
 package tripleo.elijah.nextgen.expansion;
 
-import junit.framework.TestCase;
-import tripleo.elijah_durable_congenial.comp.i.Compilation;
-import tripleo.elijah_durable_congenial.lang.i.OS_Module;
 import tripleo.elijah.stages.gen_generic.OutputFileFactoryParams;
 import tripleo.elijah.test_help.Boilerplate;
+import tripleo.elijah_durable_congenial.comp.i.Compilation;
+import tripleo.elijah_durable_congenial.lang.i.OS_Module;
 
-public class SX_NodeTest extends TestCase {
+public class SX_NodeTest {
 
 	public void testFullText() {
 		final Boilerplate b = new Boilerplate();
