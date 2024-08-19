@@ -9,16 +9,15 @@
 package tripleo.elijah_durable_congenial.stages.gen_fn;
 
 import org.jdeferred2.DoneCallback;
-import org.jdeferred2.impl.DeferredObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tripleo.elijah.util.NotImplementedException;
+import tripleo.elijah.work.WorkJob;
+import tripleo.elijah.work.WorkManager;
 import tripleo.elijah_congenial_durable.deduce2.GeneratedClasses;
 import tripleo.elijah_durable_congenial.lang.i.NamespaceStatement;
 import tripleo.elijah_durable_congenial.stages.deduce.NamespaceInvocation;
 import tripleo.elijah_durable_congenial.stages.gen_generic.ICodeRegistrar;
-import tripleo.elijah.util.NotImplementedException;
-import tripleo.elijah.work.WorkJob;
-import tripleo.elijah.work.WorkManager;
 
 /**
  * Created 5/31/21 3:01 AM
@@ -56,8 +55,7 @@ public class WlGenerateNamespace implements WorkJob {
 	@Override
 	public void run(WorkManager aWorkManager) {
 		final var resolvePromise = namespaceInvocation.resolveDeferred();
-		switch (resolvePromise.state()) {
-		case PENDING:
+		if (resolvePromise.isPending()) {
 			@NotNull EvaNamespace ns = generateFunctions.generateNamespace(namespaceStatement);
 			//ns.setCode(generateFunctions.module.getCompilation().nextClassCode());
 
@@ -70,18 +68,17 @@ public class WlGenerateNamespace implements WorkJob {
 
 			resolvePromise.resolve(ns);
 			result = ns;
-			break;
-		case RESOLVED:
+		} else if (resolvePromise.isResolved()) {
 			resolvePromise.then(new DoneCallback<EvaNamespace>() {
 				@Override
 				public void onDone(EvaNamespace result) {
 					WlGenerateNamespace.this.result = result;
 				}
 			});
-			break;
-		case REJECTED:
+		} else {
 			throw new NotImplementedException();
 		}
+
 		_isDone = true;
 //		tripleo.elijah.util.Stupidity.println_out_2(String.format("** GenerateNamespace %s at %s", namespaceInvocation.getNamespace().getName(), this));
 	}
