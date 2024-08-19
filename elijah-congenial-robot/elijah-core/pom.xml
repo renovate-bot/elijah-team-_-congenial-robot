@@ -13,16 +13,12 @@
 	<description>elijah-core</description>
 	<properties>
 		<kotlin.version>1.9.22</kotlin.version>
+		<maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
+		<auto-service.version>1.1.1</auto-service.version>
 	</properties>
 	<packaging>jar</packaging>
 
 	<dependencies>
-
-		<dependency>
-			<groupId>com.google.auto.service</groupId>
-			<artifactId>auto-service</artifactId>
-			<version>1.1.1</version>
-		</dependency>
 
 		<!-- https://search.maven.org/artifact/io.reactivex.rxjava3/rxjava/3.1.0/jar -->
 		<dependency>
@@ -89,26 +85,17 @@
 			<artifactId>moshi-kotlin-codegen</artifactId>
 			<version>1.15.0</version>
 		</dependency>
+
+		<dependency>
+			<groupId>com.google.auto.service</groupId>
+			<artifactId>auto-service</artifactId>
+			<version>${auto-service.version}</version>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
 		<plugins>
-<!--
-			<plugin>
-				<groupId>org.projectlombok</groupId>
-				<artifactId>lombok-maven-plugin</artifactId>
-				<version>1.18.20.0</version>
-				<executions>
-					<execution>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>delombok</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
--->
-
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
