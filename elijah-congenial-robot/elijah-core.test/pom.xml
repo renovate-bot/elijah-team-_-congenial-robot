@@ -56,21 +56,6 @@
 			<version>congenial.2024-04</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>com.squareup.moshi</groupId>
-			<artifactId>moshi</artifactId>
-			<version>1.15.0</version>
-		</dependency>
-		<dependency>
-			<groupId>app.cash.wisp</groupId>
-			<artifactId>wisp-moshi</artifactId>
-			<version>1.4.12</version>
-		</dependency>
-		<dependency>
-			<groupId>com.squareup.moshi</groupId>
-			<artifactId>moshi-kotlin-codegen</artifactId>
-			<version>1.15.0</version>
-		</dependency>
 <!--
 		<dependency>
 			<groupId>org.jetbrains.kotlin</groupId>
@@ -82,7 +67,9 @@
 			<groupId>com.google.auto.service</groupId>
 			<artifactId>auto-service</artifactId>
 			<version>${auto-service.version}</version>
-			<scope>provided</scope>
+			<!--
+                        <scope>provided</scope>
+            -->
 		</dependency>
 
 	</dependencies>

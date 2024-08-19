@@ -1,9 +1,13 @@
 package tripleo.elijah.stateful.annotation.processor;
 
-import com.google.auto.service.AutoService;
+//import com.google.auto.service.AutoService;
+
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.processing.*;
+import javax.annotation.processing.AbstractProcessor;
+import javax.annotation.processing.RoundEnvironment;
+import javax.annotation.processing.SupportedAnnotationTypes;
+import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
@@ -19,7 +23,7 @@ import java.util.stream.Collectors;
 
 @SupportedAnnotationTypes("tripleo.elijah.stateful.annotation.processor.StatefulProperty")
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
-@AutoService(Processor.class)
+//@AutoService(Processor.class)
 public class StatefulProcessor extends AbstractProcessor {
 
 	@Override

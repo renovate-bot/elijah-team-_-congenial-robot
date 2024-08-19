@@ -1,9 +1,8 @@
 package tripleo.elijah_durable_congenial.stages.gen_java;
 
-import com.squareup.moshi.JsonAdapter;
-import com.squareup.moshi.Moshi;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
+import tripleo.elijah.util.UnintendedUseException;
 import tripleo.elijah_durable_congenial.stages.gen_generic.DependencyRef;
 
 /**
@@ -17,9 +16,12 @@ public class JavaDependencyRef implements DependencyRef {
 
 	@Override
 	public @NotNull String jsonString() {
+/*
 		Moshi                          moshi       = new Moshi.Builder().build();
 		JsonAdapter<JavaDependencyRef> jsonAdapter = moshi.adapter(JavaDependencyRef.class);
 		String json = jsonAdapter.toJson(this);
 		return json;
+*/
+		throw new UnintendedUseException();
 	}
 }

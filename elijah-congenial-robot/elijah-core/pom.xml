@@ -70,21 +70,6 @@
 			<artifactId>kotlin-stdlib-jdk8</artifactId>
 			<version>${kotlin.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>com.squareup.moshi</groupId>
-			<artifactId>moshi</artifactId>
-			<version>1.15.0</version>
-		</dependency>
-		<dependency>
-			<groupId>app.cash.wisp</groupId>
-			<artifactId>wisp-moshi</artifactId>
-			<version>1.4.12</version>
-		</dependency>
-		<dependency>
-			<groupId>com.squareup.moshi</groupId>
-			<artifactId>moshi-kotlin-codegen</artifactId>
-			<version>1.15.0</version>
-		</dependency>
 
 		<dependency>
 			<groupId>com.google.auto.service</groupId>
